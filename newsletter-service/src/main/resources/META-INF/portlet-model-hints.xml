@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="ch.inofix.newsletter.model.Mailing">
+		<field name="uuid" type="String" />
+		<field name="mailingId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="status" type="int" />
+		<field name="title" type="String" />
+		<field name="template" type="String" />
+		<field name="newsletterId" type="long" />
+		<field name="articleId" type="String" />
+		<field name="articleGroupId" type="long" />
+		<field name="publishDate" type="Date" />
+		<field name="sent" type="boolean" />
+		<field name="sendDate" type="Date" />
+	</model>
+	<model name="ch.inofix.newsletter.model.Newsletter">
+		<field name="uuid" type="String" />
+		<field name="newsletterId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="status" type="int" />
+		<field name="title" type="String" />
+		<field name="template" type="String" />
+		<field name="fromAddress" type="String" />
+		<field name="fromName" type="String" />
+		<field name="useHttps" type="boolean" />
+		<field name="vCardGroupId" type="String" />
+	</model>
+	<model name="ch.inofix.newsletter.model.Subscriber">
+		<field name="uuid" type="String" />
+		<field name="subscriberId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="status" type="int" />
+		<field name="email" type="String" />
+		<field name="firstname" type="String" />
+		<field name="gender" type="String" />
+		<field name="lastname" type="String" />
+		<field name="middlename" type="String" />
+		<field name="newsletterId" type="long" />
+		<field name="salutation" type="String" />
+		<field name="title" type="String" />
+		<field name="vCardUID" type="String" />
+	</model>
+</model-hints>
