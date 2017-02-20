@@ -1,0 +1,10 @@
+dependencies {
+	testIntegrationCompile group: "com.liferay", name: "com.liferay.arquillian.extension.junit.bridge", version: "1.0.5"
+	testIntegrationCompile group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "2.6.0"
+	testIntegrationCompile group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.0.0"
+	testIntegrationCompile group: "com.liferay.portal", name: "com.liferay.portal.test", version: "1.0.0"
+	testIntegrationCompile group: "com.liferay.portal", name: "com.liferay.portal.test.integration", version: "1.0.0"
+	testIntegrationCompile group: "org.springframework", name: "spring-context", version: "4.1.9.RELEASE"
+	testIntegrationCompile project(":modules:ch-inofix-newsletter:newsletter-api")
+	testIntegrationCompile project(":modules:ch-inofix-newsletter:newsletter-service")	
+}
