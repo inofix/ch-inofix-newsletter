@@ -1,4 +1,4 @@
-Bundle-Name: newsletter-service
+Bundle-Name: Inofix Newsletter Service
 Bundle-SymbolicName: ch.inofix.newsletter.service
 Bundle-Version: 1.0.0
 Export-Package:\

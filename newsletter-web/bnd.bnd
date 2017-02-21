@@ -1,2 +1,3 @@
-Bundle-SymbolicName: newsletter.web
+Bundle-Name: Inofix Newsletter Web
+Bundle-SymbolicName: ch.inofix.newsletter.web
 Bundle-Version: 1.0.0
