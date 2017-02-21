@@ -8,7 +8,7 @@ A newsletter plugin for Liferay.
 1. Checkout newsletter sources to [WORKSPACE_NAME]: `cd [WORKSPACE_NAME]/modules; git clone https://github.com/inofix/ch-inofix-newsletter.git`
 1. Run ServiceBuilder: `gradle buildService`
 1. Build and test integration: `gradle build`
-1. Check local test-results: `firefox modules/ch-inofix-newsletter/newsletter-test/build/
+1. Check local test-results: `firefox ch-inofix-newsletter/newsletter-test/build/reports/tests/testIntegration/index.html`
 
 ## Testing
-* Testresults can be found at https://travis-ci.org/inofix/ch-inofix-newsletter/builds
+* Travis-results for ch-inofix-newsletter can be found at https://travis-ci.org/inofix/ch-inofix-newsletter/builds
