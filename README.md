@@ -10,4 +10,4 @@ A newsletter plugin for Liferay.
 1. Build and test integration: `gradle build`
 
 ## Testing
-* Testresults can be found at <a href="https://travis-ci.org/inofix/ch-inofix-newsletter/builds" target="_blank">https://travis-ci.org/inofix/ch-inofix-newsletter/builds</a>
+* Testresults can be found at https://travis-ci.org/inofix/ch-inofix-newsletter/builds
