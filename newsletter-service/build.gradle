@@ -1,6 +1,11 @@
 buildService {
 	apiDir = "../newsletter-api/src/main/java"
-	testDir = "../newsletter-test/src/testIntegration/java"
+//
+// auto generated tests for persistence classes are disabled until the
+// dependency issues with "com.liferay.portal.test", version: "latest.release"
+// have been fixed. See ../newsletter-test/build.gradle
+//
+//	testDir = "../newsletter-test/src/testIntegration/java"
 }
 
 dependencies {
