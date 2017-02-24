@@ -1,16 +1,16 @@
 package ch.inofix.newsletter.service.impl.test;
 
 import org.junit.Assert;
-//import org.junit.ClassRule;
-//import org.junit.Rule;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-//import com.liferay.portal.kernel.service.ServiceContext;
-//import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-//import com.liferay.portal.kernel.test.rule.Sync;
-//import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.Sync;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 
 /**
  * 
@@ -21,7 +21,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
  *
  */
 @RunWith(Arquillian.class)
-//@Sync
+@Sync
 public class NewsletterLocalServiceImplTest {
 	
 //	@ClassRule
@@ -32,8 +32,8 @@ public class NewsletterLocalServiceImplTest {
 	@Test
 	public void testAddNewsletter() throws Exception {
 		
-//		ServiceContext serviceContext =
-//			ServiceContextTestUtil.getServiceContext();
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
 		
 		Assert.assertEquals(1, 1);
 		

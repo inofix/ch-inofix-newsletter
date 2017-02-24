@@ -3,6 +3,6 @@ Bundle-SymbolicName: ch.inofix.newsletter.service
 Bundle-Version: 1.0.0
 Export-Package:\
 	ch.inofix.newsletter.model.impl,\
-	ch.inofix.newsletter.service.impl
+    ch.inofix.newsletter.service.impl
 Liferay-Require-SchemaVersion: 1.0.0
 Liferay-Service: true
