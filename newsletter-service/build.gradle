@@ -1,19 +1,14 @@
 buildService {
-	apiDir = "../newsletter-api/src/main/java"
-//
-// auto generated tests for persistence classes are disabled until the
-// dependency issues with "com.liferay.portal.test", version: "latest.release"
-// have been fixed. See ../newsletter-test/build.gradle
-//
-//	testDir = "../newsletter-test/src/testIntegration/java"
+    apiDir = "../newsletter-api/src/main/java"
+    testDir = "../newsletter-test/src/testIntegration/java"
 }
 
 dependencies {
-	compileOnly group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "3.1.0"
-	compileOnly group: "com.liferay", name: "com.liferay.osgi.util", version: "3.0.0"
-	compileOnly group: "com.liferay", name: "com.liferay.portal.spring.extender", version: "2.0.0"
-	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.6.0"
-	compileOnly project(":modules:ch-inofix-newsletter:newsletter-api")
+    compileOnly group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "3.1.0"
+    compileOnly group: "com.liferay", name: "com.liferay.osgi.util", version: "3.0.0"
+    compileOnly group: "com.liferay", name: "com.liferay.portal.spring.extender", version: "2.0.0"
+    compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.6.0"
+    compileOnly project(":modules:ch-inofix-newsletter:newsletter-api")
 }
 
 group = "ch.inofix.newsletter"
