@@ -2,8 +2,10 @@ Bundle-Name: Inofix Newsletter API
 Bundle-SymbolicName: ch.inofix.newsletter.api
 Bundle-Version: 1.0.0
 Export-Package:\
+    ch.inofix.newsletter.constants,\
 	ch.inofix.newsletter.exception,\
 	ch.inofix.newsletter.model,\
-	ch.inofix.newsletter.service,\
+    ch.inofix.newsletter.security,\
+    ch.inofix.newsletter.service,\
 	ch.inofix.newsletter.service.persistence
 -includeresource: META-INF/service.xml=../newsletter-service/service.xml
