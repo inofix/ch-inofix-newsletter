@@ -33,6 +33,9 @@ import ch.inofix.newsletter.service.base.MailingLocalServiceBaseImpl;
  * </p>
  *
  * @author Christian Berndt
+ * @created 2016-10-10 17:21
+ * @modified 2017-03-10 00:12
+ * @version 1.1.4
  * @see MailingLocalServiceBaseImpl
  * @see ch.inofix.newsletter.service.MailingLocalServiceUtil
  */
@@ -45,4 +48,6 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
 	 * ch.inofix.newsletter.service.MailingLocalServiceUtil} to access the
 	 * mailing local service.
 	 */
+    
+    
 }
