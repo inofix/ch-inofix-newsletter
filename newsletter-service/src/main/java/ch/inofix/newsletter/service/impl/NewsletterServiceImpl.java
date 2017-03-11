@@ -14,9 +14,17 @@
 
 package ch.inofix.newsletter.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
 
+import aQute.bnd.annotation.ProviderType;
+import ch.inofix.newsletter.model.Newsletter;
+import ch.inofix.newsletter.security.ActionKeys;
 import ch.inofix.newsletter.service.base.NewsletterServiceBaseImpl;
+import ch.inofix.newsletter.service.permission.NewsletterPermission;
+import ch.inofix.newsletter.service.permission.NewsletterPortletPermission;
 
 /**
  * The implementation of the newsletter remote service.
@@ -33,16 +41,112 @@ import ch.inofix.newsletter.service.base.NewsletterServiceBaseImpl;
  * </p>
  *
  * @author Christian Berndt
- * @see NewsletterServiceBaseImpl
- * @see ch.inofix.newsletter.service.NewsletterServiceUtil
+ * @created 2016-10-08 01:25
+ * @modified 2017-03-10 22:12
+ * @version 1.0.7
+ * @see ch.inofix.portlet.newsletter.service.base.NewsletterServiceBaseImpl
+ * @see ch.inofix.portlet.newsletter.service.NewsletterServiceUtil
  */
 @ProviderType
 public class NewsletterServiceImpl extends NewsletterServiceBaseImpl {
-	/*
-	 * NOTE FOR DEVELOPERS:
-	 *
-	 * Never reference this class directly. Always use {@link
-	 * ch.inofix.newsletter.service.NewsletterServiceUtil} to access the
-	 * newsletter remote service.
-	 */
+    /*
+     * NOTE FOR DEVELOPERS:
+     * 
+     * Never reference this interface directly. Always use {@link
+     * ch.inofix.portlet.newsletter.service.NewsletterServiceUtil} to access the
+     * newsletter remote service.
+     */
+
+    /**
+     *
+     * @param userId
+     * @param title
+     * @param template
+     * @param serviceContext
+     * @return
+     * @since 1.0.0
+     * @throws PortalException
+     * @throws SystemException
+     */
+    @Override
+    public Newsletter addNewsletter(long userId, String title, String template, String fromAddress, String fromName,
+            boolean useHttps, ServiceContext serviceContext) throws PortalException {
+
+        NewsletterPortletPermission.check(getPermissionChecker(), serviceContext.getScopeGroupId(),
+                ActionKeys.ADD_NEWSLETTER);
+
+        return newsletterLocalService.addNewsletter(userId, title, template, fromAddress, fromName, useHttps,
+                serviceContext);
+
+    }
+
+    /**
+     *
+     * @return
+     * @since 1.0.0
+     * @throws PortalException
+     * @throws SystemException
+     */
+    @Override
+    public Newsletter createNewsletter() throws PortalException {
+
+        // Create an empty newsletter - no permission check required
+        return newsletterLocalService.createNewsletter(0);
+
+    }
+
+    /**
+     * Delete a specific newsletter and return the deleted newsletter.
+     *
+     * @param newsletterId
+     * @return the deleted newsletter
+     * @since 1.0.0
+     * @throws PortalException
+     * @throws SystemException
+     */
+    @Override
+    public Newsletter deleteNewsletter(long newsletterId) throws PortalException {
+
+        NewsletterPermission.check(getPermissionChecker(), newsletterId, ActionKeys.DELETE);
+
+        Newsletter newsletter = newsletterLocalService.deleteNewsletter(newsletterId);
+
+        return newsletter;
+
+    }
+
+    /**
+     * Return the newsletter.
+     *
+     * @param newsletterId
+     * @return the latest version of a newsletter.
+     * @since 1.0.0
+     * @throws PortalException
+     * @throws SystemException
+     */
+    @Override
+    public Newsletter getNewsletter(long newsletterId) throws PortalException {
+
+        NewsletterPermission.check(getPermissionChecker(), newsletterId, ActionKeys.VIEW);
+
+        return newsletterLocalService.getNewsletter(newsletterId);
+
+    }
+
+    /**
+    *
+    */
+    @Override
+    public Newsletter updateNewsletter(long userId, long newsletterId, String title, String template,
+            String fromAddress, String fromName, boolean useHttps, ServiceContext serviceContext)
+            throws PortalException {
+
+        NewsletterPermission.check(getPermissionChecker(), newsletterId, ActionKeys.UPDATE);
+
+        return newsletterLocalService.updateNewsletter(userId, serviceContext.getScopeGroupId(), title, template,
+                fromAddress, fromName, useHttps, serviceContext);
+
+    }
+
+    private static Log _log = LogFactoryUtil.getLog(NewsletterServiceImpl.class.getName());
 }

@@ -35,7 +35,6 @@
 		<field name="fromAddress" type="String" />
 		<field name="fromName" type="String" />
 		<field name="useHttps" type="boolean" />
-		<field name="vCardGroupId" type="String" />
 	</model>
 	<model name="ch.inofix.newsletter.model.Subscriber">
 		<field name="uuid" type="String" />
@@ -55,6 +54,5 @@
 		<field name="newsletterId" type="long" />
 		<field name="salutation" type="String" />
 		<field name="title" type="String" />
-		<field name="vCardUID" type="String" />
 	</model>
 </model-hints>
