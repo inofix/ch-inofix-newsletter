@@ -2,8 +2,8 @@
     view.jsp: Default view of the newsletter-portlet.
     
     Created:     2016-10-05 15:54 by Christian Berndt
-    Modified:    2017-03-10 16:43 by Christian Berndt
-    Version:     1.1.4
+    Modified:    2017-03-10 23:48 by Christian Berndt
+    Version:     1.1.5
  --%>
 
 <%@ include file="/init.jsp"%>
@@ -15,13 +15,14 @@
     String backURL = ParamUtil.getString(request, "backURL");
     String tabs1 = ParamUtil.getString(request, "tabs1", "mailings");
 
-//     PortletURL portletURL = renderResponse.createRenderURL();
     portletURL.setParameter("tabs1", tabs1);
     portletURL.setParameter("mvcPath", "/view.jsp");
     portletURL.setParameter("backURL", backURL);
 
     Log log = LogFactoryUtil.getLog("docroot.view.jsp");
 %>
+
+
 
 <div id="<portlet:namespace />newsletterContainer">
 
@@ -39,18 +40,16 @@
     <c:choose>
     
         <c:when test='<%=tabs1.equals("mailings")%>'>  
-            <h1>Mailings</h1>      
-<%--             <%@include file="/html/mailings.jspf"%> --%>
+
+            <%@include file="/mailings.jspf"%>
         </c:when>
 
         <c:when test='<%=tabs1.equals("newsletters")%>'>
-            <h1>Newsletters</h1>
-<%--             <%@include file="/html/newsletters.jspf"%> --%>
+<%--             <%@include file="/newsletters.jspf"%> --%>
         </c:when>
 
         <c:otherwise> 
-            <h1>Subscribers</h1>       
-<%--             <%@include file="/html/subscribers.jspf"%> --%>
+<%--             <%@include file="/subscribers.jspf"%> --%>
         </c:otherwise>
 
     </c:choose>

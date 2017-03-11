@@ -1,0 +1,156 @@
+<%--
+    subscribers.jspf: the subscribers panel.
+    
+    Created:    2016-10-09 16:24 by Christian Berndt
+    Modified:   2017-03-10 23:50 by Christian Berndt
+    Version:    1.1.2
+--%>
+
+<%
+    SearchContext searchContext = SearchContextFactory.getInstance(request);
+
+    boolean reverse = true;
+
+    Sort sort = new Sort("modified", reverse);
+
+    searchContext.setAttribute("paginationType", "more");
+    searchContext.setStart(0);
+    searchContext.setEnd(20);
+    searchContext.setSorts(sort);
+
+    Indexer indexer = IndexerRegistryUtil.getIndexer(Newsletter.class);
+
+    Hits hits = indexer.search(searchContext);
+
+    List<Newsletter> newsletters = new ArrayList<Newsletter>();
+
+    for (int i = 0; i < hits.getDocs().length; i++) {
+
+        Document doc = hits.doc(i);
+
+        long newsletterId = GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK));
+
+        Newsletter newsletter = null;
+
+        try {
+            newsletter = NewsletterServiceUtil.getNewsletter(newsletterId);
+        } catch (PortalException pe) {
+            log.error(pe.getLocalizedMessage());
+        } catch (SystemException se) {
+            log.error(se.getLocalizedMessage());
+        }
+
+        if (newsletter != null) {
+            newsletters.add(newsletter);
+        }
+    }
+
+%>
+
+<aui:form name="fm">
+    <aui:select name="vCardGroupId" label=""
+        onChange=" window.location.href = this.value; ">
+        <aui:option value="" label="select-newsletter" />
+        <%
+            for (Newsletter newsletter : newsletters) {
+                        PortletURL selectURL = renderResponse.createRenderURL();
+                        String currentVCardGroupId = newsletter.getVCardGroupId();
+                        selectURL.setParameter("vCardGroupId", currentVCardGroupId);
+                        selectURL.setParameter("tabs1", tabs1);
+                        boolean selected = vCardGroupId.equalsIgnoreCase(currentVCardGroupId);
+        %>
+        <option <%=selected ? "selected" : StringPool.BLANK%>
+            value="<%=selectURL.toString()%>"><%=newsletter.getTitle()%></option>
+        <%
+            }
+        %>
+    </aui:select>
+</aui:form>
+
+<c:choose>
+    <c:when test="<%=Validator.isNull(vCardGroupId)%>">
+        <div class="alert alert-info">
+            <liferay-ui:message key="no-newsletter-selected"></liferay-ui:message>
+        </div>
+    </c:when>
+    <c:otherwise>
+        <liferay-ui:search-container
+            emptyResultsMessage="there-are-no-subscribers">
+            <%
+                PortletURL iteratorURL = searchContainer.getIteratorURL();
+                            iteratorURL.setParameter("vCardGroupId", vCardGroupId);
+                            iteratorURL.setParameter("tabs1", tabs1);
+                            searchContainer.setIteratorURL(iteratorURL);
+
+                            List<Subscriber> subscribers = SubscriberServiceUtil.getSubscribersFromVCardGroup(
+                                    themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId(), vCardGroupId,
+                                    searchContainer.getStart(), searchContainer.getEnd());
+
+                            int numSubscribers = SubscriberServiceUtil.getSubscribersFromVCardGroupCount(
+                                    themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId(), vCardGroupId);
+            %>
+
+            <liferay-ui:search-container-results
+                results="<%=subscribers%>" />
+
+            <liferay-ui:search-container-row
+                className="ch.inofix.portlet.newsletter.model.Subscriber"
+                modelVar="subscriber">
+
+                <portlet:actionURL var="previewMailingURL"
+                    name="previewMailing"
+                    windowState="<%=LiferayWindowState.POP_UP.toString()%>">
+                    <portlet:param name="mvcPath"
+                        value="/html/preview_mailing.jsp" />
+                    <portlet:param name="redirect"
+                        value="<%=currentURL%>" />
+                    <portlet:param name="subscriberId"
+                        value="<%=String.valueOf(subscriber.getSubscriberId())%>" />
+                    <portlet:param name="vCardUID"
+                        value="<%=subscriber.getVCardUID()%>" />
+                    <portlet:param name="vCardGroupId"
+                        value="<%=vCardGroupId%>" />
+                    <portlet:param name="windowId"
+                        value="previewMailing" />
+                </portlet:actionURL>
+
+                <%
+                    String taglibPreviewMailingURL = "javascript:Liferay.Util.openWindow({id: '"
+                                            + renderResponse.getNamespace() + "previewMailing', title: '"
+                                            + HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "preview-mailing", ""))
+                                            + "', uri:'" + HtmlUtil.escapeJS(previewMailingURL) + "'});";
+                %>
+
+                <liferay-ui:search-container-column-text
+                    href="<%=taglibPreviewMailingURL%>" name="name"
+                    value='<%=subscriber.getName()%>' />
+
+                <liferay-ui:search-container-column-text
+                    href="<%=taglibPreviewMailingURL%>" name="email"
+                    value='<%=subscriber.getEmail()%>' />
+
+                <liferay-ui:search-container-column-text
+                    href="<%=taglibPreviewMailingURL%>"
+                    name="modified-date"
+                    value='<%=subscriber.getModifiedDate().toString()%>' />
+
+                <liferay-ui:search-container-column-text>
+
+                    <liferay-ui:icon-menu>
+
+                        <liferay-ui:icon iconCssClass="icon-binoculars"
+                            message="preview" label="true"
+                            useDialog="true" image="preview"
+                            url="<%=taglibPreviewMailingURL%>" />
+
+                    </liferay-ui:icon-menu>
+
+                </liferay-ui:search-container-column-text>
+
+            </liferay-ui:search-container-row>
+
+            <liferay-ui:search-iterator />
+
+        </liferay-ui:search-container>
+    </c:otherwise>
+</c:choose>
