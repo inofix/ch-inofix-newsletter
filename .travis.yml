@@ -16,9 +16,12 @@ cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
+    
+before_script:
+  - gradle runDocker -Pdocker
 
 script:
-  - gradle hello
-
+  - gradle test testIntegration -Pdocker
+  
 after_success:
   - gradle coveralls
