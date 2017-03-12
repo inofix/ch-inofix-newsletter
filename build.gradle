@@ -1,3 +1,53 @@
+// 
+// build.gradle: build and test Inofix' newsletter module. Based on
+// the example of https://github.com/liferay/com-liferay-adaptive-media
+// 
+// Created:     2017-03-12 23:17 by Christian Berndt
+// Modified:    2017-03-12 23:17 by Christian berndt
+// Version:     1.0.0
+// 
+
+buildscript {
+    dependencies {
+        classpath group: "com.liferay", name: "com.liferay.gradle.plugins.defaults", version: "latest.release"
+        classpath group: "org.kt3k.gradle.plugin", name: "coveralls-gradle-plugin", version: "2.6.3"
+    }
+
+    repositories {
+        mavenLocal()
+
+        maven {
+            url "https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public"
+        }
+
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+}
+
+apply plugin: "com.github.kt3k.coveralls"
+apply plugin: "com.liferay.app.defaults.plugin"
+apply plugin: "jacoco"
+
+task createTempDir(type: Exec) {
+    commandLine 'mkdir', '-m', '777', '-p', "${rootDir}/build/tmpdir"
+}
+
+import java.nio.charset.Charset
+import java.nio.file.Files
+
+
+
+
+
+
+
+
+
+
+
+
 def helloName = "Fird Birfle"
 int personAge = 43
 
