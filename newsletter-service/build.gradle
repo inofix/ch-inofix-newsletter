@@ -14,3 +14,15 @@ dependencies {
     compile group: "javax.servlet", name: "javax.servlet-api", version: "3.0.1"
     compileOnly project(":modules:ch-inofix-newsletter:newsletter-api")
 }
+
+jar {
+    doLast {
+        // println('newsletter.service doLast'); 
+        copy {
+            from 'build/libs'
+            into '../../../bundles/deploy'
+            include '**/*.jar'
+        }
+    }
+}
+
