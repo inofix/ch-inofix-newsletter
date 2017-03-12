@@ -20,12 +20,6 @@ cache:
 before_script:
   - gradle runDocker -Pdocker
 
-env:
-    #DOCKER_USER:
-    - secure: QXFEwLxvwI2OusJPU=
-    #DOCKER_PWD:
-    - secure: alBdKvj3tE=
-
 script:
   - gradle test testIntegration -Pdocker
   
