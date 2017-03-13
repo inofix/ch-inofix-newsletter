@@ -17,8 +17,8 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
     
-env:
-- DOCKER_USER=root DOCKER_PWD=""
+// env:
+// - DOCKER_USER=root DOCKER_PWD=""
     
 before_script:
   - gradle -b test.gradle runDocker -Pdocker
