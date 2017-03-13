@@ -109,9 +109,11 @@ task loginDocker << {
                         "environment variable to proceed.")
             }           
 
+            commandLine 'docker', 'login', "--username=dockeruser,
+                    "--password=secret"
 
-            commandLine 'docker', 'login', "--username=$dockerUser",
-                    "--password=$dockerPwd"
+//            commandLine 'docker', 'login', "--username=$dockerUser",
+//                    "--password=$dockerPwd"
 
         }
         else {
