@@ -111,7 +111,7 @@ task loginDocker << {
 
 
             commandLine 'docker', 'login', "--username=$dockerUser",
-                    "--password=$dockerPwd", 'registry.example.com'
+                    "--password=$dockerPwd"
 
         }
         else {
