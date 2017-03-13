@@ -180,8 +180,8 @@ task runDocker(type: Exec) {
         '-v', "${rootDir}/docker/portal-ext.properties:/liferay/portal-ext.properties",
         '-v', "${rootDir}/build/tmpdir:${rootDir}/build/tmpdir",
         '-d',
-        '--name', "ch-inofix-newsletter",
-        'liferay/liferay-de:20170228072932334161125-db'
+        '--name', "ch-inofix-newsletter"
+//        'liferay/liferay-de:20170228072932334161125-db'
 
     finalizedBy checkDocker
 }
