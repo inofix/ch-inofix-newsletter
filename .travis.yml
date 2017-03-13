@@ -18,10 +18,10 @@ cache:
     - $HOME/.gradle/wrapper/
     
 before_script:
-  - gradle runDocker -Pdocker
+  - gradle -b test.gradle runDocker -Pdocker
 
 script:
-  - gradle test testIntegration -Pdocker
+  - gradle -b test.gradle test testIntegration -Pdocker
   
 after_success:
-  - gradle coveralls
+  - gradle -b test.gradle coveralls
