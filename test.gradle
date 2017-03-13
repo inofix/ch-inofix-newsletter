@@ -146,7 +146,7 @@ task checkDocker() {
 task stopDocker(type: Exec) {
     ignoreExitValue true
 
-    commandLine 'docker', 'stop', "com-liferay-adaptive-media"
+    commandLine 'docker', 'stop', "ch-inofix-newsletter"
 }
 
 task rmDocker(type: Exec) {
@@ -154,13 +154,13 @@ task rmDocker(type: Exec) {
 
     ignoreExitValue true
 
-    commandLine 'docker', 'rm', "com-liferay-adaptive-media"
+    commandLine 'docker', 'rm', "ch-inofix-newsletter"
 }
 
 
 task runDocker(type: Exec) {
     dependsOn createTempDir
-    dependsOn loginDocker
+//    dependsOn loginDocker
     dependsOn rmDocker
 
     def javaOpts = project.getProperty('javaOpts');
