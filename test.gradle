@@ -108,13 +108,10 @@ task loginDocker << {
                 throw new Exception(
                     "You must enter docker password or set DOCKER_PWD " +
                         "environment variable to proceed.")
-            }           
+            }
 
-            commandLine 'docker', 'login', "--username=dockeruser",
-                    "--password=secret"
-
-//            commandLine 'docker', 'login', "--username=$dockerUser",
-//                    "--password=$dockerPwd"
+            // commandLine 'docker', 'login', "--username=$dockerUser",
+            //        "--password=$dockerPwd"
 
         }
         else {
