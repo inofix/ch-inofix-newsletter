@@ -69,6 +69,7 @@ task loginDocker << {
             String dockerPwd = System.getenv().get("DOCKER_PWD");
 
             if (dockerUser == null || dockerPwd == null) {
+            
                 println "DOCKER_USER or DOCKER_PWD environment variables not set"
 
                 // If no environment variables are set, read credentials from
