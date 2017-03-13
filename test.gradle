@@ -157,7 +157,6 @@ task rmDocker(type: Exec) {
     commandLine 'docker', 'rm', "ch-inofix-newsletter"
 }
 
-
 task runDocker(type: Exec) {
     dependsOn createTempDir
     dependsOn loginDocker
