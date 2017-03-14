@@ -170,7 +170,8 @@ task runDocker(type: Exec) {
         '-v', "${rootDir}/build/tmpdir:${rootDir}/build/tmpdir",
         '-d',
         '--name', "com-liferay-adaptive-media",
-        'liferay/liferay-de:20170228072932334161125-db'
+        'liferay/portal:7.0.2-ga3-tomcat'
+//        'liferay/liferay-de:20170228072932334161125-db'
 
     finalizedBy checkDocker
 }
