@@ -1,3 +1,12 @@
+// 
+// build.gradle: build and test Inofix' newsletter module. Based on
+// the example of https://github.com/liferay/com-liferay-adaptive-media
+// 
+// Created:     2017-03-12 23:17 by Christian Berndt
+// Modified:    2017-03-12 23:17 by Christian berndt
+// Version:     1.0.0
+// 
+
 buildscript {
     dependencies {
         classpath group: "com.liferay", name: "com.liferay.gradle.plugins.defaults", version: "latest.release"
@@ -17,7 +26,7 @@ buildscript {
     }
 }
 
-apply plugin: "com.github.kt3k.coveralls"
+// apply plugin: "com.github.kt3k.coveralls"
 apply plugin: "com.liferay.app.defaults.plugin"
 apply plugin: "jacoco"
 
@@ -257,11 +266,11 @@ task coverageReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
     }
 }
 
-tasks.coveralls {
-    dependsOn 'coverageReport'
-}
+//tasks.coveralls {
+//    dependsOn 'coverageReport'
+//}
 
-coveralls.jacocoReportPath = "build/reports/jacoco/coverageReport/coverageReport.xml"
-coveralls.sourceDirs = files(subprojects.findAll{!it.childProjects}.sourceSets.main.allSource.srcDirs).collect {
-    file -> file.absolutePath
-}
+//coveralls.jacocoReportPath = "build/reports/jacoco/coverageReport/coverageReport.xml"
+//coveralls.sourceDirs = files(subprojects.findAll{!it.childProjects}.sourceSets.main.allSource.srcDirs).collect {
+//   file -> file.absolutePath
+//}
