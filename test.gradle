@@ -69,7 +69,6 @@ task loginDocker << {
             String dockerPwd = System.getenv().get("DOCKER_PWD");
 
             if (dockerUser == null || dockerPwd == null) {
-            
                 println "DOCKER_USER or DOCKER_PWD environment variables not set"
 
                 // If no environment variables are set, read credentials from
@@ -179,7 +178,8 @@ task runDocker(type: Exec) {
         '-v', "${rootDir}/docker/portal-ext.properties:/liferay/portal-ext.properties",
         '-v', "${rootDir}/build/tmpdir:${rootDir}/build/tmpdir",
         '-d',
-        '--name', "ch-inofix-newsletter"
+        '--name', "ch-inofix-newsletter",
+        'liferay/portal:7.0.2-ga3-tomcat'
 //        'liferay/liferay-de:20170228072932334161125-db'
 
     finalizedBy checkDocker
@@ -213,15 +213,13 @@ configure(subprojects.findAll {!it.childProjects}) {
     }
 
     test {
-        ignoreFailures = true
-//        ignoreFailures = false
+        ignoreFailures = false
     }
 
     testIntegration {
         dependsOn createTempDir
 
-        ignoreFailures = true
-//        ignoreFailures = false
+        ignoreFailures = false
         systemProperty "java.io.tmpdir", "${rootDir}/build/tmpdir"
     }
 
