@@ -136,7 +136,7 @@ task checkDocker() {
 task stopDocker(type: Exec) {
     ignoreExitValue true
 
-    commandLine 'docker', 'stop', "com-liferay-adaptive-media"
+    commandLine 'docker', 'stop', "ch-inofix-newsletter"
 }
 
 task rmDocker(type: Exec) {
@@ -144,7 +144,7 @@ task rmDocker(type: Exec) {
 
     ignoreExitValue true
 
-    commandLine 'docker', 'rm', "com-liferay-adaptive-media"
+    commandLine 'docker', 'rm', "ch-inofix-newsletter"
 }
 
 task runDocker(type: Exec) {
@@ -169,7 +169,7 @@ task runDocker(type: Exec) {
         '-v', "${rootDir}/docker/portal-ext.properties:/liferay/portal-ext.properties",
         '-v', "${rootDir}/build/tmpdir:${rootDir}/build/tmpdir",
         '-d',
-        '--name', "com-liferay-adaptive-media",
+        '--name', "ch-inofix-newsletter",
         'liferay/portal:7.0.2-ga3-tomcat'
 //        'liferay/liferay-de:20170228072932334161125-db'
 
