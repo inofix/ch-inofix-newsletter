@@ -18,11 +18,11 @@ cache:
     - $HOME/.gradle/wrapper/
 
 before_script:
-  - ./gradlew buildService -Pdocker 
-  - ./gradlew runDocker -Pdocker
+  - ./gradlew -b test.gradle buildService -Pdocker 
+  - ./gradlew -b test.gradle runDocker -Pdocker
 
 script:
-  - ./gradlew test -Pdocker
+  - ./gradlew -b test.gradle test -Pdocker
 
 after_success:
   - ./gradlew coveralls
