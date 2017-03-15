@@ -2,6 +2,10 @@
 // test.gradle: build and test Inofix' newsletter module. Based on
 // the example of https://github.com/liferay/com-liferay-adaptive-media
 // 
+// test.gradle is renamed to build.gradle before it's executed in the 
+// docker container with ./gradlew 
+// 
+// 
 // Created:     2017-03-12 23:17 by Christian Berndt
 // Modified:    2017-03-15 22:31 by Christian berndt
 // Version:     1.0.1
