@@ -18,6 +18,7 @@ cache:
     - $HOME/.gradle/wrapper/
 
 before_script:
+  - mv test-settings.gradle settings.gradle
   - mv test.gradle build.gradle
   - ./gradlew buildService -Pdocker 
   - ./gradlew runDocker -Pdocker
