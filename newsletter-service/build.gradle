@@ -2,7 +2,7 @@ buildService {
     apiDir = "../newsletter-api/src/main/java"
     osgiModule = true
     propsUtil = "ch.inofix.newsletter.service.util.PropsUtil"
-    testDir = "../newsletter-test/src/testIntegration/java"
+//    testDir = "../newsletter-test/src/testIntegration/java"
 }
 
 dependencies {
