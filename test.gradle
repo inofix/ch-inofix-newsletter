@@ -1,0 +1,277 @@
+// 
+// test.gradle: build and test Inofix' newsletter module. Based on
+// the example of https://github.com/liferay/com-liferay-adaptive-media
+// 
+// Created:     2017-03-12 23:17 by Christian Berndt
+// Modified:    2017-03-15 22:31 by Christian berndt
+// Version:     1.0.1
+// 
+
+buildscript {
+    dependencies {
+        classpath group: "com.liferay", name: "com.liferay.gradle.plugins.defaults", version: "2.5.0"
+//        classpath group: "com.liferay", name: "com.liferay.gradle.plugins.defaults", version: "latest.release"
+        classpath group: "org.kt3k.gradle.plugin", name: "coveralls-gradle-plugin", version: "2.6.3"
+    }
+
+    repositories {
+        mavenLocal()
+
+        maven {
+            url "https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public"
+        }
+
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+}
+
+apply plugin: "com.github.kt3k.coveralls"
+apply plugin: "com.liferay.app.defaults.plugin"
+apply plugin: "jacoco"
+
+task createTempDir(type: Exec) {
+    commandLine 'mkdir', '-m', '777', '-p', "${rootDir}/build/tmpdir"
+}
+
+import java.nio.charset.Charset
+import java.nio.file.Files
+
+def isAlreadyLoggedIn() {
+    String homeDir = System.getenv().get("HOME");
+
+    File dockerConfigFile = file(new File(homeDir + '/.docker/config.json'));
+
+    boolean loggedIn = false;
+
+    if (dockerConfigFile.exists()) {
+        String dockerConfigContent = new String(
+            Files.readAllBytes(dockerConfigFile.toPath()),
+            Charset.forName("UTF-8"));
+
+        if (dockerConfigContent.contains("https://index.docker.io/v1/")) {
+            loggedIn = true;
+        }
+    }
+
+    return loggedIn;
+}
+
+task loginDocker << {
+    exec {
+        if (!isAlreadyLoggedIn()) {
+            println "User not logged in into docker yet"
+
+            // If environment variables are set, use them
+
+            String dockerUser = System.getenv().get("DOCKER_USER");
+
+            String dockerPwd = System.getenv().get("DOCKER_PWD");
+
+            if (dockerUser == null || dockerPwd == null) {
+                println "DOCKER_USER or DOCKER_PWD environment variables not set"
+
+                // If no environment variables are set, read credentials from
+                // standard input if possible
+
+                if (System.console() == null) {
+                    throw new Exception(
+                        "It is not possible to read docker credentials")
+                }
+                else {
+                    println "Using system in to prompt for docker user and password"
+
+                    println "Please enter docker user:"
+
+                    dockerUser = System.console().readLine()
+
+                    dockerUser = new String(dockerUser)
+
+                    char[] dockerPwdCharArray = System.console().
+                        readPassword("Please enter docker password:")
+
+                    dockerPwd = new String(dockerPwdCharArray)
+                }
+            }
+            else {
+                println "Using DOCKER_USER and DOCKER_PWD environment variables"
+            }
+
+            if (dockerUser.size() <= 0) {
+                throw new Exception(
+                    "You must enter docker user or set DOCKER_USER " +
+                        "environment variable to proceed.")
+            }
+
+            if (dockerPwd.size() <= 0) {
+                throw new Exception(
+                    "You must enter docker password or set DOCKER_PWD " +
+                        "environment variable to proceed.")
+            }
+
+            commandLine 'docker', 'login', "--username=$dockerUser",
+                    "--password=$dockerPwd"
+
+        }
+        else {
+            commandLine 'echo', "User already logged in in docker"
+        }
+    }
+}
+
+task checkDocker() {
+    doLast {
+        def url = "http://localhost:8080";
+
+        println("Trying to reach " + url);
+
+        while (true) {
+            try {
+                print(".");
+
+                url.toURL().text;
+
+                println("Portal startup finished");
+
+                break;
+            }
+            catch (Exception e) {
+                Thread.sleep(1000);
+            }
+        }
+    }
+}
+
+task stopDocker(type: Exec) {
+    ignoreExitValue true
+
+    commandLine 'docker', 'stop', "ch-inofix-newsletter"
+}
+
+task rmDocker(type: Exec) {
+    dependsOn stopDocker
+
+    ignoreExitValue true
+
+    commandLine 'docker', 'rm', "ch-inofix-newsletter"
+}
+
+task runDocker(type: Exec) {
+    dependsOn createTempDir
+    dependsOn loginDocker
+    dependsOn rmDocker
+
+    def javaOpts = project.getProperty('javaOpts');
+
+    if (project.hasProperty('debug')) {
+        javaOpts += ' ' + project.getProperty('debugOpts');
+    }
+
+    commandLine 'docker', 'run',
+        '-h', "localhost",
+        '-e', "JAVA_OPTS=$javaOpts",
+        '-p', '5005:5005',
+        '-p', '8080:8080',
+        '-p', '8099:8099',
+        '-p', '11311:11311',
+        '-v', "${rootDir}/../bundles/deploy:/liferay/deploy",
+        '-v', "${rootDir}/docker/portal-ext.properties:/liferay/portal-ext.properties",
+        '-v', "${rootDir}/build/tmpdir:${rootDir}/build/tmpdir",
+        '-d',
+        '--name', "ch-inofix-newsletter",
+        'liferay/portal:7.0.2-ga3-tomcat'
+//        'liferay/liferay-de:20170228072932334161125-db'
+
+    finalizedBy checkDocker
+}
+
+configure(subprojects.findAll {!it.childProjects}) {
+    apply plugin: "com.liferay.defaults.plugin"
+    apply plugin: "jacoco"
+
+    configurations {
+        runtimeLib {
+            description = 'deployable runtime libs'
+        }
+
+        compile.extendsFrom(runtimeLib)
+    }
+
+    liferay {
+        deployDir = new File("${rootDir}/../bundles/deploy")
+    }
+
+    jacocoTestReport {
+        additionalSourceDirs = files(sourceSets.main.allSource.srcDirs)
+        sourceDirectories = files(sourceSets.main.allSource.srcDirs)
+        classDirectories =  files(sourceSets.main.output)
+
+        reports {
+            html.enabled = true
+            xml.enabled = true
+        }
+    }
+
+    test {
+        ignoreFailures = false
+    }
+
+    testIntegration {
+        dependsOn createTempDir
+
+        ignoreFailures = false
+        systemProperty "java.io.tmpdir", "${rootDir}/build/tmpdir"
+    }
+
+    task deployRuntimeLibs(type: Copy) {
+        into liferay.deployDir
+        from configurations.runtimeLib
+        rename {
+            String fileName ->
+                fileName.replaceAll("(.*)-((\\d\\.{1})*\\d)\\.jar", "\$1.jar")
+        }
+    }
+
+    runDocker.dependsOn deploy
+    runDocker.dependsOn deployRuntimeLibs
+
+    if (project.hasProperty('docker')) {
+        setUpTestableTomcat.enabled = false
+    }
+
+    startTestableTomcat.enabled = false
+    stopTestableTomcat.enabled = false
+}
+
+repositories {
+    mavenLocal()
+    jcenter()
+}
+
+task coverageReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
+    additionalSourceDirs = files(subprojects.findAll{!it.childProjects}.sourceSets.main.allSource.srcDirs)
+    classDirectories = files(subprojects.findAll{!it.childProjects}.sourceSets.main.output)
+    executionData = files(subprojects.findAll{!it.childProjects}.jacocoTestReport.executionData)
+    sourceDirectories = files(subprojects.findAll{!it.childProjects}.sourceSets.main.allSource.srcDirs)
+
+    reports {
+        html.enabled = true
+        xml.enabled = true
+    }
+
+    onlyIf = { true }
+
+    doFirst {
+        executionData = files(executionData.findAll { it.exists() })
+    }
+}
+
+tasks.coveralls {
+    dependsOn 'coverageReport'
+}
+
+coveralls.jacocoReportPath = "build/reports/jacoco/coverageReport/coverageReport.xml"
+coveralls.sourceDirs = files(subprojects.findAll{!it.childProjects}.sourceSets.main.allSource.srcDirs).collect {
+   file -> file.absolutePath
+}
