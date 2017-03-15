@@ -22,7 +22,7 @@ before_script:
   - ./gradlew runDocker -Pdocker
 
 script:
-  - ./gradlew test testIntegration -Pdocker
+  - ./gradlew test -Pdocker
 
 after_success:
   - ./gradlew coveralls
