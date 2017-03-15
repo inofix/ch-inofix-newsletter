@@ -2,7 +2,7 @@ buildService {
     apiDir = "../newsletter-api/src/main/java"
     osgiModule = true
     propsUtil = "ch.inofix.newsletter.service.util.PropsUtil"
-//    testDir = "../newsletter-test/src/testIntegration/java"
+    testDir = "../newsletter-test/src/testIntegration/java"
 }
 
 dependencies {
@@ -14,3 +14,17 @@ dependencies {
     compile group: "javax.servlet", name: "javax.servlet-api", version: "3.0.1"
     compileOnly project(":modules:ch-inofix-newsletter:newsletter-api")
 }
+
+//
+// Deploy before integration tests
+//
+// jar {
+//     doLast {
+//         copy {
+//             from 'build/libs'
+//             into '../../../bundles/deploy'
+//             include '**/*.jar'
+//         }
+//     }
+// }
+//

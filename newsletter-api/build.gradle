@@ -4,3 +4,17 @@ dependencies {
     compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.6.0"
 	compileOnly group: "org.osgi", name: "org.osgi.core", version: "6.0.0"
 }
+
+//
+// Deploy before integration tests
+//
+// jar {
+//     doLast {
+//         copy {
+//             from 'build/libs'
+//             into '../../../bundles/deploy'
+//             include '**/*.jar'
+//         }
+//     }
+// }
+//
