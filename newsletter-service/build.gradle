@@ -18,13 +18,14 @@ dependencies {
 //
 // Deploy before integration tests
 //
-// jar {
-//     doLast {
-//         copy {
-//             from 'build/libs'
-//             into '../../../bundles/deploy'
-//             include '**/*.jar'
-//         }
-//     }
-// }
-//
+jar {
+    doLast {
+        println('newsletter-service:jar.doLast: deploy jar');
+        copy {
+            from 'build/libs'
+            into '../../bundles/deploy'
+            include '**/*.jar'
+        }
+    }
+}
+

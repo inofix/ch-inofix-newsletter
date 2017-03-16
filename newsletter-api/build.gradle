@@ -8,13 +8,13 @@ dependencies {
 //
 // Deploy before integration tests
 //
-// jar {
-//     doLast {
-//         copy {
-//             from 'build/libs'
-//             into '../../../bundles/deploy'
-//             include '**/*.jar'
-//         }
-//     }
-// }
-//
+jar {
+    doLast {
+        copy {
+            from 'build/libs'
+            into '../../bundles/deploy'
+            include '**/*.jar'
+        }
+    }
+}
+
