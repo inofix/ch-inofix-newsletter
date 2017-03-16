@@ -15,7 +15,7 @@ A newsletter plugin for Liferay.
 1. Merge finished features into your individual master branch and 
 1. create pull-requests, to contribute your solutions to the inofix master branch.
 
-** Stay up-to-date**
+**Stay up-to-date**
 
 1. Change the current working directory to your local project.
 1. Configure https://github.com/inofix/ch-inofix-newsletter as additional upstream remote (see: https://help.github.com/articles/configuring-a-remote-for-a-fork/)
@@ -26,7 +26,7 @@ A newsletter plugin for Liferay.
 1. Push merged master to your individual github account and 
 1. create a pull-request, to contribute your solution to the inofix master branch.
 
-** Note for Eclipse / Liferay-IDE developers **
+**Note for Eclipse / Liferay-IDE developers**
 
 if the JSPs of the newsletter-web project aren't validated properly, 
 
