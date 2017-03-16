@@ -6,9 +6,6 @@
     Version:    1.1.3
 --%>
 
-
-        
-
 <portlet:actionURL var="addMailingURL" name="editMailing"
     windowState="<%= LiferayWindowState.POP_UP.toString() %>">
     <portlet:param name="mvcPath" value="/html/edit_mailing.jsp" />
@@ -23,12 +20,12 @@
     String taglibAddURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace()+ "editMailing', title: '"+ HtmlUtil.escapeJS(LanguageUtil.format(request, "edit-x", "new")) + "', uri:'" + HtmlUtil.escapeJS(addMailingURL) + "'});";
 %>
 
-    <div class="control-group">
-        <aui:a href="<%=taglibAddURL%>"
-            cssClass="btn btn-primary add-mailing">
-            <liferay-ui:message key="add-mailing" />
-        </aui:a>
-    </div>
+<div class="control-group">
+    <aui:a href="<%=taglibAddURL%>"
+        cssClass="btn btn-primary add-mailing">
+        <liferay-ui:message key="add-mailing" />
+    </aui:a>
+</div>
 
 <%-- </c:if> --%>
 
@@ -90,21 +87,21 @@
 <liferay-ui:search-container
     searchContainer="<%= new MailingSearch(renderRequest, portletURL) %>"
     var="mailingSearchContainer">
-    
+
     <liferay-ui:search-container-results results="<%= mailings %>" />
 
     <liferay-ui:search-container-row
         className="ch.inofix.newsletter.model.Mailing"
         modelVar="mailing">
-        
+
         <portlet:actionURL var="deleteURL" name="deleteMailing">
             <portlet:param name="mailingId"
                 value="<%= String.valueOf(mailing.getMailingId()) %>" />
             <portlet:param name="backURL" value="<%= currentURL %>" />
             <portlet:param name="mvcPath" value="/view.jsp" />
-            <portlet:param name="tabs1" value="<%= tabs1 %>" />            
+            <portlet:param name="tabs1" value="<%= tabs1 %>" />
         </portlet:actionURL>
-    
+
         <portlet:actionURL var="editURL" name="editMailing"
             windowState="<%= LiferayWindowState.POP_UP.toString() %>">
             <portlet:param name="redirect" value="<%= currentURL %>" />
@@ -112,9 +109,9 @@
                 value="<%= String.valueOf(mailing.getMailingId()) %>" />
             <portlet:param name="mvcPath" value="/html/edit_mailing.jsp" />
             <portlet:param name="windowId" value="editMailing" />
-            <portlet:param name="tabs1" value="mailing" />                       
+            <portlet:param name="tabs1" value="mailing" />
         </portlet:actionURL>
-    
+
         <%
             StringBuilder sb = new StringBuilder(); 
         
@@ -124,13 +121,13 @@
         
             String modelResourceDescription = sb.toString(); 
         %>
-    
+
         <liferay-security:permissionsURL
             modelResource="<%= Mailing.class.getName() %>"
             modelResourceDescription="<%= modelResourceDescription %>"
             resourcePrimKey="<%= String.valueOf(mailing.getMailingId()) %>"
-            var="permissionsURL" />         
-        
+            var="permissionsURL" />
+
         <%
             String taglibEditURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editMailing', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(request, "edit-x", mailing.getTitle())) + "', uri:'" + HtmlUtil.escapeJS(editURL) + "'});";
             String taglibViewURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editMailing', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(request, "view-x", mailing.getTitle())) + "', uri:'" + HtmlUtil.escapeJS(editURL) + "'});";
@@ -176,50 +173,52 @@
             }
         %>
 
-            <liferay-ui:search-container-column-text
-                cssClass="<%= cssClass %>"
-                href="<%=detailURL%>" property="title"
-                orderable="true" orderableProperty="title" />
-            <liferay-ui:search-container-column-text
-                cssClass="<%=cssClass%>" href="<%=detailURL%>"
-                orderable="false" name="newsletter"
-                value="<%=newsletterTitle%>" />
-            <liferay-ui:search-container-column-text
-                cssClass="<%= cssClass %>"
-                href="<%=detailURL%>" name="user-name"
-                orderable="true" orderableProperty="userName"
-                property="userName" />
-            <liferay-ui:search-container-column-text
-                cssClass="<%= cssClass %>"
-                href="<%=detailURL%>" name="modified-date"
-                orderable="true" orderableProperty="modified"
-                property="modifiedDate" />
-            <liferay-ui:search-container-column-text
-                cssClass="<%= cssClass %>"
-                href="<%=detailURL%>" name="send-date"
-                orderable="true" orderableProperty="sendDate_sortable"
-                value="<%= sendDate %>" />              
+        <liferay-ui:search-container-column-text
+            cssClass="<%= cssClass %>" href="<%=detailURL%>"
+            property="title" orderable="true" orderableProperty="title" />
+        <liferay-ui:search-container-column-text
+            cssClass="<%=cssClass%>" href="<%=detailURL%>"
+            orderable="false" name="newsletter"
+            value="<%=newsletterTitle%>" />
+        <liferay-ui:search-container-column-text
+            cssClass="<%= cssClass %>" href="<%=detailURL%>"
+            name="user-name" orderable="true"
+            orderableProperty="userName" property="userName" />
+        <liferay-ui:search-container-column-text
+            cssClass="<%= cssClass %>" href="<%=detailURL%>"
+            name="modified-date" orderable="true"
+            orderableProperty="modified" property="modifiedDate" />
+        <liferay-ui:search-container-column-text
+            cssClass="<%= cssClass %>" href="<%=detailURL%>"
+            name="send-date" orderable="true"
+            orderableProperty="sendDate_sortable"
+            value="<%= sendDate %>" />
 
-        <liferay-ui:search-container-column-text>      
+        <liferay-ui:search-container-column-text>
 
             <liferay-ui:icon-menu>
 
-                <c:if test="<%= hasUpdatePermission && !mailing.isSent() %>">
-                    <liferay-ui:icon image="edit" url="<%=taglibEditURL%>" />
+                <c:if
+                    test="<%= hasUpdatePermission && !mailing.isSent() %>">
+                    <liferay-ui:icon image="edit"
+                        url="<%=taglibEditURL%>" />
                 </c:if>
-                <c:if test="<%= hasUpdatePermission && mailing.isSent() %>">
-                    <liferay-ui:icon image="view" url="<%=taglibViewURL%>" />
-                </c:if>                
+                <c:if
+                    test="<%= hasUpdatePermission && mailing.isSent() %>">
+                    <liferay-ui:icon image="view"
+                        url="<%=taglibViewURL%>" />
+                </c:if>
                 <c:if test="<%= hasPermissionsPermission %>">
-                    <liferay-ui:icon image="permissions" url="<%= permissionsURL %>" />
-                </c:if>                                    
+                    <liferay-ui:icon image="permissions"
+                        url="<%= permissionsURL %>" />
+                </c:if>
                 <c:if test="<%= hasDeletePermission %>">
                     <liferay-ui:icon-delete url="<%=deleteURL%>" />
                 </c:if>
 
             </liferay-ui:icon-menu>
 
-        </liferay-ui:search-container-column-text>                    
+        </liferay-ui:search-container-column-text>
 
     </liferay-ui:search-container-row>
 
