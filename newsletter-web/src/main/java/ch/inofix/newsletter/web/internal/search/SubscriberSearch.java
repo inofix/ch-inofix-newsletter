@@ -8,7 +8,7 @@ import java.util.Map;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
 
-import ch.inofix.newsletter.model.Newsletter;
+import ch.inofix.newsletter.model.Subscriber;
 //import ch.inofix.newsletter.util.PortletKey;
 
 import com.liferay.portal.kernel.dao.search.SearchContainer;
@@ -22,18 +22,18 @@ import com.liferay.portal.kernel.util.Validator;
 /**
  *
  * @author Christian Berndt
- * @created 2016-10-16 22:22
- * @modified 2017-03-10 17:47
- * @version 1.0.1
+ * @created 2017-03-16 16:22
+ * @modified 2017-03-16 16:22
+ * @version 1.0.0
  *
  */
-public class NewsletterSearch extends SearchContainer<Newsletter> {
+public class SubscriberSearch extends SearchContainer<Subscriber> {
 
 	static List<String> headerNames = new ArrayList<String>();
 	static Map<String, String> orderableHeaders = new HashMap<String, String>();
 
 	// The list of header names corresponds bean properties of
-	// ch.inofix.newsletter.model.NewsletterImpl
+	// ch.inofix.newsletter.model.SubscriberImpl
 	static {
 		headerNames.add("create-date");
 		headerNames.add("modified-date");
@@ -46,23 +46,23 @@ public class NewsletterSearch extends SearchContainer<Newsletter> {
 		orderableHeaders.put("user-name", "user-name");
 	}
 
-	public static final String EMPTY_RESULTS_MESSAGE = "there-are-no-newsletters";
+	public static final String EMPTY_RESULTS_MESSAGE = "there-are-no-subscribers";
 
-	public NewsletterSearch(PortletRequest portletRequest, PortletURL iteratorURL) {
+	public SubscriberSearch(PortletRequest portletRequest, PortletURL iteratorURL) {
 		this(portletRequest, DEFAULT_CUR_PARAM, iteratorURL);
 	}
 
-	public NewsletterSearch(PortletRequest portletRequest, String curParam, PortletURL iteratorURL) {
+	public SubscriberSearch(PortletRequest portletRequest, String curParam, PortletURL iteratorURL) {
 
-		super(portletRequest, new NewsletterDisplayTerms(portletRequest), new NewsletterSearchTerms(portletRequest),
+		super(portletRequest, new SubscriberDisplayTerms(portletRequest), new SubscriberSearchTerms(portletRequest),
 				curParam, DEFAULT_DELTA, iteratorURL, headerNames, EMPTY_RESULTS_MESSAGE);
 
-		NewsletterDisplayTerms displayTerms = (NewsletterDisplayTerms) getDisplayTerms();
+		SubscriberDisplayTerms displayTerms = (SubscriberDisplayTerms) getDisplayTerms();
 
-		iteratorURL.setParameter(NewsletterDisplayTerms.CREATE_DATE, String.valueOf(displayTerms.getCreateDate()));
-		iteratorURL.setParameter(NewsletterDisplayTerms.MODIFIED_DATE, String.valueOf(displayTerms.getModifiedDate()));
-		iteratorURL.setParameter(NewsletterDisplayTerms.TITLE, String.valueOf(displayTerms.getTitle()));
-		iteratorURL.setParameter(NewsletterDisplayTerms.USER_NAME, String.valueOf(displayTerms.getUserName()));
+		iteratorURL.setParameter(SubscriberDisplayTerms.CREATE_DATE, String.valueOf(displayTerms.getCreateDate()));
+		iteratorURL.setParameter(SubscriberDisplayTerms.MODIFIED_DATE, String.valueOf(displayTerms.getModifiedDate()));
+		iteratorURL.setParameter(SubscriberDisplayTerms.TITLE, String.valueOf(displayTerms.getTitle()));
+		iteratorURL.setParameter(SubscriberDisplayTerms.USER_NAME, String.valueOf(displayTerms.getUserName()));
 
 		try {
 			PortalPreferences preferences = PortletPreferencesFactoryUtil.getPortalPreferences(portletRequest);
@@ -73,14 +73,14 @@ public class NewsletterSearch extends SearchContainer<Newsletter> {
 			if (Validator.isNotNull(orderByCol) && Validator.isNotNull(orderByType)) {
 				// TODO:
 				// preferences.setValue(PortletKey.NEWSLETTER,
-				// "newsletters-order-by-col", orderByCol);
+				// "subscribers-order-by-col", orderByCol);
 				// preferences.setValue(PortletKey.NEWSLETTER,
-				// "newsletters-order-by-type", orderByType);
+				// "subscribers-order-by-type", orderByType);
 				// } else {
 				// orderByCol = preferences.getValue(PortletKey.NEWSLETTER,
-				// "newsletters-order-by-col", "modified-date");
+				// "subscribers-order-by-col", "modified-date");
 				// orderByType = preferences.getValue(PortletKey.NEWSLETTER,
-				// "newsletters-order-by-type", "desc");
+				// "subscribers-order-by-type", "desc");
 			}
 
 			setOrderableHeaders(orderableHeaders);
@@ -92,6 +92,6 @@ public class NewsletterSearch extends SearchContainer<Newsletter> {
 		}
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(NewsletterSearch.class);
+	private static Log _log = LogFactoryUtil.getLog(SubscriberSearch.class);
 
 }
