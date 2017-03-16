@@ -2,8 +2,8 @@
     newsletters.jspf: the newsletters panel.
     
     Created:    2016-10-08 15:49 by Christian Berndt
-    Modified:   2017-03-10 23:52 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2017-03-16 16:42 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <portlet:actionURL var="addNewsletterURL" name="editNewsletter"
@@ -13,20 +13,21 @@
     <portlet:param name="windowId" value="editNewsletter" />
 </portlet:actionURL>
 
-<c:if test='<%=NewsletterPortletPermission.contains(permissionChecker, scopeGroupId, ActionKeys.ADD_NEWSLETTER)%>'>
+<%-- TODO: enable permission checks --%>
+<%-- <c:if test='<%=NewsletterPortletPermission.contains(permissionChecker, scopeGroupId, ActionKeys.ADD_NEWSLETTER)%>'> --%>
 
 <%
-    String taglibAddURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace()+ "editNewsletter', title: '"+ HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "edit-x", "new")) + "', uri:'" + HtmlUtil.escapeJS(addNewsletterURL) + "'});";
+    String taglibAddURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace()+ "editNewsletter', title: '"+ HtmlUtil.escapeJS(LanguageUtil.format(request, "edit-x", "new")) + "', uri:'" + HtmlUtil.escapeJS(addNewsletterURL) + "'});";
 %>
 
-    <div class="control-group">
-        <aui:a href="<%=taglibAddURL%>"
-            cssClass="btn btn-primary add-newsletter">
-            <liferay-ui:message key="add-newsletter" />
-        </aui:a>
-    </div>
+<div class="control-group">
+    <aui:a href="<%=taglibAddURL%>"
+        cssClass="btn btn-primary add-newsletter">
+        <liferay-ui:message key="add-newsletter" />
+    </aui:a>
+</div>
 
-</c:if>
+<%-- </c:if> --%>
 
 <%
     int idx = ParamUtil.getInteger(request, "cur");
@@ -86,11 +87,10 @@
 <liferay-ui:search-container
     searchContainer="<%= new NewsletterSearch(renderRequest, portletURL) %>"
     var="newsletterSearchContainer">
-    <liferay-ui:search-container-results
-        results="<%= newsletters %>" />
+    <liferay-ui:search-container-results results="<%= newsletters %>" />
 
     <liferay-ui:search-container-row
-        className="ch.inofix.portlet.newsletter.model.Newsletter"
+        className="ch.inofix.newsletter.model.Newsletter"
         modelVar="newsletter">
 
         <portlet:actionURL var="deleteURL" name="deleteNewsletter">
@@ -114,7 +114,7 @@
         <%
             StringBuilder sb = new StringBuilder(); 
         
-            sb.append(LanguageUtil.get(pageContext, "permissions-of-newsletter")); 
+            sb.append(LanguageUtil.get(request, "permissions-of-newsletter")); 
             sb.append(" "); 
             sb.append(newsletter.getNewsletterId()); 
         
@@ -128,7 +128,7 @@
             var="permissionsURL" />
 
         <%
-            String taglibEditURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editNewsletter', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "edit-x", newsletter.getTitle())) + "', uri:'" + HtmlUtil.escapeJS(editURL) + "'});";
+            String taglibEditURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editNewsletter', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(request, "edit-x", newsletter.getTitle())) + "', uri:'" + HtmlUtil.escapeJS(editURL) + "'});";
         
             boolean hasDeletePermission = NewsletterPermission.contains(permissionChecker,
                     newsletter.getNewsletterId(), ActionKeys.DELETE);   

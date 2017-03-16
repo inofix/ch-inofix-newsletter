@@ -2,8 +2,8 @@
     subscribers.jspf: the subscribers panel.
     
     Created:    2016-10-09 16:24 by Christian Berndt
-    Modified:   2017-03-10 23:50 by Christian Berndt
-    Version:    1.1.2
+    Modified:   2017-03-16 17:05 by Christian Berndt
+    Version:    1.1.3
 --%>
 
 <%
@@ -44,20 +44,21 @@
             newsletters.add(newsletter);
         }
     }
-
 %>
 
 <aui:form name="fm">
-    <aui:select name="vCardGroupId" label=""
+
+    <%-- TODO:  --%>
+    <aui:select name="todo" label=""
         onChange=" window.location.href = this.value; ">
         <aui:option value="" label="select-newsletter" />
         <%
             for (Newsletter newsletter : newsletters) {
                         PortletURL selectURL = renderResponse.createRenderURL();
-                        String currentVCardGroupId = newsletter.getVCardGroupId();
-                        selectURL.setParameter("vCardGroupId", currentVCardGroupId);
                         selectURL.setParameter("tabs1", tabs1);
-                        boolean selected = vCardGroupId.equalsIgnoreCase(currentVCardGroupId);
+
+                        // TODO
+                        boolean selected = false;
         %>
         <option <%=selected ? "selected" : StringPool.BLANK%>
             value="<%=selectURL.toString()%>"><%=newsletter.getTitle()%></option>
@@ -68,7 +69,9 @@
 </aui:form>
 
 <c:choose>
-    <c:when test="<%=Validator.isNull(vCardGroupId)%>">
+
+    <%-- TODO --%>
+    <c:when test="<%=false%>">
         <div class="alert alert-info">
             <liferay-ui:message key="no-newsletter-selected"></liferay-ui:message>
         </div>
@@ -78,23 +81,26 @@
             emptyResultsMessage="there-are-no-subscribers">
             <%
                 PortletURL iteratorURL = searchContainer.getIteratorURL();
-                            iteratorURL.setParameter("vCardGroupId", vCardGroupId);
                             iteratorURL.setParameter("tabs1", tabs1);
                             searchContainer.setIteratorURL(iteratorURL);
 
-                            List<Subscriber> subscribers = SubscriberServiceUtil.getSubscribersFromVCardGroup(
-                                    themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId(), vCardGroupId,
-                                    searchContainer.getStart(), searchContainer.getEnd());
+                            // TODO:
+                            List<Subscriber> subscribers = new ArrayList<Subscriber>();
+                            int numSubscribers = 0;
 
-                            int numSubscribers = SubscriberServiceUtil.getSubscribersFromVCardGroupCount(
-                                    themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId(), vCardGroupId);
+                            // 				List<Subscriber> subscribers = SubscriberServiceUtil.getSubscribersFromVCardGroup(
+                            // 				        themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId(), vCardGroupId,
+                            // 				        searchContainer.getStart(), searchContainer.getEnd());
+
+                            // 				int numSubscribers = SubscriberServiceUtil.getSubscribersFromVCardGroupCount(
+                            // 				        themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId(), vCardGroupId);
             %>
 
             <liferay-ui:search-container-results
                 results="<%=subscribers%>" />
 
             <liferay-ui:search-container-row
-                className="ch.inofix.portlet.newsletter.model.Subscriber"
+                className="ch.inofix.newsletter.model.Subscriber"
                 modelVar="subscriber">
 
                 <portlet:actionURL var="previewMailingURL"
@@ -106,10 +112,6 @@
                         value="<%=currentURL%>" />
                     <portlet:param name="subscriberId"
                         value="<%=String.valueOf(subscriber.getSubscriberId())%>" />
-                    <portlet:param name="vCardUID"
-                        value="<%=subscriber.getVCardUID()%>" />
-                    <portlet:param name="vCardGroupId"
-                        value="<%=vCardGroupId%>" />
                     <portlet:param name="windowId"
                         value="previewMailing" />
                 </portlet:actionURL>
@@ -117,13 +119,15 @@
                 <%
                     String taglibPreviewMailingURL = "javascript:Liferay.Util.openWindow({id: '"
                                             + renderResponse.getNamespace() + "previewMailing', title: '"
-                                            + HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "preview-mailing", ""))
+                                            + HtmlUtil.escapeJS(LanguageUtil.format(request, "preview-mailing", ""))
                                             + "', uri:'" + HtmlUtil.escapeJS(previewMailingURL) + "'});";
                 %>
 
+                <%-- TODO 
                 <liferay-ui:search-container-column-text
                     href="<%=taglibPreviewMailingURL%>" name="name"
                     value='<%=subscriber.getName()%>' />
+                --%>
 
                 <liferay-ui:search-container-column-text
                     href="<%=taglibPreviewMailingURL%>" name="email"
