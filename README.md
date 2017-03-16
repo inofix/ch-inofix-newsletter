@@ -25,12 +25,14 @@ A newsletter plugin for Liferay.
 1. create a pull-request, to contribute your solution to the inofix master branch.
 
 Note for Eclipse / Liferay-IDE developers: if the JSPs of the newsletter-web project aren't validated properly, 
+
 - select the newsletter-web in the Project-Explorer view
 - open the context menu with the right mouse key
 - select "Configure" and
 - choose "Add JSP Validation Support"
 - select the timetracker-web in the Project-Explorer view
 - choose CTRL + F5 to refresh your project
+
 You may have to restart Eclipse, too in order to have your JSPs validated.
 
 ## Testing
