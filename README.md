@@ -5,8 +5,8 @@ A newsletter plugin for Liferay.
 1. Install blade: `curl https://raw.githubusercontent.com/liferay/liferay-blade-cli/master/installers/local | sh`
 1. Create a liferay workspace: `WORKSPACE=my-workspace; blade init $WORKSPACE`
 1. Checkout newsletter sources to the workspace's module directory: `cd $WORKSPACE/modules; git clone https://github.com/inofix/ch-inofix-newsletter.git`
-1. Run ServiceBuilder: `gradle buildService`
-1. Build: `gradle jar`
+1. Run ServiceBuilder: `./gradlew buildService`
+1. Build: `./gradlew jar`
 
 ## How To Contribute
 1. Fork this repository to your individual github account.
