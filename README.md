@@ -1,4 +1,4 @@
-# ch-inofix-newsletter
+# ch-inofix-newsletter [![Build Status](https://travis-ci.org/inofix/ch-inofix-newsletter.svg?branch=master)](https://travis-ci.org/inofix/ch-inofix-newsletter)
 A newsletter plugin for Liferay.
 
 ## How To Build
