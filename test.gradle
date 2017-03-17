@@ -7,14 +7,14 @@
 // 
 // 
 // Created:     2017-03-12 23:17 by Christian Berndt
-// Modified:    2017-03-15 22:31 by Christian berndt
-// Version:     1.0.1
+// Modified:    2017-03-17 19:25 by Christian berndt
+// Version:     1.0.2
 // 
 
 buildscript {
     dependencies {
-        classpath group: "com.liferay", name: "com.liferay.gradle.plugins.defaults", version: "2.5.0"
-//        classpath group: "com.liferay", name: "com.liferay.gradle.plugins.defaults", version: "latest.release"
+//        classpath group: "com.liferay", name: "com.liferay.gradle.plugins.defaults", version: "2.5.0"
+        classpath group: "com.liferay", name: "com.liferay.gradle.plugins.defaults", version: "latest.release"
         classpath group: "org.kt3k.gradle.plugin", name: "coveralls-gradle-plugin", version: "2.6.3"
     }
 
