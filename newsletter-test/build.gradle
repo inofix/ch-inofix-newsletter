@@ -14,5 +14,5 @@ dependencies {
 
 startTestableTomcat { 
 	// Disable automatic shutdown for testing
-    stopTestableTomcat.enabled = false
+//    stopTestableTomcat.enabled = false
 }
