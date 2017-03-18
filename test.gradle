@@ -13,9 +13,12 @@
 
 buildscript {
     dependencies {
-        classpath group: "com.liferay", name: "com.liferay.gradle.plugins.defaults", version: "2.5.0"
+//        classpath group: "com.liferay", name: "com.liferay.gradle.plugins.workspace", version: "1.2.4"
+//        classpath group: "com.liferay", name: "com.liferay.gradle.plugins.workspace", version: "1.0.40"
+        classpath group: "com.liferay", name: "com.liferay.gradle.plugins.defaults", version: "1.2.0"
+//        classpath group: "com.liferay", name: "com.liferay.gradle.plugins.defaults", version: "2.5.0"
 //        classpath group: "com.liferay", name: "com.liferay.gradle.plugins.defaults", version: "latest.release"
-        classpath group: "org.kt3k.gradle.plugin", name: "coveralls-gradle-plugin", version: "2.6.3"
+//        classpath group: "org.kt3k.gradle.plugin", name: "coveralls-gradle-plugin", version: "2.6.3"
     }
 
     repositories {
@@ -31,9 +34,10 @@ buildscript {
     }
 }
 
-apply plugin: "com.github.kt3k.coveralls"
+//apply plugin: "com.github.kt3k.coveralls"
+//apply plugin: "com.liferay.workspace"
 apply plugin: "com.liferay.app.defaults.plugin"
-apply plugin: "jacoco"
+//apply plugin: "jacoco"
 
 task createTempDir(type: Exec) {
     commandLine 'mkdir', '-m', '777', '-p', "${rootDir}/build/tmpdir"
@@ -192,7 +196,7 @@ task runDocker(type: Exec) {
 
 configure(subprojects.findAll {!it.childProjects}) {
     apply plugin: "com.liferay.defaults.plugin"
-    apply plugin: "jacoco"
+//    apply plugin: "jacoco"
 
     configurations {
         runtimeLib {
@@ -206,16 +210,16 @@ configure(subprojects.findAll {!it.childProjects}) {
         deployDir = new File("${rootDir}/../bundles/deploy")
     }
 
-    jacocoTestReport {
-        additionalSourceDirs = files(sourceSets.main.allSource.srcDirs)
-        sourceDirectories = files(sourceSets.main.allSource.srcDirs)
-        classDirectories =  files(sourceSets.main.output)
+//    jacocoTestReport {
+//        additionalSourceDirs = files(sourceSets.main.allSource.srcDirs)
+//        sourceDirectories = files(sourceSets.main.allSource.srcDirs)
+//        classDirectories =  files(sourceSets.main.output)
 
-        reports {
-            html.enabled = true
-            xml.enabled = true
-        }
-    }
+//        reports {
+//            html.enabled = true
+//            xml.enabled = true
+//        }
+//    }
 
     test {
         ignoreFailures = false
@@ -244,8 +248,8 @@ configure(subprojects.findAll {!it.childProjects}) {
         setUpTestableTomcat.enabled = false
     }
 
-    startTestableTomcat.enabled = false
-    stopTestableTomcat.enabled = false
+//    startTestableTomcat.enabled = false
+//    stopTestableTomcat.enabled = false
 }
 
 repositories {
@@ -253,29 +257,29 @@ repositories {
     jcenter()
 }
 
-task coverageReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
-    additionalSourceDirs = files(subprojects.findAll{!it.childProjects}.sourceSets.main.allSource.srcDirs)
-    classDirectories = files(subprojects.findAll{!it.childProjects}.sourceSets.main.output)
-    executionData = files(subprojects.findAll{!it.childProjects}.jacocoTestReport.executionData)
-    sourceDirectories = files(subprojects.findAll{!it.childProjects}.sourceSets.main.allSource.srcDirs)
+//task coverageReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
+//    additionalSourceDirs = files(subprojects.findAll{!it.childProjects}.sourceSets.main.allSource.srcDirs)
+//    classDirectories = files(subprojects.findAll{!it.childProjects}.sourceSets.main.output)
+//    executionData = files(subprojects.findAll{!it.childProjects}.jacocoTestReport.executionData)
+//    sourceDirectories = files(subprojects.findAll{!it.childProjects}.sourceSets.main.allSource.srcDirs)
 
-    reports {
-        html.enabled = true
-        xml.enabled = true
-    }
+//    reports {
+//        html.enabled = true
+//        xml.enabled = true
+//    }
 
-    onlyIf = { true }
+//    onlyIf = { true }
 
-    doFirst {
-        executionData = files(executionData.findAll { it.exists() })
-    }
-}
+//    doFirst {
+//        executionData = files(executionData.findAll { it.exists() })
+//    }
+//}
 
-tasks.coveralls {
-    dependsOn 'coverageReport'
-}
+//tasks.coveralls {
+//    dependsOn 'coverageReport'
+//}
 
-coveralls.jacocoReportPath = "build/reports/jacoco/coverageReport/coverageReport.xml"
-coveralls.sourceDirs = files(subprojects.findAll{!it.childProjects}.sourceSets.main.allSource.srcDirs).collect {
-   file -> file.absolutePath
-}
+//coveralls.jacocoReportPath = "build/reports/jacoco/coverageReport/coverageReport.xml"
+//coveralls.sourceDirs = files(subprojects.findAll{!it.childProjects}.sourceSets.main.allSource.srcDirs).collect {
+//   file -> file.absolutePath
+//}
