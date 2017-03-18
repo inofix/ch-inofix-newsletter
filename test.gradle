@@ -7,17 +7,14 @@
 // 
 // 
 // Created:     2017-03-12 23:17 by Christian Berndt
-// Modified:    2017-03-17 19:25 by Christian berndt
+// Modified:    2017-03-18 19:37 by Christian berndt
 // Version:     1.0.2
 // 
 
 buildscript {
     dependencies {
-//        classpath group: "com.liferay", name: "com.liferay.gradle.plugins.workspace", version: "1.2.4"
-//        classpath group: "com.liferay", name: "com.liferay.gradle.plugins.workspace", version: "1.0.40"
-        classpath group: "com.liferay", name: "com.liferay.gradle.plugins.defaults", version: "1.2.0"
-//        classpath group: "com.liferay", name: "com.liferay.gradle.plugins.defaults", version: "2.5.0"
-//        classpath group: "com.liferay", name: "com.liferay.gradle.plugins.defaults", version: "latest.release"
+        classpath group: "com.liferay", name: "com.liferay.gradle.plugins.defaults", version: "1.1.1"
+//        classpath group: "com.liferay", name: "com.liferay.gradle.plugins.defaults", version: "1.2.0"
 //        classpath group: "org.kt3k.gradle.plugin", name: "coveralls-gradle-plugin", version: "2.6.3"
     }
 
@@ -35,7 +32,6 @@ buildscript {
 }
 
 //apply plugin: "com.github.kt3k.coveralls"
-//apply plugin: "com.liferay.workspace"
 apply plugin: "com.liferay.app.defaults.plugin"
 //apply plugin: "jacoco"
 
