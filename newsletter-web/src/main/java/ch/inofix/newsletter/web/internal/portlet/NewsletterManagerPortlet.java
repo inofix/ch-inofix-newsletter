@@ -15,7 +15,6 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 
-import com.liferay.portal.kernel.exception.NoSuchResourceException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
@@ -43,17 +42,18 @@ import ch.inofix.newsletter.web.internal.constants.NewsletterWebKeys;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2017-03-10 23:44
- * @version 1.2.0
+ * @modified 2017-03-19 15:03
+ * @version 1.2.1
  */
 @Component(immediate = true, property = { "com.liferay.portlet.display-category=category.inofix",
         "com.liferay.portlet.instanceable=false", "javax.portlet.display-name=Newsletter",
         "javax.portlet.init-param.template-path=/", "javax.portlet.init-param.view-template=/view.jsp",
+        "javax.portlet.resource-bundle=content.Language",
         "javax.portlet.security-role-ref=power-user,user" }, service = Portlet.class)
 public class NewsletterManagerPortlet extends MVCPortlet {
 
     /**
-     * 
+     *
      * @param actionRequest
      * @param actionResponse
      * @since 1.0.0
@@ -73,15 +73,16 @@ public class NewsletterManagerPortlet extends MVCPortlet {
     public void render(RenderRequest renderRequest, RenderResponse renderResponse)
             throws IOException, PortletException {
 
-//        try {
-//            getNewsletter(renderRequest);
-//        } catch (Exception e) {
-//            if (e instanceof NoSuchResourceException || e instanceof PrincipalException) {
-//                SessionErrors.add(renderRequest, e.getClass());
-//            } else {
-//                throw new PortletException(e);
-//            }
-//        }
+        // try {
+        // getNewsletter(renderRequest);
+        // } catch (Exception e) {
+        // if (e instanceof NoSuchResourceException || e instanceof
+        // PrincipalException) {
+        // SessionErrors.add(renderRequest, e.getClass());
+        // } else {
+        // throw new PortletException(e);
+        // }
+        // }
 
         renderRequest.setAttribute(NewsletterManagerConfiguration.class.getName(), _newsletterManagerConfiguration);
 
@@ -97,7 +98,7 @@ public class NewsletterManagerPortlet extends MVCPortlet {
     }
 
     /**
-     * 
+     *
      * @param actionRequest
      * @param actionResponse
      * @since 1.0.0
@@ -144,7 +145,7 @@ public class NewsletterManagerPortlet extends MVCPortlet {
     }
 
     /**
-     * 
+     *
      */
     @Override
     protected void doDispatch(RenderRequest renderRequest, RenderResponse renderResponse)
@@ -168,7 +169,7 @@ public class NewsletterManagerPortlet extends MVCPortlet {
     }
 
     /**
-     * 
+     *
      * @param actionRequest
      * @param actionResponse
      * @param newsletter
@@ -204,7 +205,7 @@ public class NewsletterManagerPortlet extends MVCPortlet {
     }
 
     /**
-     * 
+     *
      * @param portletRequest
      * @throws Exception
      */
