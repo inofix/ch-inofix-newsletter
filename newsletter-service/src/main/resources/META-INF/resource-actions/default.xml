@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<!DOCTYPE resource-action-mapping PUBLIC 
+    "-//Liferay//DTD Resource Action Mapping 7.0.0//EN" 
+    "http://www.liferay.com/dtd/liferay-resource-action-mapping_7_0_0.dtd">
+<!--  
+    default.xml: The newsletter-portlet's permission configuration.
+    
+    Created:    2016-10-08 00:59 by Christian Berndt
+    Modified:   2017-03-22 10:11 by Christian Berndt
+    Version:    1.0.2
+-->
+<resource-action-mapping>
+
+    <model-resource>
+        <model-name>ch.inofix.newsletter</model-name>
+        <portlet-ref>
+            <portlet-name>ch_inofix_newsletter_web_internal_portlet_NewsletterManagerPortlet</portlet-name>
+        </portlet-ref>
+        <permissions>
+            <supports>
+                <action-key>ADD_MAILING</action-key>
+                <action-key>ADD_NEWSLETTER</action-key>
+                <action-key>ADD_SUBSCRIBER</action-key>
+                <action-key>PERMISSIONS</action-key>
+            </supports>
+            <site-member-defaults>
+                <action-key>ADD_MAILING</action-key>
+                <action-key>ADD_NEWSLETTER</action-key>
+                <action-key>ADD_SUBSCRIBER</action-key>
+            </site-member-defaults>
+            <guest-defaults/>
+            <guest-unsupported>
+                <action-key>ADD_MAILING</action-key>
+                <action-key>ADD_NEWSLETTER</action-key>
+                <action-key>ADD_SUBSCRIBER</action-key>
+                <action-key>PERMISSIONS</action-key>
+            </guest-unsupported>
+        </permissions>
+    </model-resource>
+    
+    <model-resource>
+        <model-name>ch.inofix.newsletter.model.Mailing</model-name>
+        <portlet-ref>
+            <portlet-name>ch_inofix_newsletter_web_internal_portlet_NewsletterManagerPortlet</portlet-name>
+        </portlet-ref>
+        <permissions>
+            <supports>
+                <action-key>DELETE</action-key>
+                <action-key>PERMISSIONS</action-key>
+                <action-key>UPDATE</action-key>
+                <action-key>VIEW</action-key>
+            </supports>
+            <site-member-defaults>
+                <action-key>VIEW</action-key> 
+            </site-member-defaults>
+            <guest-defaults/>
+            <guest-unsupported>
+                <action-key>DELETE</action-key>
+                <action-key>PERMISSIONS</action-key>
+                <action-key>UPDATE</action-key>
+            </guest-unsupported>
+        </permissions>
+    </model-resource>    
+
+    <model-resource>
+        <model-name>ch.inofix.newsletter.model.Newsletter</model-name>
+        <portlet-ref>
+            <portlet-name>ch_inofix_newsletter_web_internal_portlet_NewsletterManagerPortlet</portlet-name>
+        </portlet-ref>
+        <permissions>
+            <supports>
+                <action-key>DELETE</action-key>
+                <action-key>PERMISSIONS</action-key>
+                <action-key>UPDATE</action-key>
+                <action-key>VIEW</action-key>
+            </supports>
+            <site-member-defaults>
+                <action-key>VIEW</action-key> 
+            </site-member-defaults>
+            <guest-defaults/>
+            <guest-unsupported>
+                <action-key>DELETE</action-key>
+                <action-key>PERMISSIONS</action-key>
+                <action-key>UPDATE</action-key>
+            </guest-unsupported>
+        </permissions>
+    </model-resource>
+    
+    <model-resource>
+        <model-name>ch.inofix.newsletter.model.Subscriber</model-name>
+        <portlet-ref>
+            <portlet-name>ch_inofix_newsletter_web_internal_portlet_NewsletterManagerPortlet</portlet-name>
+        </portlet-ref>
+        <permissions>
+            <supports>
+                <action-key>DELETE</action-key>
+                <action-key>PERMISSIONS</action-key>
+                <action-key>UPDATE</action-key>
+                <action-key>VIEW</action-key>
+            </supports>
+            <site-member-defaults>
+                <action-key>VIEW</action-key> 
+            </site-member-defaults>
+            <guest-defaults/>
+            <guest-unsupported>
+                <action-key>DELETE</action-key>
+                <action-key>PERMISSIONS</action-key>
+                <action-key>UPDATE</action-key>
+            </guest-unsupported>
+        </permissions>
+    </model-resource>
+
+</resource-action-mapping>
