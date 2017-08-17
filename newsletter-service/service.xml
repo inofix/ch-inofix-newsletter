@@ -6,14 +6,14 @@
     service.xml: Model description for the newsletter-portlet.
     
     Created:    2016-10-07 23:13 by Christian Berndt
-    Modified:   2017-03-10 21:50 by Christian Berndt
-    Version:    1.1.7
+    Modified:   2017-07-14 13:30 by Christian Berndt
+    Version:    1.1.8
 -->
 
 <service-builder package-path="ch.inofix.newsletter">
 	<author>Christian Berndt</author>
 
-	<namespace>inofix</namespace>
+	<namespace>inofix_nl</namespace>
 
 	<entity name="Mailing" local-service="true" remote-service="true"
 		uuid="true">
