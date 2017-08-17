@@ -1,10 +1,3 @@
-buildService {
-    apiDir = "../newsletter-api/src/main/java"
-    osgiModule = true
-    propsUtil = "ch.inofix.newsletter.service.util.PropsUtil"
-//    testDir = "../newsletter-test/src/testIntegration/java"
-}
-
 dependencies {
     compileOnly group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "3.1.0"
     compileOnly group: "com.liferay", name: "com.liferay.osgi.util", version: "3.0.0"
@@ -15,3 +8,9 @@ dependencies {
     compileOnly project(":modules:ch-inofix-newsletter:newsletter-api")
 }
 
+buildService {
+    apiDir = "../newsletter-api/src/main/java"
+    osgiModule = true
+    propsUtil = "ch.inofix.newsletter.service.util.PropsUtil"
+//    testDir = "../newsletter-test/src/testIntegration/java"
+}
