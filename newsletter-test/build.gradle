@@ -11,8 +11,3 @@ dependencies {
 
     testIntegrationCompile group: "org.springframework", name: "spring-core", version: "4.1.9.RELEASE"
 }
-
-startTestableTomcat { 
-	// Disable automatic shutdown for testing
-//    stopTestableTomcat.enabled = false
-}
