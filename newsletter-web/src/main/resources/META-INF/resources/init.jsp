@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2016-10-05 15:44 by Christian Berndt
-    Modified:    2017-03-10 16:15 by Christian Berndt
-    Version:     1.1.7
+    Modified:    2017-08-30 23:19 by Christian Berndt
+    Version:     1.1.8
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -75,8 +75,14 @@
     long articleGroupId = GetterUtil.getLong(portletPreferences.getValue("articleGroupId", ""));
 
     String currentURL = PortalUtil.getCurrentURL(request);
+    
+    String markupView = "lexicon";
 
     String newsletterStructureId = portletPreferences.getValue("newsletterStructureId", "");
 
-    PortletURL portletURL = renderResponse.createRenderURL();
+    boolean showSearchSpeed = false;
+    
+    String tabs1 = ParamUtil.getString(request, "tabs1", "mailing");
+//     String tabs2 = ParamUtil.getString(request, "tabs2", "export");
+
 %>
