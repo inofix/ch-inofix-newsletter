@@ -1,6 +1,6 @@
 # ch-inofix-newsletter 
 
-<a href="https://travis-ci.org/inofix/ch-inofix-newsletter" target="_blank"><img src="https://travis-ci.org/inofix/ch-inofix-newsletter.svg?branch=master"/></a>
+<a href="https://travis-ci.org/inofix/ch-inofix-newsletter/builds" target="_blank"><img src="https://travis-ci.org/inofix/ch-inofix-newsletter.svg?branch=master"/></a>
 
 A newsletter plugin for Liferay.
 
@@ -42,5 +42,18 @@ if the JSPs of the newsletter-web project aren't validated properly,
 
 You may have to restart Eclipse, too in order to have your JSPs validated.
 
-## Testing
-* Travis-results for ch-inofix-newsletter can be found at https://travis-ci.org/inofix/ch-inofix-newsletter/builds
+## How To Test
+
+### In the Liferay workspace
+
+1. Select ch-inofix-newsletter -> verification -> testIntegration task from Gradle Tasks
+1. Run
+
+### Standalone 
+
+1. `cd ch-inofix-newsletter`
+1. `ln -s standalone-gradle.properties gradle.properties`
+1. `ln -s standalone-settings.gradle settings.gradle`
+1. `./gradlew clean initBundle buildService testIntegration`
+
+Latest Travis-test-results for ch-inofix-newsletter can be obtained from https://travis-ci.org/inofix/ch-inofix-newsletter/builds
