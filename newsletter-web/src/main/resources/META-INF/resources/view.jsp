@@ -2,8 +2,8 @@
     view.jsp: Default view of the newsletter-portlet.
     
     Created:     2016-10-05 15:54 by Christian Berndt
-    Modified:    2017-03-16 17:06 by Christian Berndt
-    Version:     1.1.6
+    Modified:    2017-08-30 by Christian Berndt
+    Version:     1.1.8
  --%>
 
 <%@ include file="/init.jsp"%>
@@ -13,7 +13,9 @@
 
 <%
     String backURL = ParamUtil.getString(request, "backURL");
-    String tabs1 = ParamUtil.getString(request, "tabs1", "mailings");
+//     String tabs1 = ParamUtil.getString(request, "tabs1", "mailings");
+
+    PortletURL portletURL = renderResponse.createRenderURL();
 
     portletURL.setParameter("tabs1", tabs1);
     portletURL.setParameter("mvcPath", "/view.jsp");
@@ -22,9 +24,10 @@
     Log log = LogFactoryUtil.getLog("docroot.view.jsp");
 %>
 
-<div id="<portlet:namespace />newsletterContainer">
-
-    <%--     <liferay-ui:header backURL="<%=backURL%>" title="newsletter-manager" /> --%>
+<liferay-util:include page="/navigation.jsp"
+    servletContext="<%=application%>"/>
+    
+<div class="container-fluid-1280">
 
     <liferay-ui:error exception="<%=PrincipalException.class%>"
         message="you-dont-have-the-required-permissions" />
@@ -32,14 +35,10 @@
     <liferay-ui:error
         exception="<%= NewsletterReferencedByMailingException.class %>"
         message="the-newsletter-is-referenced-by-one-or-more-mailings" />
-
-    <liferay-ui:tabs names="mailings,newsletters,subscribers"
-        param="tabs1" url="<%=portletURL.toString()%>" />
-
-    <c:choose>
-
+        
+    <c:choose>             
+    
         <c:when test='<%=tabs1.equals("mailings")%>'>
-
             <%@include file="/mailings.jspf"%>
         </c:when>
 
@@ -50,11 +49,7 @@
         <c:otherwise>
             <%@include file="/subscribers.jspf"%>
         </c:otherwise>
-
-    </c:choose>
-
-    <hr>
-
-    <!--     <ifx-util:build-info /> -->
-
+   
+    </c:choose>        
 </div>
+
