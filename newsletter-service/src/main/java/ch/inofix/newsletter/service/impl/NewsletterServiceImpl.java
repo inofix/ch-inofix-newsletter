@@ -14,9 +14,13 @@
 
 package ch.inofix.newsletter.service.impl;
 
+import java.util.LinkedHashMap;
+
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 import aQute.bnd.annotation.ProviderType;
@@ -42,8 +46,8 @@ import ch.inofix.newsletter.service.permission.NewsletterPortletPermission;
  *
  * @author Christian Berndt
  * @created 2016-10-08 01:25
- * @modified 2017-03-10 22:12
- * @version 1.0.7
+ * @modified 2017-09-02 11:07
+ * @version 1.0.9
  * @see ch.inofix.portlet.newsletter.service.base.NewsletterServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.NewsletterServiceUtil
  */
@@ -130,6 +134,23 @@ public class NewsletterServiceImpl extends NewsletterServiceBaseImpl {
         NewsletterPermission.check(getPermissionChecker(), newsletterId, ActionKeys.VIEW);
 
         return newsletterLocalService.getNewsletter(newsletterId);
+
+    }
+    
+    @Override
+    public Hits search(long userId, long groupId, long ownerUserId, String keywords, int start, int end, Sort sort)
+            throws PortalException {
+
+        return newsletterLocalService.search(userId, groupId, ownerUserId, keywords, start, end, sort);
+    }
+
+    @Override
+    public Hits search(long userId, long groupId, long ownerUserId, String title, String description, int status,
+            LinkedHashMap<String, Object> params, boolean andSearch, int start, int end, Sort sort)
+            throws PortalException {
+
+        return newsletterLocalService.search(userId, groupId, ownerUserId, title, description, status, params,
+                andSearch, start, end, sort);
 
     }
 

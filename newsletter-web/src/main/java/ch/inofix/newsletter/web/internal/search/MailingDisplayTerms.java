@@ -9,13 +9,14 @@ import com.liferay.portal.kernel.util.ParamUtil;
  *
  * @author Christian Berndt
  * @created 2016-10-16 23:25
- * @modified 2017-03-10 17:36
- * @version 1.0.2
+ * @modified 2017-09-02 08:33
+ * @version 1.0.3
  *
  */
 public class MailingDisplayTerms extends DisplayTerms {
 
     public static final String CREATE_DATE = "createDate";
+    public static final String OWNER_USER_ID = "ownerUserId";
     public static final String MODIFIED_DATE = "modifiedDate";
     public static final String SEND_DATE = "sendDate";
     public static final String TITLE = "title";
@@ -25,6 +26,7 @@ public class MailingDisplayTerms extends DisplayTerms {
         super(portletRequest);
 
         createDate = ParamUtil.getString(portletRequest, CREATE_DATE);
+        ownerUserId = ParamUtil.getLong(portletRequest, OWNER_USER_ID);
         sendDate = ParamUtil.getString(portletRequest, SEND_DATE);
         title = ParamUtil.getString(portletRequest, TITLE);
         modifiedDate = ParamUtil.getString(portletRequest, MODIFIED_DATE);
@@ -45,6 +47,14 @@ public class MailingDisplayTerms extends DisplayTerms {
 
     public void setModifiedDate(String modifiedDate) {
         this.modifiedDate = modifiedDate;
+    }
+
+    public long getOwnerUserId() {
+        return ownerUserId;
+    }
+
+    public void setOwnerUserId(long ownerUserId) {
+        this.ownerUserId = ownerUserId;
     }
 
     public String getSendDate() {
@@ -72,6 +82,7 @@ public class MailingDisplayTerms extends DisplayTerms {
     }
 
     protected String createDate;
+    protected long ownerUserId;
     protected String modifiedDate;
     protected String sendDate;
     protected String title;

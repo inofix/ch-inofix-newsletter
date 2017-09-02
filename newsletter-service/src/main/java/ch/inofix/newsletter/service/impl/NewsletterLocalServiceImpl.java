@@ -15,6 +15,7 @@
 package ch.inofix.newsletter.service.impl;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
 
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetLinkConstants;
@@ -23,19 +24,31 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.QueryConfig;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import aQute.bnd.annotation.ProviderType;
+import ch.inofix.newsletter.model.Mailing;
 import ch.inofix.newsletter.model.Newsletter;
 import ch.inofix.newsletter.service.base.NewsletterLocalServiceBaseImpl;
 import ch.inofix.newsletter.social.NewsletterActivityKeys;
@@ -56,8 +69,8 @@ import ch.inofix.newsletter.social.NewsletterActivityKeys;
  *
  * @author Christian Berndt
  * @created 2016-10-08 16:41
- * @modified 2017-03-10 21:35
- * @version 1.0.7
+ * @modified 2017-09-02 11:08
+ * @version 1.0.8
  * @see NewsletterLocalServiceBaseImpl
  * @see ch.inofix.newsletter.service.NewsletterLocalServiceUtil
  */
@@ -221,10 +234,47 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
         return newsletterPersistence.findByPrimaryKey(newsletterId);
     }
 
-    @Indexable(type = IndexableType.REINDEX)
-    public Newsletter reIndexBibligraphy(long newsletterId) throws PortalException {
+    @Override
+    public Hits search(long userId, long groupId, long ownerUserId, String keywords, int start, int end, Sort sort)
+            throws PortalException {
 
-        return getNewsletter(newsletterId);
+        if (sort == null) {
+            sort = new Sort(Field.MODIFIED_DATE, true);
+        }
+
+        String description = null;
+        String workPackage = null;
+        boolean andOperator = false;
+
+        if (Validator.isNotNull(keywords)) {
+
+            description = keywords;
+            workPackage = keywords;
+
+        } else {
+            andOperator = true;
+        }
+
+        return search(userId, groupId, ownerUserId, workPackage, description, WorkflowConstants.STATUS_ANY, null,
+                andOperator, start, end, sort);
+
+    }
+
+    @Override
+    public Hits search(long userId, long groupId, long ownerUserId, String title, String description, int status,
+            LinkedHashMap<String, Object> params, boolean andSearch, int start, int end, Sort sort)
+            throws PortalException {
+
+        if (sort == null) {
+            sort = new Sort(Field.MODIFIED_DATE, true);
+        }
+
+        Indexer<Mailing> indexer = IndexerRegistryUtil.getIndexer(Mailing.class.getName());
+
+        SearchContext searchContext = buildSearchContext(userId, groupId, ownerUserId, title, description, status,
+                params, andSearch, start, end, sort);
+
+        return indexer.search(searchContext);
 
     }
 
@@ -319,6 +369,67 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
 
         resourceLocalService.updateResources(newsletter.getCompanyId(), newsletter.getGroupId(),
                 Newsletter.class.getName(), newsletter.getNewsletterId(), groupPermissions, guestPermissions);
+    }
+    
+    protected SearchContext buildSearchContext(long userId, long groupId, long ownerUserId, String title,
+            String description, int status, LinkedHashMap<String, Object> params, boolean andSearch, int start, int end,
+            Sort sort) throws PortalException {
+
+        SearchContext searchContext = new SearchContext();
+
+        searchContext.setAttribute(Field.STATUS, status);
+
+        if (Validator.isNotNull(description)) {
+            searchContext.setAttribute("description", description);
+        }
+
+        if (Validator.isNotNull(title)) {
+            searchContext.setAttribute("title", title);
+        }
+
+        searchContext.setAttribute("paginationType", "more");
+
+        Group group = GroupLocalServiceUtil.getGroup(groupId);
+
+        searchContext.setCompanyId(group.getCompanyId());
+
+        if (ownerUserId > 0) {
+            searchContext.setOwnerUserId(ownerUserId);
+        }
+
+        searchContext.setEnd(end);
+        if (groupId > 0) {
+            searchContext.setGroupIds(new long[] { groupId });
+        }
+        searchContext.setSorts(sort);
+        searchContext.setStart(start);
+        searchContext.setUserId(userId);
+
+        searchContext.setAndSearch(andSearch);
+
+        if (params != null) {
+
+            String keywords = (String) params.remove("keywords");
+
+            if (Validator.isNotNull(keywords)) {
+                searchContext.setKeywords(keywords);
+            }
+        }
+
+        QueryConfig queryConfig = new QueryConfig();
+
+        queryConfig.setHighlightEnabled(false);
+        queryConfig.setScoreEnabled(false);
+
+        searchContext.setQueryConfig(queryConfig);
+
+        if (sort != null) {
+            searchContext.setSorts(sort);
+        }
+
+        searchContext.setStart(start);
+
+        return searchContext;
     }
 
     private static final Log _log = LogFactoryUtil.getLog(NewsletterLocalServiceImpl.class);

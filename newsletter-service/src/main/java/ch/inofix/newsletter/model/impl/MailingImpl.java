@@ -31,13 +31,13 @@ import aQute.bnd.annotation.ProviderType;
  */
 @ProviderType
 public class MailingImpl extends MailingBaseImpl {
-	/*
-	 * NOTE FOR DEVELOPERS:
-	 *
-	 * Never reference this class directly. All methods that expect a mailing
-	 * model instance should use the {@link ch.inofix.newsletter.model.Mailing}
-	 * interface instead.
-	 */
-	public MailingImpl() {
-	}
+    /*
+     * NOTE FOR DEVELOPERS:
+     *
+     * Never reference this class directly. All methods that expect a mailing
+     * model instance should use the {@link ch.inofix.newsletter.model.Mailing}
+     * interface instead.
+     */
+    public MailingImpl() {
+    }
 }
