@@ -15,10 +15,13 @@
 package ch.inofix.newsletter.service.impl;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 import aQute.bnd.annotation.ProviderType;
@@ -44,8 +47,8 @@ import ch.inofix.newsletter.service.permission.NewsletterPortletPermission;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:19
- * @modified 2017-03-11 00:16
- * @version 1.1.4
+ * @modified 2017-09-02 11:07
+ * @version 1.1.5
  * @see MailingServiceBaseImpl
  * @see ch.inofix.newsletter.service.MailingServiceUtil
  */
@@ -218,14 +221,33 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
     //
     // }
 
+    @Override
+    public Hits search(long userId, long groupId, long ownerUserId, String keywords, int start, int end, Sort sort)
+            throws PortalException {
+
+        return mailingLocalService.search(userId, groupId, ownerUserId, keywords, start, end, sort);
+    }
+
+    @Override
+    public Hits search(long userId, long groupId, long ownerUserId, String title, String description, int status,
+            LinkedHashMap<String, Object> params, boolean andSearch, int start, int end, Sort sort)
+            throws PortalException {
+
+        return mailingLocalService.search(userId, groupId, ownerUserId, title, description, status, params,
+                andSearch, start, end, sort);
+
+    }
+
     // TODO
-//    @Override
-//    public long sendMailingsInBackground(long userId, String taskName, long groupId, Map<String, String[]> parameterMap)
-//            throws PortalException {
-//
-//        // TODO: check permissions
-//        return mailingLocalService.sendMailingsInBackground(userId, taskName, groupId, parameterMap);
-//    }
+    // @Override
+    // public long sendMailingsInBackground(long userId, String taskName, long
+    // groupId, Map<String, String[]> parameterMap)
+    // throws PortalException {
+    //
+    // // TODO: check permissions
+    // return mailingLocalService.sendMailingsInBackground(userId, taskName,
+    // groupId, parameterMap);
+    // }
 
     @Override
     public Mailing updateMailing(long userId, long groupId, long mailingId, String title, String template,

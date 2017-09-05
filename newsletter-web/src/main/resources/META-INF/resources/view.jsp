@@ -39,15 +39,15 @@
     <c:choose>             
     
         <c:when test='<%=tabs1.equals("mailings")%>'>
-            <%@include file="/mailings.jspf"%>
+            <liferay-util:include page="/view_mailings.jsp" servletContext="<%= application %>" />
         </c:when>
 
         <c:when test='<%=tabs1.equals("newsletters")%>'>
-            <%@include file="/newsletters.jspf"%>
+            <liferay-util:include page="/view_newsletters.jsp" servletContext="<%= application %>" />
         </c:when>
 
         <c:otherwise>
-            <%@include file="/subscribers.jspf"%>
+            <liferay-util:include page="/view_subscribers.jsp" servletContext="<%= application %>" />
         </c:otherwise>
    
     </c:choose>        

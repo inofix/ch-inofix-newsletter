@@ -35,6 +35,18 @@ public class MailingPermission {
         }
     }
 
+    public static boolean contains(PermissionChecker permissionChecker, Mailing mailing, String actionId) {
+
+        if (permissionChecker.hasOwnerPermission(mailing.getCompanyId(), Mailing.class.getName(),
+                mailing.getMailingId(), mailing.getUserId(), actionId)) {
+
+            return true;
+        }
+
+        return permissionChecker.hasPermission(mailing.getGroupId(), Mailing.class.getName(),
+                String.valueOf(mailing.getMailingId()), actionId);
+    }
+
     /**
      *
      * @param permissionChecker
@@ -60,4 +72,5 @@ public class MailingPermission {
                 actionId);
 
     }
+
 }

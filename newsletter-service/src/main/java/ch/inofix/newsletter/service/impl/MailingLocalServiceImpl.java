@@ -17,6 +17,7 @@ package ch.inofix.newsletter.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,16 +26,24 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.QueryConfig;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.SubscriptionSender;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import aQute.bnd.annotation.ProviderType;
 import ch.inofix.newsletter.constants.PortletKeys;
@@ -59,8 +68,8 @@ import ch.inofix.newsletter.service.base.MailingLocalServiceBaseImpl;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:21
- * @modified 2017-03-10 00:12
- * @version 1.1.4
+ * @modified 2017-09-02 11:08
+ * @version 1.1.5
  * @see MailingLocalServiceBaseImpl
  * @see ch.inofix.newsletter.service.MailingLocalServiceUtil
  */
@@ -76,7 +85,7 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
     @Override
     public Mailing addMailing(long userId, long groupId, String title, String template, long newsletterId,
             String articleId, long articleGroupId, Date publishDate, Date sendDate, ServiceContext serviceContext)
-            throws PortalException  {
+            throws PortalException {
 
         boolean sent = false;
 
@@ -95,7 +104,7 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
     }
 
     @Override
-    public void checkMailings() throws PortalException  {
+    public void checkMailings() throws PortalException {
 
         if (_log.isDebugEnabled()) {
             _log.debug("checkMailings()");
@@ -135,7 +144,7 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
     }
 
     @Override
-    public Mailing deleteMailing(long mailingId) throws PortalException  {
+    public Mailing deleteMailing(long mailingId) throws PortalException {
 
         Mailing mailing = mailingPersistence.remove(mailingId);
 
@@ -154,103 +163,52 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
         return mailing;
     }
 
-    private Mailing saveMailing(long userId, long groupId, long mailingId, String title, String template,
-            long newsletterId, String articleId, long articleGroupId, Date publishDate, Date sendDate, boolean sent,
-            ServiceContext serviceContext) throws PortalException  {
+    @Override
+    public Hits search(long userId, long groupId, long ownerUserId, String keywords, int start, int end, Sort sort)
+            throws PortalException {
 
-        User user = userPersistence.findByPrimaryKey(userId);
-        Date now = new Date();
-        Mailing mailing = null;
-
-        if (mailingId > 0) {
-            mailing = mailingLocalService.getMailing(mailingId);
-        } else {
-            mailingId = counterLocalService.increment();
-            mailing = mailingPersistence.create(mailingId);
-            mailing.setCompanyId(user.getCompanyId());
-            mailing.setGroupId(groupId);
-            mailing.setUserId(user.getUserId());
-            mailing.setUserName(user.getFullName());
-            mailing.setCreateDate(now);
+        if (sort == null) {
+            sort = new Sort(Field.MODIFIED_DATE, true);
         }
 
-        mailing.setModifiedDate(now);
+        String description = null;
+        String workPackage = null;
+        boolean andOperator = false;
 
-        mailing.setTitle(title);
-        mailing.setTemplate(template);
-        mailing.setNewsletterId(newsletterId);
-        mailing.setArticleId(articleId);
-        mailing.setArticleGroupId(articleGroupId);
-        mailing.setPublishDate(publishDate);
-        mailing.setSendDate(sendDate);
-        mailing.setSent(sent);
-        mailing.setExpandoBridgeAttributes(serviceContext);
+        if (Validator.isNotNull(keywords)) {
 
-        mailing = mailingPersistence.update(mailing);
-
-        return mailing;
-
-    }
-
-    private void sendEmail(Mailing mailing, Subscriber subscriber) throws PortalException  {
-
-        Newsletter newsletter = null;
-
-        if (mailing.getNewsletterId() > 0) {
-            newsletter = newsletterLocalService.getNewsletter(mailing.getNewsletterId());
-        }
-
-        long companyId = 0;
-
-        String fromAddress = null;
-        String fromName = null;
-
-        if (newsletter != null) {
-            companyId = newsletter.getCompanyId();
-            fromAddress = newsletter.getFromAddress();
-            fromName = newsletter.getFromName();
-        }
-
-        String toAddress = subscriber.getEmail();
-        String toName = "TODO: implement toName";
-        // TODO
-//        String toName = subscriber.getName();
-
-        if (Validator.isEmailAddress(toAddress)) {
-
-            String subject = mailing.getTitle();
-
-            Map<String, Object> contextObjects = new HashMap<String, Object>();
-            contextObjects.put("subscriber", subscriber);
-
-            String body = "";
-
-            // TODO
-            body = "TODO: implement body setup";
-//            body = mailingService.prepareMailing(contextObjects, mailing.getMailingId());
-
-            SubscriptionSender subscriptionSender = new SubscriptionSender();
-
-            subscriptionSender.setSubject(subject);
-            subscriptionSender.setCompanyId(companyId);
-            subscriptionSender.setBody(body);
-            subscriptionSender.setFrom(fromAddress, fromName);
-            subscriptionSender.setHtmlFormat(true);
-            subscriptionSender.setMailId("newsletter", mailing.getMailingId());
-            subscriptionSender.setPortletId(PortletKeys.NEWSLETTER_MANAGER);
-            subscriptionSender.setScopeGroupId(mailing.getGroupId());
-            subscriptionSender.addRuntimeSubscribers(toAddress, toName);
-
-            subscriptionSender.flushNotificationsAsync();
+            description = keywords;
+            workPackage = keywords;
 
         } else {
-            _log.warn("The to-address " + toAddress + " is not valid");
+            andOperator = true;
         }
+
+        return search(userId, groupId, ownerUserId, workPackage, description, WorkflowConstants.STATUS_ANY, null,
+                andOperator, start, end, sort);
+
     }
 
     @Override
-    public void sendMailings(long groupId, Map<String, String[]> parameterMap, Date sendDate)
-            throws PortalException  {
+    public Hits search(long userId, long groupId, long ownerUserId, String title, String description, int status,
+            LinkedHashMap<String, Object> params, boolean andSearch, int start, int end, Sort sort)
+            throws PortalException {
+
+        if (sort == null) {
+            sort = new Sort(Field.MODIFIED_DATE, true);
+        }
+
+        Indexer<Mailing> indexer = IndexerRegistryUtil.getIndexer(Mailing.class.getName());
+
+        SearchContext searchContext = buildSearchContext(userId, groupId, ownerUserId, title, description, status,
+                params, andSearch, start, end, sort);
+
+        return indexer.search(searchContext);
+
+    }
+
+    @Override
+    public void sendMailings(long groupId, Map<String, String[]> parameterMap, Date sendDate) throws PortalException {
 
         if (sendDate == null) {
             sendDate = new Date();
@@ -285,10 +243,12 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
             }
 
             // TODO
-//            if (newsletter != null) {
-//                subscribers = subscriberService.getSubscribersFromVCardGroup(newsletter.getCompanyId(), groupId,
-//                        newsletter.getVCardGroupId(), 0, Integer.MAX_VALUE);
-//            }
+            // if (newsletter != null) {
+            // subscribers =
+            // subscriberService.getSubscribersFromVCardGroup(newsletter.getCompanyId(),
+            // groupId,
+            // newsletter.getVCardGroupId(), 0, Integer.MAX_VALUE);
+            // }
         }
 
         int numSent = 0;
@@ -327,27 +287,32 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
     }
 
     // TODO
-//    @Override
-//    public long sendMailingsInBackground(long userId, String taskName, long groupId, Map<String, String[]> parameterMap)
-//            throws PortalException  {
-//
-//        Map<String, Serializable> taskContextMap = new HashMap<String, Serializable>();
-//        taskContextMap.put("userId", userId);
-//        taskContextMap.put("groupId", groupId);
-//        taskContextMap.put("parameterMap", (Serializable) parameterMap);
-//
-//        String[] servletContextNames = parameterMap.get("servletContextNames");
-//
-//        BackgroundTask backgroundTask = BackgroundTaskLocalServiceUtil.addBackgroundTask(userId, groupId, taskName,
-//                servletContextNames, MailingBackgroundTaskExecutor.class, taskContextMap, new ServiceContext());
-//
-//        return backgroundTask.getBackgroundTaskId();
-//
-//    }
+    // @Override
+    // public long sendMailingsInBackground(long userId, String taskName, long
+    // groupId, Map<String, String[]> parameterMap)
+    // throws PortalException {
+    //
+    // Map<String, Serializable> taskContextMap = new HashMap<String,
+    // Serializable>();
+    // taskContextMap.put("userId", userId);
+    // taskContextMap.put("groupId", groupId);
+    // taskContextMap.put("parameterMap", (Serializable) parameterMap);
+    //
+    // String[] servletContextNames = parameterMap.get("servletContextNames");
+    //
+    // BackgroundTask backgroundTask =
+    // BackgroundTaskLocalServiceUtil.addBackgroundTask(userId, groupId,
+    // taskName,
+    // servletContextNames, MailingBackgroundTaskExecutor.class, taskContextMap,
+    // new ServiceContext());
+    //
+    // return backgroundTask.getBackgroundTaskId();
+    //
+    // }
 
     @Override
     public void updateAsset(long userId, Mailing mailing, long[] assetCategoryIds, String[] assetTagNames,
-            long[] assetLinkEntryIds) throws PortalException  {
+            long[] assetLinkEntryIds) throws PortalException {
 
         boolean visible = true;
 
@@ -381,7 +346,7 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
     @Override
     public Mailing updateMailing(long userId, long groupId, long mailingId, String title, String template,
             long newsletterId, String articleId, long articleGroupId, Date publishDate, Date sendDate, boolean sent,
-            ServiceContext serviceContext) throws PortalException  {
+            ServiceContext serviceContext) throws PortalException {
 
         Mailing mailing = saveMailing(userId, groupId, mailingId, title, template, newsletterId, articleId,
                 articleGroupId, publishDate, sendDate, sent, serviceContext);
@@ -396,6 +361,162 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
                 serviceContext.getAssetLinkEntryIds());
 
         return mailing;
+    }
+
+    protected SearchContext buildSearchContext(long userId, long groupId, long ownerUserId, String title,
+            String description, int status, LinkedHashMap<String, Object> params, boolean andSearch, int start, int end,
+            Sort sort) throws PortalException {
+
+        SearchContext searchContext = new SearchContext();
+
+        searchContext.setAttribute(Field.STATUS, status);
+
+        if (Validator.isNotNull(description)) {
+            searchContext.setAttribute("description", description);
+        }
+
+        if (Validator.isNotNull(title)) {
+            searchContext.setAttribute("title", title);
+        }
+
+        searchContext.setAttribute("paginationType", "more");
+
+        Group group = GroupLocalServiceUtil.getGroup(groupId);
+
+        searchContext.setCompanyId(group.getCompanyId());
+
+        if (ownerUserId > 0) {
+            searchContext.setOwnerUserId(ownerUserId);
+        }
+
+        searchContext.setEnd(end);
+        if (groupId > 0) {
+            searchContext.setGroupIds(new long[] { groupId });
+        }
+        searchContext.setSorts(sort);
+        searchContext.setStart(start);
+        searchContext.setUserId(userId);
+
+        searchContext.setAndSearch(andSearch);
+
+        if (params != null) {
+
+            String keywords = (String) params.remove("keywords");
+
+            if (Validator.isNotNull(keywords)) {
+                searchContext.setKeywords(keywords);
+            }
+        }
+
+        QueryConfig queryConfig = new QueryConfig();
+
+        queryConfig.setHighlightEnabled(false);
+        queryConfig.setScoreEnabled(false);
+
+        searchContext.setQueryConfig(queryConfig);
+
+        if (sort != null) {
+            searchContext.setSorts(sort);
+        }
+
+        searchContext.setStart(start);
+
+        return searchContext;
+    }
+
+    private Mailing saveMailing(long userId, long groupId, long mailingId, String title, String template,
+            long newsletterId, String articleId, long articleGroupId, Date publishDate, Date sendDate, boolean sent,
+            ServiceContext serviceContext) throws PortalException {
+
+        User user = userPersistence.findByPrimaryKey(userId);
+        Date now = new Date();
+        Mailing mailing = null;
+
+        if (mailingId > 0) {
+            mailing = mailingLocalService.getMailing(mailingId);
+        } else {
+            mailingId = counterLocalService.increment();
+            mailing = mailingPersistence.create(mailingId);
+            mailing.setCompanyId(user.getCompanyId());
+            mailing.setGroupId(groupId);
+            mailing.setUserId(user.getUserId());
+            mailing.setUserName(user.getFullName());
+            mailing.setCreateDate(now);
+        }
+
+        mailing.setModifiedDate(now);
+
+        mailing.setTitle(title);
+        mailing.setTemplate(template);
+        mailing.setNewsletterId(newsletterId);
+        mailing.setArticleId(articleId);
+        mailing.setArticleGroupId(articleGroupId);
+        mailing.setPublishDate(publishDate);
+        mailing.setSendDate(sendDate);
+        mailing.setSent(sent);
+        mailing.setExpandoBridgeAttributes(serviceContext);
+
+        mailing = mailingPersistence.update(mailing);
+
+        return mailing;
+
+    }
+
+    private void sendEmail(Mailing mailing, Subscriber subscriber) throws PortalException {
+
+        Newsletter newsletter = null;
+
+        if (mailing.getNewsletterId() > 0) {
+            newsletter = newsletterLocalService.getNewsletter(mailing.getNewsletterId());
+        }
+
+        long companyId = 0;
+
+        String fromAddress = null;
+        String fromName = null;
+
+        if (newsletter != null) {
+            companyId = newsletter.getCompanyId();
+            fromAddress = newsletter.getFromAddress();
+            fromName = newsletter.getFromName();
+        }
+
+        String toAddress = subscriber.getEmail();
+        String toName = "TODO: implement toName";
+        // TODO
+        // String toName = subscriber.getName();
+
+        if (Validator.isEmailAddress(toAddress)) {
+
+            String subject = mailing.getTitle();
+
+            Map<String, Object> contextObjects = new HashMap<String, Object>();
+            contextObjects.put("subscriber", subscriber);
+
+            String body = "";
+
+            // TODO
+            body = "TODO: implement body setup";
+            // body = mailingService.prepareMailing(contextObjects,
+            // mailing.getMailingId());
+
+            SubscriptionSender subscriptionSender = new SubscriptionSender();
+
+            subscriptionSender.setSubject(subject);
+            subscriptionSender.setCompanyId(companyId);
+            subscriptionSender.setBody(body);
+            subscriptionSender.setFrom(fromAddress, fromName);
+            subscriptionSender.setHtmlFormat(true);
+            subscriptionSender.setMailId("newsletter", mailing.getMailingId());
+            subscriptionSender.setPortletId(PortletKeys.NEWSLETTER_MANAGER);
+            subscriptionSender.setScopeGroupId(mailing.getGroupId());
+            subscriptionSender.addRuntimeSubscribers(toAddress, toName);
+
+            subscriptionSender.flushNotificationsAsync();
+
+        } else {
+            _log.warn("The to-address " + toAddress + " is not valid");
+        }
     }
 
     private static Log _log = LogFactoryUtil.getLog(MailingLocalServiceImpl.class.getName());
