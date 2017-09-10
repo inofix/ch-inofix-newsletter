@@ -42,14 +42,23 @@ import ch.inofix.newsletter.web.internal.constants.NewsletterWebKeys;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2017-03-19 15:03
- * @version 1.2.1
+ * @modified 2017-09-10 23:24
+ * @version 1.2.2
  */
-@Component(immediate = true, property = { "com.liferay.portlet.display-category=category.inofix",
-        "com.liferay.portlet.instanceable=false", "javax.portlet.display-name=Newsletter",
-        "javax.portlet.init-param.template-path=/", "javax.portlet.init-param.view-template=/view.jsp",
+@Component(
+    immediate = true, 
+    property = { 
+        "com.liferay.portlet.css-class-wrapper=portlet-newsletter",
+        "com.liferay.portlet.display-category=category.inofix",
+        "com.liferay.portlet.instanceable=false", 
+        "javax.portlet.display-name=Newsletter",
+        "javax.portlet.init-param.template-path=/", 
+        "javax.portlet.init-param.view-template=/view.jsp",
         "javax.portlet.resource-bundle=content.Language",
-        "javax.portlet.security-role-ref=power-user,user" }, service = Portlet.class)
+        "javax.portlet.security-role-ref=power-user,user" 
+    }, 
+    service = Portlet.class
+)
 public class NewsletterManagerPortlet extends MVCPortlet {
 
     /**
