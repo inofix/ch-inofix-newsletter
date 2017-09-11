@@ -2,8 +2,8 @@
     navigation.jsp: Default navigation of Inofix' newsletter manager.
     
     Created:     2017-08-30 23:12 by Christian Berndt
-    Modified:    2017-08-30 23:12 by Christian Berndt
-    Version:     1.0.0
+    Modified:    2017-09-11 23:01 by Christian Berndt
+    Version:     1.0.1
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -31,7 +31,7 @@
 
     <liferay-portlet:renderURL varImpl="searchURL"/>
 
-    <aui:form action="<%= searchURL.toString() %>" cssClass="task-record-search" name="searchFm">
+    <aui:form action="<%= searchURL.toString() %>" cssClass="newsletter-search" name="searchFm">
          
         <c:if test="<%= formDateTime > 0 %>">           
             <div class="clear-message">
