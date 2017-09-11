@@ -2,13 +2,14 @@
     view.jsp: Default view of the newsletter-portlet.
     
     Created:     2016-10-05 15:54 by Christian Berndt
-    Modified:    2017-08-30 by Christian Berndt
-    Version:     1.1.8
+    Modified:    2017-09-11 23:02 by Christian Berndt
+    Version:     1.1.9
  --%>
 
 <%@ include file="/init.jsp"%>
 
 <%@page import="ch.inofix.newsletter.exception.NewsletterReferencedByMailingException"%>
+
 <%@page import="com.liferay.portal.kernel.security.auth.PrincipalException"%>
 
 <%
@@ -26,8 +27,8 @@
 
 <liferay-util:include page="/navigation.jsp"
     servletContext="<%=application%>"/>
-    
-<div class="container-fluid-1280">
+
+<div class="container-fluid-1280">    
 
     <liferay-ui:error exception="<%=PrincipalException.class%>"
         message="you-dont-have-the-required-permissions" />
@@ -52,4 +53,3 @@
    
     </c:choose>        
 </div>
-
