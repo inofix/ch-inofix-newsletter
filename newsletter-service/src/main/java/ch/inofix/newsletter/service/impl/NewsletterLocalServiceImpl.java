@@ -39,7 +39,6 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HtmlUtil;
@@ -69,8 +68,8 @@ import ch.inofix.newsletter.social.NewsletterActivityKeys;
  *
  * @author Christian Berndt
  * @created 2016-10-08 16:41
- * @modified 2017-09-02 11:08
- * @version 1.0.8
+ * @modified 2017-09-14 10:43
+ * @version 1.0.9
  * @see NewsletterLocalServiceBaseImpl
  * @see ch.inofix.newsletter.service.NewsletterLocalServiceUtil
  */
@@ -116,16 +115,10 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
 
         // Resources
 
-        if (serviceContext.isAddGroupPermissions() || serviceContext.isAddGuestPermissions()) {
-
-            addNewsletterResources(newsletter, serviceContext.isAddGroupPermissions(),
-                    serviceContext.isAddGuestPermissions());
-        } else {
-            addNewsletterResources(newsletter, serviceContext.getModelPermissions());
-        }
+        resourceLocalService.addModelResources(newsletter, serviceContext);
 
         // Asset
-        
+
         resourceLocalService.addResources(newsletter.getCompanyId(), groupId, userId, Mailing.class.getName(),
                 newsletter.getNewsletterId(), false, true, true);
 
@@ -143,40 +136,6 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
 
         return newsletter;
 
-    }
-
-    @Override
-    public void addNewsletterResources(Newsletter newsletter, boolean addGroupPermissions, boolean addGuestPermissions)
-            throws PortalException {
-
-        resourceLocalService.addResources(newsletter.getCompanyId(), newsletter.getGroupId(), newsletter.getUserId(),
-                Newsletter.class.getName(), newsletter.getNewsletterId(), false, addGroupPermissions,
-                addGuestPermissions);
-    }
-
-    @Override
-    public void addNewsletterResources(Newsletter newsletter, ModelPermissions modelPermissions)
-            throws PortalException {
-
-        resourceLocalService.addModelResources(newsletter.getCompanyId(), newsletter.getGroupId(),
-                newsletter.getUserId(), Newsletter.class.getName(), newsletter.getNewsletterId(), modelPermissions);
-    }
-
-    @Override
-    public void addNewsletterResources(long newsletterId, boolean addGroupPermissions, boolean addGuestPermissions)
-            throws PortalException {
-
-        Newsletter newsletter = newsletterPersistence.findByPrimaryKey(newsletterId);
-
-        addNewsletterResources(newsletter, addGroupPermissions, addGuestPermissions);
-    }
-
-    @Override
-    public void addNewsletterResources(long newsletterId, ModelPermissions modelPermissions) throws PortalException {
-
-        Newsletter newsletter = newsletterPersistence.findByPrimaryKey(newsletterId);
-
-        addNewsletterResources(newsletter, modelPermissions);
     }
 
     @Indexable(type = IndexableType.DELETE)
@@ -356,7 +315,7 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
         return newsletter;
 
     }
-    
+
     protected SearchContext buildSearchContext(long userId, long groupId, long ownerUserId, String title,
             String description, int status, LinkedHashMap<String, Object> params, boolean andSearch, int start, int end,
             Sort sort) throws PortalException {

@@ -21,7 +21,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -42,7 +41,6 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -73,8 +71,8 @@ import ch.inofix.newsletter.service.base.MailingLocalServiceBaseImpl;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:21
- * @modified 2017-09-13 23:34
- * @version 1.1.6
+ * @modified 2017-09-14 10:42
+ * @version 1.1.7
  * @see MailingLocalServiceBaseImpl
  * @see ch.inofix.newsletter.service.MailingLocalServiceUtil
  */
@@ -123,12 +121,7 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
 
         // Resources
 
-        if (serviceContext.isAddGroupPermissions() || serviceContext.isAddGuestPermissions()) {
-            addMailingResources(mailing, serviceContext.isAddGroupPermissions(),
-                    serviceContext.isAddGuestPermissions());
-        } else {
-            addMailingResources(mailing, serviceContext.getModelPermissions());
-        }
+        resourceLocalService.addModelResources(mailing, serviceContext);
 
         // Asset
 
@@ -140,39 +133,6 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
 
         return mailing;
     }
-
-    @Override
-    public void addMailingResources(Mailing mailing, boolean addGroupPermissions, boolean addGuestPermissions)
-            throws PortalException {
-
-        resourceLocalService.addResources(mailing.getCompanyId(), mailing.getGroupId(), mailing.getUserId(),
-                Mailing.class.getName(), mailing.getMailingId(), false, addGroupPermissions, addGuestPermissions);
-    }
-
-    @Override
-    public void addMailingResources(Mailing mailing, ModelPermissions modelPermissions) throws PortalException {
-
-        resourceLocalService.addModelResources(mailing.getCompanyId(), mailing.getGroupId(), mailing.getUserId(),
-                Mailing.class.getName(), mailing.getMailingId(), modelPermissions);
-    }
-
-    @Override
-    public void addMailingResources(long mailingId, boolean addGroupPermissions, boolean addGuestPermissions)
-            throws PortalException {
-
-        Mailing mailing = mailingPersistence.findByPrimaryKey(mailingId);
-
-        addMailingResources(mailing, addGroupPermissions, addGuestPermissions);
-    }
-
-    @Override
-    public void addMailingResources(long mailingId, ModelPermissions modelPermissions) throws PortalException {
-
-        Mailing mailing = mailingPersistence.findByPrimaryKey(mailingId);
-
-        addMailingResources(mailing, modelPermissions);
-    }
-
     @Override
     public void checkMailings() throws PortalException {
 

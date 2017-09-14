@@ -39,7 +39,6 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HtmlUtil;
@@ -69,8 +68,8 @@ import ch.inofix.newsletter.social.SubscriberActivityKeys;
  *
  * @author Christian Berndt
  * @created 2016-10-08 16:41
- * @modified 2017-09-02 11:08
- * @version 1.0.2
+ * @modified 2017-09-14 10:44
+ * @version 1.0.3
  * @see SubscriberLocalServiceBaseImpl
  * @see ch.inofix.newsletter.service.SubscriberLocalServiceUtil
  */
@@ -117,13 +116,7 @@ public class SubscriberLocalServiceImpl extends SubscriberLocalServiceBaseImpl {
 
         // Resources
 
-        if (serviceContext.isAddGroupPermissions() || serviceContext.isAddGuestPermissions()) {
-
-            addSubscriberResources(subscriber, serviceContext.isAddGroupPermissions(),
-                    serviceContext.isAddGuestPermissions());
-        } else {
-            addSubscriberResources(subscriber, serviceContext.getModelPermissions());
-        }
+        resourceLocalService.addModelResources(subscriber, serviceContext);
 
         // Asset
 
@@ -141,40 +134,6 @@ public class SubscriberLocalServiceImpl extends SubscriberLocalServiceBaseImpl {
 
         return subscriber;
 
-    }
-
-    @Override
-    public void addSubscriberResources(Subscriber subscriber, boolean addGroupPermissions, boolean addGuestPermissions)
-            throws PortalException {
-
-        resourceLocalService.addResources(subscriber.getCompanyId(), subscriber.getGroupId(), subscriber.getUserId(),
-                Subscriber.class.getName(), subscriber.getSubscriberId(), false, addGroupPermissions,
-                addGuestPermissions);
-    }
-
-    @Override
-    public void addSubscriberResources(Subscriber subscriber, ModelPermissions modelPermissions)
-            throws PortalException {
-
-        resourceLocalService.addModelResources(subscriber.getCompanyId(), subscriber.getGroupId(),
-                subscriber.getUserId(), Subscriber.class.getName(), subscriber.getSubscriberId(), modelPermissions);
-    }
-
-    @Override
-    public void addSubscriberResources(long subscriberId, boolean addGroupPermissions, boolean addGuestPermissions)
-            throws PortalException {
-
-        Subscriber subscriber = subscriberPersistence.findByPrimaryKey(subscriberId);
-
-        addSubscriberResources(subscriber, addGroupPermissions, addGuestPermissions);
-    }
-
-    @Override
-    public void addSubscriberResources(long subscriberId, ModelPermissions modelPermissions) throws PortalException {
-
-        Subscriber subscriber = subscriberPersistence.findByPrimaryKey(subscriberId);
-
-        addSubscriberResources(subscriber, modelPermissions);
     }
 
     @Indexable(type = IndexableType.DELETE)
@@ -356,7 +315,7 @@ public class SubscriberLocalServiceImpl extends SubscriberLocalServiceBaseImpl {
         return subscriber;
 
     }
-    
+
     protected SearchContext buildSearchContext(long userId, long groupId, long ownerUserId, String title,
             String description, int status, LinkedHashMap<String, Object> params, boolean andSearch, int start, int end,
             Sort sort) throws PortalException {
