@@ -47,8 +47,8 @@ import ch.inofix.newsletter.service.permission.NewsletterPortletPermission;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:19
- * @modified 2017-09-02 11:07
- * @version 1.1.5
+ * @modified 2017-09-13 10:06
+ * @version 1.1.6
  * @see MailingServiceBaseImpl
  * @see ch.inofix.newsletter.service.MailingServiceUtil
  */
@@ -65,13 +65,13 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
 
     @Override
     public Mailing addMailing(long userId, long groupId, String title, String template, long newsletterId,
-            String articleId, long articleGroupId, Date publishDate, Date sendDate, ServiceContext serviceContext)
-            throws PortalException {
+            String articleId, long articleGroupId, Date publishDate, Date sendDate, int status,
+            ServiceContext serviceContext) throws PortalException {
 
         NewsletterPortletPermission.check(getPermissionChecker(), groupId, ActionKeys.ADD_NEWSLETTER);
 
-        return mailingLocalService.addMailing(userId, groupId, title, template, newsletterId, articleId, articleGroupId,
-                publishDate, sendDate, serviceContext);
+        return mailingLocalService.addMailing(userId, title, template, newsletterId, articleId, articleGroupId,
+                publishDate, sendDate, status, serviceContext);
 
     }
 
@@ -233,8 +233,8 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
             LinkedHashMap<String, Object> params, boolean andSearch, int start, int end, Sort sort)
             throws PortalException {
 
-        return mailingLocalService.search(userId, groupId, ownerUserId, title, description, status, params,
-                andSearch, start, end, sort);
+        return mailingLocalService.search(userId, groupId, ownerUserId, title, description, status, params, andSearch,
+                start, end, sort);
 
     }
 
@@ -252,12 +252,12 @@ public class MailingServiceImpl extends MailingServiceBaseImpl {
     @Override
     public Mailing updateMailing(long userId, long groupId, long mailingId, String title, String template,
             long newsletterId, String articleId, long articleGroupId, Date publishDate, Date sendDate, boolean sent,
-            ServiceContext serviceContext) throws PortalException {
+            int status, ServiceContext serviceContext) throws PortalException {
 
         MailingPermission.check(getPermissionChecker(), mailingId, ActionKeys.UPDATE);
 
-        return mailingLocalService.updateMailing(userId, groupId, mailingId, title, template, newsletterId, articleId,
-                articleGroupId, publishDate, sendDate, sent, serviceContext);
+        return mailingLocalService.updateMailing(mailingId, userId, title, template, newsletterId, articleId,
+                articleGroupId, publishDate, sendDate, sent, status, serviceContext);
 
     }
 

@@ -84,8 +84,8 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
      * newsletter local service.
      */
 
-    @Indexable(type = IndexableType.REINDEX)
     @Override
+    @Indexable(type = IndexableType.REINDEX)
     public Newsletter addNewsletter(long userId, String title, String template, String fromAddress, String fromName,
             boolean useHttps, ServiceContext serviceContext) throws PortalException {
 
@@ -93,7 +93,6 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
 
         User user = userPersistence.findByPrimaryKey(userId);
         long groupId = serviceContext.getScopeGroupId();
-
         long newsletterId = counterLocalService.increment();
 
         Newsletter newsletter = newsletterPersistence.create(newsletterId);
@@ -126,6 +125,9 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
         }
 
         // Asset
+        
+        resourceLocalService.addResources(newsletter.getCompanyId(), groupId, userId, Mailing.class.getName(),
+                newsletter.getNewsletterId(), false, true, true);
 
         updateAsset(userId, newsletter, serviceContext.getAssetCategoryIds(), serviceContext.getAssetTagNames(),
                 serviceContext.getAssetLinkEntryIds(), serviceContext.getAssetPriority());
@@ -353,22 +355,6 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
 
         return newsletter;
 
-    }
-
-    @Override
-    public void updateNewsletterResources(Newsletter newsletter, ModelPermissions modelPermissions)
-            throws PortalException {
-
-        resourceLocalService.updateResources(newsletter.getCompanyId(), newsletter.getGroupId(),
-                Newsletter.class.getName(), newsletter.getNewsletterId(), modelPermissions);
-    }
-
-    @Override
-    public void updateNewsletterResources(Newsletter newsletter, String[] groupPermissions, String[] guestPermissions)
-            throws PortalException {
-
-        resourceLocalService.updateResources(newsletter.getCompanyId(), newsletter.getGroupId(),
-                Newsletter.class.getName(), newsletter.getNewsletterId(), groupPermissions, guestPermissions);
     }
     
     protected SearchContext buildSearchContext(long userId, long groupId, long ownerUserId, String title,

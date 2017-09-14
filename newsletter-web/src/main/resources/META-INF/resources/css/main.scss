@@ -1,0 +1,19 @@
+/**
+ * main.scss: css specific to the newsletter-portlet.
+ *
+ * Created:     2017-09-13 22:49 by Christian Berndt
+ * Modified:    2017-09-13 22:49 by Christian Berndt
+ * Version:     1.0.0
+ * 
+ */
+@import "bourbon";
+@import "mixins";
+
+.container {
+    
+    .container-fluid-1280 {
+        padding-left: 0; 
+        padding-right: 0; 
+    }
+    
+}

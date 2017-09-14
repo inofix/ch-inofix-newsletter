@@ -28,9 +28,12 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.QueryConfig;
@@ -39,6 +42,8 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.permission.ModelPermissions;
+import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.SubscriptionSender;
@@ -68,8 +73,8 @@ import ch.inofix.newsletter.service.base.MailingLocalServiceBaseImpl;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:21
- * @modified 2017-09-02 11:08
- * @version 1.1.5
+ * @modified 2017-09-13 23:34
+ * @version 1.1.6
  * @see MailingLocalServiceBaseImpl
  * @see ch.inofix.newsletter.service.MailingLocalServiceUtil
  */
@@ -83,14 +88,47 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
      * mailing local service.
      */
     @Override
-    public Mailing addMailing(long userId, long groupId, String title, String template, long newsletterId,
-            String articleId, long articleGroupId, Date publishDate, Date sendDate, ServiceContext serviceContext)
+    @Indexable(type = IndexableType.REINDEX)
+    public Mailing addMailing(long userId, String title, String template, long newsletterId, String articleId,
+            long articleGroupId, Date publishDate, Date sendDate, int status, ServiceContext serviceContext)
             throws PortalException {
 
-        boolean sent = false;
+        // Mailing
 
-        Mailing mailing = saveMailing(userId, groupId, 0, title, template, newsletterId, articleId, articleGroupId,
-                publishDate, sendDate, sent, serviceContext);
+        boolean sent = false;
+        long groupId = serviceContext.getScopeGroupId();
+        long mailingId = counterLocalService.increment();
+        User user = userPersistence.findByPrimaryKey(userId);
+
+        Mailing mailing = mailingPersistence.create(mailingId);
+
+        mailing.setUuid(serviceContext.getUuid());
+        mailing.setGroupId(groupId);
+        mailing.setCompanyId(user.getCompanyId());
+        mailing.setUserId(user.getUserId());
+        mailing.setUserName(user.getFullName());
+        mailing.setExpandoBridgeAttributes(serviceContext);
+
+        mailing.setTitle(title);
+        mailing.setTemplate(template);
+        mailing.setNewsletterId(newsletterId);
+        mailing.setArticleId(articleId);
+        mailing.setArticleGroupId(articleGroupId);
+        mailing.setPublishDate(publishDate);
+        mailing.setSendDate(sendDate);
+        mailing.setSent(sent);
+        mailing.setStatus(status);
+
+        mailing = mailingPersistence.update(mailing);
+
+        // Resources
+
+        if (serviceContext.isAddGroupPermissions() || serviceContext.isAddGuestPermissions()) {
+            addMailingResources(mailing, serviceContext.isAddGroupPermissions(),
+                    serviceContext.isAddGuestPermissions());
+        } else {
+            addMailingResources(mailing, serviceContext.getModelPermissions());
+        }
 
         // Asset
 
@@ -101,6 +139,38 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
                 serviceContext.getAssetLinkEntryIds());
 
         return mailing;
+    }
+
+    @Override
+    public void addMailingResources(Mailing mailing, boolean addGroupPermissions, boolean addGuestPermissions)
+            throws PortalException {
+
+        resourceLocalService.addResources(mailing.getCompanyId(), mailing.getGroupId(), mailing.getUserId(),
+                Mailing.class.getName(), mailing.getMailingId(), false, addGroupPermissions, addGuestPermissions);
+    }
+
+    @Override
+    public void addMailingResources(Mailing mailing, ModelPermissions modelPermissions) throws PortalException {
+
+        resourceLocalService.addModelResources(mailing.getCompanyId(), mailing.getGroupId(), mailing.getUserId(),
+                Mailing.class.getName(), mailing.getMailingId(), modelPermissions);
+    }
+
+    @Override
+    public void addMailingResources(long mailingId, boolean addGroupPermissions, boolean addGuestPermissions)
+            throws PortalException {
+
+        Mailing mailing = mailingPersistence.findByPrimaryKey(mailingId);
+
+        addMailingResources(mailing, addGroupPermissions, addGuestPermissions);
+    }
+
+    @Override
+    public void addMailingResources(long mailingId, ModelPermissions modelPermissions) throws PortalException {
+
+        Mailing mailing = mailingPersistence.findByPrimaryKey(mailingId);
+
+        addMailingResources(mailing, modelPermissions);
     }
 
     @Override
@@ -143,24 +213,50 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
         }
     }
 
+    @Indexable(type = IndexableType.DELETE)
     @Override
-    public Mailing deleteMailing(long mailingId) throws PortalException {
+    @SystemEvent(type = SystemEventConstants.TYPE_DELETE)
+    public Mailing deleteMailing(Mailing mailing) throws PortalException {
 
-        Mailing mailing = mailingPersistence.remove(mailingId);
+        // Mailing
+
+        mailingPersistence.remove(mailing);
+
+        // Resources
 
         resourceLocalService.deleteResource(mailing.getCompanyId(), Mailing.class.getName(),
-                ResourceConstants.SCOPE_INDIVIDUAL, mailingId);
+                ResourceConstants.SCOPE_INDIVIDUAL, mailing.getMailingId());
+
+        // Subscriptions
+
+        subscriptionLocalService.deleteSubscriptions(mailing.getCompanyId(), Newsletter.class.getName(),
+                mailing.getMailingId());
 
         // Asset
 
-        Indexer indexer = IndexerRegistryUtil.nullSafeGetIndexer(Mailing.class);
-        indexer.delete(mailing);
+        assetEntryLocalService.deleteEntry(Newsletter.class.getName(), mailing.getMailingId());
 
-        AssetEntry assetEntry = assetEntryLocalService.fetchEntry(Mailing.class.getName(), mailingId);
+        // Expando
 
-        assetEntryLocalService.deleteEntry(assetEntry);
+        expandoRowLocalService.deleteRows(mailing.getMailingId());
+
+        // Ratings
+
+        ratingsStatsLocalService.deleteStats(Newsletter.class.getName(), mailing.getMailingId());
+
+        // Trash
+
+        trashEntryLocalService.deleteEntry(Newsletter.class.getName(), mailing.getMailingId());
 
         return mailing;
+    }
+
+    @Override
+    public Mailing deleteMailing(long mailingId) throws PortalException {
+        
+        Mailing mailing = mailingPersistence.findByPrimaryKey(mailingId);
+
+        return mailingLocalService.deleteMailing(mailing);
     }
 
     @Override
@@ -280,9 +376,10 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
             serviceContext.setScopeGroupId(mailing.getGroupId());
             serviceContext.setModifiedDate(sendDate);
 
-            updateMailing(mailing.getUserId(), mailing.getGroupId(), mailing.getMailingId(), mailing.getTitle(),
-                    mailing.getTemplate(), mailing.getNewsletterId(), mailing.getArticleId(),
-                    mailing.getArticleGroupId(), mailing.getPublishDate(), sendDate, sent, serviceContext);
+            updateMailing(mailing.getMailingId(), mailing.getUserId(), mailing.getTitle(), mailing.getTemplate(),
+                    mailing.getNewsletterId(), mailing.getArticleId(), mailing.getArticleGroupId(),
+                    mailing.getPublishDate(), mailing.getSendDate(), sent, mailing.getStatus(), serviceContext);
+
         }
     }
 
@@ -344,21 +441,37 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
     }
 
     @Override
-    public Mailing updateMailing(long userId, long groupId, long mailingId, String title, String template,
-            long newsletterId, String articleId, long articleGroupId, Date publishDate, Date sendDate, boolean sent,
+    public Mailing updateMailing(long mailingId, long userId, String title, String template, long newsletterId,
+            String articleId, long articleGroupId, Date publishDate, Date sendDate, boolean sent, int status,
             ServiceContext serviceContext) throws PortalException {
 
-        Mailing mailing = saveMailing(userId, groupId, mailingId, title, template, newsletterId, articleId,
-                articleGroupId, publishDate, sendDate, sent, serviceContext);
+        // Mailing
+
+        long groupId = serviceContext.getScopeGroupId();
+
+        Mailing mailing = mailingPersistence.findByPrimaryKey(mailingId);
+
+        mailing.setGroupId(groupId);
+        mailing.setExpandoBridgeAttributes(serviceContext);
+
+        mailing.setTitle(title);
+        mailing.setTemplate(template);
+        mailing.setNewsletterId(newsletterId);
+        mailing.setArticleId(articleId);
+        mailing.setArticleGroupId(articleGroupId);
+        mailing.setPublishDate(publishDate);
+        mailing.setSendDate(sendDate);
+        mailing.setSent(sent);
+        mailing.setStatus(status);
+
+        mailingPersistence.update(mailing);
 
         // Asset
 
-        resourceLocalService.updateResources(serviceContext.getCompanyId(), serviceContext.getScopeGroupId(),
-                mailing.getTitle(), mailingId, serviceContext.getGroupPermissions(),
-                serviceContext.getGuestPermissions());
-
         updateAsset(userId, mailing, serviceContext.getAssetCategoryIds(), serviceContext.getAssetTagNames(),
                 serviceContext.getAssetLinkEntryIds());
+
+        // TODO: add social
 
         return mailing;
     }
@@ -422,44 +535,6 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
         searchContext.setStart(start);
 
         return searchContext;
-    }
-
-    private Mailing saveMailing(long userId, long groupId, long mailingId, String title, String template,
-            long newsletterId, String articleId, long articleGroupId, Date publishDate, Date sendDate, boolean sent,
-            ServiceContext serviceContext) throws PortalException {
-
-        User user = userPersistence.findByPrimaryKey(userId);
-        Date now = new Date();
-        Mailing mailing = null;
-
-        if (mailingId > 0) {
-            mailing = mailingLocalService.getMailing(mailingId);
-        } else {
-            mailingId = counterLocalService.increment();
-            mailing = mailingPersistence.create(mailingId);
-            mailing.setCompanyId(user.getCompanyId());
-            mailing.setGroupId(groupId);
-            mailing.setUserId(user.getUserId());
-            mailing.setUserName(user.getFullName());
-            mailing.setCreateDate(now);
-        }
-
-        mailing.setModifiedDate(now);
-
-        mailing.setTitle(title);
-        mailing.setTemplate(template);
-        mailing.setNewsletterId(newsletterId);
-        mailing.setArticleId(articleId);
-        mailing.setArticleGroupId(articleGroupId);
-        mailing.setPublishDate(publishDate);
-        mailing.setSendDate(sendDate);
-        mailing.setSent(sent);
-        mailing.setExpandoBridgeAttributes(serviceContext);
-
-        mailing = mailingPersistence.update(mailing);
-
-        return mailing;
-
     }
 
     private void sendEmail(Mailing mailing, Subscriber subscriber) throws PortalException {
