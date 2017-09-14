@@ -14,6 +14,7 @@ import javax.portlet.RenderResponse;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -23,6 +24,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -32,8 +34,11 @@ import com.liferay.portal.kernel.util.WebKeys;
 import aQute.bnd.annotation.metatype.Configurable;
 import ch.inofix.newsletter.constants.PortletKeys;
 import ch.inofix.newsletter.exception.NoSuchNewsletterException;
+import ch.inofix.newsletter.model.Mailing;
 import ch.inofix.newsletter.model.Newsletter;
+import ch.inofix.newsletter.service.MailingService;
 import ch.inofix.newsletter.service.NewsletterService;
+import ch.inofix.newsletter.service.SubscriberService;
 import ch.inofix.newsletter.web.configuration.NewsletterManagerConfiguration;
 import ch.inofix.newsletter.web.internal.constants.NewsletterWebKeys;
 
@@ -76,6 +81,20 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         _newsletterService.deleteNewsletter(newsletterId);
 
         actionResponse.setRenderParameter("postDelete", "true");
+
+    }
+    
+    /**
+     * From ImportLayoutsMVCCommand
+     *
+     * @param actionRequest
+     * @param actionResponse
+     * @throws Exception
+     */
+    @Override
+    public void processAction(ActionRequest actionRequest, ActionResponse actionResponse) {
+
+        String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
 
     }
 
@@ -232,13 +251,70 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
         portletRequest.setAttribute(NewsletterWebKeys.NEWSLETTER, newsletter);
     }
-
-    @org.osgi.service.component.annotations.Reference
+    
+    @Reference
+    protected void setMailingService(MailingService mailingService) {
+        this._mailingService = mailingService;
+    }
+    
+    @Reference
     protected void setNewsletterService(NewsletterService newsletterService) {
         this._newsletterService = newsletterService;
     }
 
-    private NewsletterService _newsletterService;
+    @Reference
+    protected void setSubscriberService(SubscriberService subscriberService) {
+        this._subscriberService = subscriberService;
+    }
+    
+    /**
+    *
+    * @param actionRequest
+    * @param actionResponse
+    * @throws Exception
+    */
+   protected void updateMailing(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+
+       long mailingId = ParamUtil.getLong(actionRequest, "mailingId");
+
+       ServiceContext serviceContext = ServiceContextFactory.getInstance(Mailing.class.getName(), actionRequest);
+
+       String workPackage = ParamUtil.getString(actionRequest, "workPackage");
+       String description = ParamUtil.getString(actionRequest, "description");
+       String ticketURL = ParamUtil.getString(actionRequest, "ticketURL");
+
+       int status = ParamUtil.getInteger(actionRequest, "status");
+
+
+       Mailing mailing = null;
+
+       if (mailingId <= 0) {
+
+           // Add mailing
+
+           // TODO
+//           mailing = _mailingService.addMailing(workPackage, description, ticketURL, untilDate, fromDate,
+//                   status, duration, serviceContext);
+
+       } else {
+
+           // Update mailing
+           // TODO
+//           mailing = _mailingService.updateMailing();
+       }
+
+       // TODO
+//       String redirect = getEditMailingURL(actionRequest, actionResponse, mailing);
+
+       // TODO
+//       actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
+
+       actionRequest.setAttribute(NewsletterWebKeys.MAILING, mailing);
+   }
+
+   private MailingService _mailingService;
+   private NewsletterService _newsletterService;
+   private SubscriberService _subscriberService;
 
     private volatile NewsletterManagerConfiguration _newsletterManagerConfiguration;
 
