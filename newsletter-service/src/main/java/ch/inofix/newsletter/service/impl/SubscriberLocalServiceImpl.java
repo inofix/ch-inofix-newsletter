@@ -356,22 +356,6 @@ public class SubscriberLocalServiceImpl extends SubscriberLocalServiceBaseImpl {
         return subscriber;
 
     }
-
-    @Override
-    public void updateSubscriberResources(Subscriber subscriber, ModelPermissions modelPermissions)
-            throws PortalException {
-
-        resourceLocalService.updateResources(subscriber.getCompanyId(), subscriber.getGroupId(),
-                Subscriber.class.getName(), subscriber.getSubscriberId(), modelPermissions);
-    }
-
-    @Override
-    public void updateSubscriberResources(Subscriber subscriber, String[] groupPermissions, String[] guestPermissions)
-            throws PortalException {
-
-        resourceLocalService.updateResources(subscriber.getCompanyId(), subscriber.getGroupId(),
-                Subscriber.class.getName(), subscriber.getSubscriberId(), groupPermissions, guestPermissions);
-    }
     
     protected SearchContext buildSearchContext(long userId, long groupId, long ownerUserId, String title,
             String description, int status, LinkedHashMap<String, Object> params, boolean andSearch, int start, int end,
