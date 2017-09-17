@@ -56,8 +56,6 @@
     searchContainer.setRowChecker(entriesChecker);
 %>
 
-hits.getLength = <%= hits.getLength() %>
-
 <div id="<portlet:namespace />mailingContainer">
 
     <liferay-ui:error exception="<%= PrincipalException.class %>"
