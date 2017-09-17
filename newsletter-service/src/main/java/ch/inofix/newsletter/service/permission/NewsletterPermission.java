@@ -12,8 +12,8 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:32
- * @modified 2017-03-10 16:35
- * @version 1.0.1
+ * @modified 2017-09-16 00:05
+ * @version 1.0.2
  *
  */
 public class NewsletterPermission {
@@ -52,6 +52,23 @@ public class NewsletterPermission {
 
         Newsletter newsletter = NewsletterLocalServiceUtil
                 .getNewsletter(newsletterId);
+
+        if (permissionChecker.hasOwnerPermission(newsletter.getCompanyId(),
+                Newsletter.class.getName(), newsletter.getNewsletterId(),
+                newsletter.getUserId(), actionId)) {
+
+            return true;
+        }
+
+        return permissionChecker.hasPermission(newsletter.getGroupId(),
+                Newsletter.class.getName(), newsletter.getNewsletterId(),
+                actionId);
+
+    }
+    
+    public static boolean contains(PermissionChecker permissionChecker,
+            Newsletter newsletter, String actionId) throws PortalException,
+            SystemException {
 
         if (permissionChecker.hasOwnerPermission(newsletter.getCompanyId(),
                 Newsletter.class.getName(), newsletter.getNewsletterId(),
