@@ -2,8 +2,8 @@
     view_newsletters.jsp: the newsletters panel.
     
     Created:    2017-09-02 11:55 by Christian Berndt
-    Modified:   2017-09-02 11:55 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-09-17 13:25 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -36,8 +36,8 @@
     if (searchTerms.isAdvancedSearch()) {
 
         hits = NewsletterServiceUtil.search(themeDisplay.getUserId(), scopeGroupId, ownerUserId,
-                searchTerms.getTitle(), null, status, null, searchTerms.isAndOperator(),
-                searchContainer.getStart(), searchContainer.getEnd(), sort);
+                searchTerms.getTitle(), searchTerms.getFromAddress(), searchTerms.getFromName(), status,
+                null, searchTerms.isAndOperator(), searchContainer.getStart(), searchContainer.getEnd(), sort);
 
     } else {
 
