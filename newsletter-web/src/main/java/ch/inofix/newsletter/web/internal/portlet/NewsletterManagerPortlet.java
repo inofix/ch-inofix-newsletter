@@ -1,6 +1,7 @@
 package ch.inofix.newsletter.web.internal.portlet;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Map;
 
 import javax.portlet.ActionRequest;
@@ -16,7 +17,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
-import com.liferay.exportimport.kernel.lar.ExportImportHelper;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
@@ -52,26 +52,14 @@ import ch.inofix.newsletter.web.internal.constants.NewsletterWebKeys;
  * @modified 2017-09-13 22:51
  * @version 1.2.3
  */
-@Component(
-    immediate = true, 
-    property = { 
-        "com.liferay.portlet.css-class-wrapper=portlet-newsletter",
-        "com.liferay.portlet.display-category=category.inofix",
-        "com.liferay.portlet.header-portlet-css=/css/main.css",         
-        "com.liferay.portlet.instanceable=false",
-        "javax.portlet.display-name=Newsletter",
-        "javax.portlet.init-param.template-path=/", 
-        "javax.portlet.init-param.view-template=/view.jsp",
-        "javax.portlet.name=" + PortletKeys.NEWSLETTER_MANAGER,
-        "javax.portlet.resource-bundle=content.Language",
-        "javax.portlet.security-role-ref=power-user,user" 
-    }, 
-    service = Portlet.class
-)
+@Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-newsletter",
+        "com.liferay.portlet.display-category=category.inofix", "com.liferay.portlet.header-portlet-css=/css/main.css",
+        "com.liferay.portlet.instanceable=false", "javax.portlet.display-name=Newsletter",
+        "javax.portlet.init-param.template-path=/", "javax.portlet.init-param.view-template=/view.jsp",
+        "javax.portlet.name=" + PortletKeys.NEWSLETTER_MANAGER, "javax.portlet.resource-bundle=content.Language",
+        "javax.portlet.security-role-ref=power-user,user" }, service = Portlet.class)
 public class NewsletterManagerPortlet extends MVCPortlet {
 
-
-    
     @Override
     public void doView(RenderRequest renderRequest, RenderResponse renderResponse)
             throws IOException, PortletException {
@@ -80,14 +68,14 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
         super.doView(renderRequest, renderResponse);
     }
-    
+
     @Override
     public void processAction(ActionRequest actionRequest, ActionResponse actionResponse) {
 
-        String className = ParamUtil.getString(actionRequest, "className"); 
+        String className = ParamUtil.getString(actionRequest, "className");
 
         String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
-        
+
         try {
             if (cmd.equals(Constants.DELETE)) {
 
@@ -103,7 +91,7 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         }
 
         catch (Exception e) {
-            
+
             // TODO: report errors back to user
             _log.error(e);
         }
@@ -114,6 +102,7 @@ public class NewsletterManagerPortlet extends MVCPortlet {
     public void render(RenderRequest renderRequest, RenderResponse renderResponse)
             throws IOException, PortletException {
 
+        // TODO
         // try {
         // getNewsletter(renderRequest);
         // } catch (Exception e) {
@@ -144,23 +133,23 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         _newsletterManagerConfiguration = Configurable.createConfigurable(NewsletterManagerConfiguration.class,
                 properties);
     }
-    
+
     /**
-    *
-    * @param actionRequest
-    * @param actionResponse
-    * @since 1.0.0
-    * @throws Exception
-    */
-   protected void deleteNewsletter(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+     *
+     * @param actionRequest
+     * @param actionResponse
+     * @since 1.0.0
+     * @throws Exception
+     */
+    protected void deleteNewsletter(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
 
-       long newsletterId = ParamUtil.getLong(actionRequest, "newsletterId");
+        long newsletterId = ParamUtil.getLong(actionRequest, "newsletterId");
 
-       _newsletterService.deleteNewsletter(newsletterId);
+        _newsletterService.deleteNewsletter(newsletterId);
 
-       actionResponse.setRenderParameter("postDelete", "true");
+        actionResponse.setRenderParameter("postDelete", "true");
 
-   }
+    }
 
     /**
      *
@@ -185,32 +174,66 @@ public class NewsletterManagerPortlet extends MVCPortlet {
      * @return
      * @throws Exception
      */
+    protected String getEditMailingURL(ActionRequest actionRequest, ActionResponse actionResponse, Mailing mailing)
+            throws Exception {
+
+        return getEditURL(actionRequest, actionResponse, mailing.getMailingId(), "mailingId", "edit_mailing.jsp");
+    }
+
+    /**
+     *
+     * @param actionRequest
+     * @param actionResponse
+     * @param newsletter
+     * @return
+     * @throws Exception
+     */
     protected String getEditNewsletterURL(ActionRequest actionRequest, ActionResponse actionResponse,
             Newsletter newsletter) throws Exception {
 
+        return getEditURL(actionRequest, actionResponse, newsletter.getNewsletterId(), "newsletterId",
+                "edit_newsletter.jsp");
+
+    }
+
+    /**
+     *
+     * @param actionRequest
+     * @param actionResponse
+     * @param newsletter
+     * @return
+     * @throws Exception
+     */
+    protected String getEditSubscriberURL(ActionRequest actionRequest, ActionResponse actionResponse,
+            Subscriber subscriber) throws Exception {
+
+        return getEditURL(actionRequest, actionResponse, subscriber.getNewsletterId(), "subscriberId",
+                "edit_subscriber.jsp");
+
+    }
+
+    protected String getEditURL(ActionRequest actionRequest, ActionResponse actionResponse, long classPK,
+            String classPKParam, String editJSP) throws Exception {
+
         ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
-        String editNewsletterURL = getRedirect(actionRequest, actionResponse);
+        String editURL = getRedirect(actionRequest, actionResponse);
 
-        if (Validator.isNull(editNewsletterURL)) {
-            editNewsletterURL = PortalUtil.getLayoutFullURL(themeDisplay);
+        if (Validator.isNull(editURL)) {
+            editURL = PortalUtil.getLayoutFullURL(themeDisplay);
         }
 
         String namespace = actionResponse.getNamespace();
         String windowState = actionResponse.getWindowState().toString();
 
-        editNewsletterURL = HttpUtil.setParameter(editNewsletterURL, "p_p_id", PortletKeys.NEWSLETTER_MANAGER);
-        editNewsletterURL = HttpUtil.setParameter(editNewsletterURL, "p_p_state", windowState);
-        editNewsletterURL = HttpUtil.setParameter(editNewsletterURL, namespace + "mvcPath",
-                templatePath + "edit_newsletter.jsp");
-        editNewsletterURL = HttpUtil.setParameter(editNewsletterURL, namespace + "redirect",
-                getRedirect(actionRequest, actionResponse));
-        editNewsletterURL = HttpUtil.setParameter(editNewsletterURL, namespace + "backURL",
-                ParamUtil.getString(actionRequest, "backURL"));
-        editNewsletterURL = HttpUtil.setParameter(editNewsletterURL, namespace + "newsletterId",
-                newsletter.getNewsletterId());
+        editURL = HttpUtil.setParameter(editURL, "p_p_id", PortletKeys.NEWSLETTER_MANAGER);
+        editURL = HttpUtil.setParameter(editURL, "p_p_state", windowState);
+        editURL = HttpUtil.setParameter(editURL, namespace + "mvcPath", templatePath + editJSP);
+        editURL = HttpUtil.setParameter(editURL, namespace + "redirect", getRedirect(actionRequest, actionResponse));
+        editURL = HttpUtil.setParameter(editURL, namespace + "backURL", ParamUtil.getString(actionRequest, "backURL"));
+        editURL = HttpUtil.setParameter(editURL, namespace + classPKParam, classPK);
 
-        return editNewsletterURL;
+        return editURL;
     }
 
     /**
@@ -231,12 +254,12 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
         portletRequest.setAttribute(NewsletterWebKeys.NEWSLETTER, newsletter);
     }
-    
+
     @Reference
     protected void setMailingService(MailingService mailingService) {
         this._mailingService = mailingService;
     }
-    
+
     @Reference
     protected void setNewsletterService(NewsletterService newsletterService) {
         this._newsletterService = newsletterService;
@@ -246,97 +269,137 @@ public class NewsletterManagerPortlet extends MVCPortlet {
     protected void setSubscriberService(SubscriberService subscriberService) {
         this._subscriberService = subscriberService;
     }
-    
+
     /**
-    *
-    * @param actionRequest
-    * @param actionResponse
-    * @throws Exception
-    */
-   protected void updateMailing(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+     *
+     * @param actionRequest
+     * @param actionResponse
+     * @throws Exception
+     */
+    protected void updateMailing(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+        
+        _log.info("updateMailing");
 
-       long mailingId = ParamUtil.getLong(actionRequest, "mailingId");
+        long mailingId = ParamUtil.getLong(actionRequest, "mailingId");
 
-       ServiceContext serviceContext = ServiceContextFactory.getInstance(Mailing.class.getName(), actionRequest);
+        ServiceContext serviceContext = ServiceContextFactory.getInstance(Mailing.class.getName(), actionRequest);
 
-       String workPackage = ParamUtil.getString(actionRequest, "workPackage");
-       String description = ParamUtil.getString(actionRequest, "description");
-       String ticketURL = ParamUtil.getString(actionRequest, "ticketURL");
+        String articleId = ParamUtil.getString(actionRequest, "articleId");
+        long articleGroupId = ParamUtil.getLong(actionRequest, "articleGroupId");
+        long newsletterId = ParamUtil.getLong(actionRequest, "newsletterId");
+        // TODO:
+        Date publishDate = null;
+        // TODO:
+        Date sendDate = null;
+        boolean sent = ParamUtil.getBoolean(actionRequest, "sent");
+        int status = ParamUtil.getInteger(actionRequest, "status");
 
-       int status = ParamUtil.getInteger(actionRequest, "status");
+        String title = ParamUtil.getString(actionRequest, "title");
+        String template = ParamUtil.getString(actionRequest, "template");
 
+        Mailing mailing = null;
 
-       Mailing mailing = null;
+        if (mailingId <= 0) {
 
-       if (mailingId <= 0) {
+            // Add mailing
 
-           // Add mailing
+            mailing = _mailingService.addMailing(title, template, newsletterId, articleId, articleGroupId, publishDate,
+                    sendDate, status, serviceContext);
+        } else {
 
-           // TODO
-//           mailing = _mailingService.addMailing(workPackage, description, ticketURL, untilDate, fromDate,
-//                   status, duration, serviceContext);
+            // Update mailing
 
-       } else {
+            mailing = _mailingService.updateMailing(mailingId, title, template, newsletterId, articleId, articleGroupId,
+                    publishDate, sendDate, sent, status, serviceContext);
 
-           // Update mailing
-           // TODO
-//           mailing = _mailingService.updateMailing();
-       }
+        }
 
-       // TODO
-//       String redirect = getEditMailingURL(actionRequest, actionResponse, mailing);
+        String redirect = getEditMailingURL(actionRequest, actionResponse, mailing);
+        actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
 
-       // TODO
-//       actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
+        actionRequest.setAttribute(NewsletterWebKeys.MAILING, mailing);
+    }
 
-       actionRequest.setAttribute(NewsletterWebKeys.MAILING, mailing);
-   }
-   
-   /**
-   *
-   * @param actionRequest
-   * @param actionResponse
-   * @since 1.0.0
-   * @throws Exception
-   */
-  protected void updateNewsletter(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
-      
-      _log.info("updateNewsletter");
+    /**
+     *
+     * @param actionRequest
+     * @param actionResponse
+     * @since 1.0.0
+     * @throws Exception
+     */
+    protected void updateNewsletter(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
 
-      long newsletterId = ParamUtil.getLong(actionRequest, "newsletterId");
+        _log.info("updateNewsletter");
 
-      String fromAddress = ParamUtil.getString(actionRequest, "fromAddress");
-      String fromName = ParamUtil.getString(actionRequest, "fromName");
-      String template = ParamUtil.getString(actionRequest, "template");
-      String title = ParamUtil.getString(actionRequest, "title");
-      boolean useHttps = ParamUtil.getBoolean(actionRequest, "useHttps");
+        long newsletterId = ParamUtil.getLong(actionRequest, "newsletterId");
 
-      ServiceContext serviceContext = ServiceContextFactory.getInstance(Newsletter.class.getName(), actionRequest);
+        String fromAddress = ParamUtil.getString(actionRequest, "fromAddress");
+        String fromName = ParamUtil.getString(actionRequest, "fromName");
+        String template = ParamUtil.getString(actionRequest, "template");
+        String title = ParamUtil.getString(actionRequest, "title");
+        boolean useHttps = ParamUtil.getBoolean(actionRequest, "useHttps");
 
-      long userId = serviceContext.getUserId();
+        ServiceContext serviceContext = ServiceContextFactory.getInstance(Newsletter.class.getName(), actionRequest);
 
-      Newsletter newsletter = null;
+        Newsletter newsletter = null;
 
-      if (newsletterId <= 0) {
-          newsletter = _newsletterService.addNewsletter(userId, title, template, fromAddress, fromName, useHttps,
-                  serviceContext);
-      } else {
-          newsletter = _newsletterService.updateNewsletter(userId, newsletterId, title, template, fromAddress,
-                  fromName, useHttps, serviceContext);
-      }
+        if (newsletterId <= 0) {
+            newsletter = _newsletterService.addNewsletter(title, template, fromAddress, fromName, useHttps,
+                    serviceContext);
+        } else {
+            newsletter = _newsletterService.updateNewsletter(newsletterId, title, template, fromAddress, fromName,
+                    useHttps, serviceContext);
+        }
 
-      String redirect = getEditNewsletterURL(actionRequest, actionResponse, newsletter);
-      String tabs1 = ParamUtil.get(actionRequest, "tabs1", "settings");
+        String redirect = getEditNewsletterURL(actionRequest, actionResponse, newsletter);
+        String tabs1 = ParamUtil.get(actionRequest, "tabs1", "settings");
 
-      actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
-      actionRequest.setAttribute(NewsletterWebKeys.NEWSLETTER, newsletter);
-      actionResponse.setRenderParameter("tabs1", tabs1);
+        actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
+        actionRequest.setAttribute(NewsletterWebKeys.NEWSLETTER, newsletter);
+        actionResponse.setRenderParameter("tabs1", tabs1);
 
-  }
+    }
 
-   private MailingService _mailingService;
-   private NewsletterService _newsletterService;
-   private SubscriberService _subscriberService;
+    protected void updateSubscriber(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+
+        _log.info("updateSubscriber");
+
+        long subscriberId = ParamUtil.getLong(actionRequest, "subscriberId");
+
+        String email = ParamUtil.getString(actionRequest, "email");
+        String firstname = ParamUtil.getString(actionRequest, "firstname");
+        String gender = ParamUtil.getString(actionRequest, "gender");
+        String lastname = ParamUtil.getString(actionRequest, "lastname");
+        String middlename = ParamUtil.getString(actionRequest, "middlename");
+        long newsletterId = ParamUtil.getLong(actionRequest, "newsletterId");
+        String salutation = ParamUtil.getString(actionRequest, "salutation");
+        String title = ParamUtil.getString(actionRequest, "title");
+        int status = ParamUtil.getInteger(actionRequest, "status");
+
+        ServiceContext serviceContext = ServiceContextFactory.getInstance(Subscriber.class.getName(), actionRequest);
+
+        Subscriber subscriber = null;
+
+        if (subscriberId <= 0) {
+            subscriber = _subscriberService.addSubscriber(email, firstname, gender, lastname, middlename, newsletterId,
+                    salutation, title, status, serviceContext);
+        } else {
+            subscriber = _subscriberService.updateSubscriber(subscriberId, email, firstname, gender, lastname,
+                    middlename, newsletterId, salutation, title, status, serviceContext);
+        }
+
+        String redirect = getEditSubscriberURL(actionRequest, actionResponse, subscriber);
+        String tabs1 = ParamUtil.get(actionRequest, "tabs1", "settings");
+
+        actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
+        actionRequest.setAttribute(NewsletterWebKeys.SUBSCRIBER, subscriber);
+        actionResponse.setRenderParameter("tabs1", tabs1);
+
+    }
+
+    private MailingService _mailingService;
+    private NewsletterService _newsletterService;
+    private SubscriberService _subscriberService;
 
     private volatile NewsletterManagerConfiguration _newsletterManagerConfiguration;
 

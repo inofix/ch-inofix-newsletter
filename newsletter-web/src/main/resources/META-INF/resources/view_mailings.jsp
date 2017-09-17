@@ -36,7 +36,7 @@
     if (searchTerms.isAdvancedSearch()) {
 
         hits = MailingServiceUtil.search(themeDisplay.getUserId(), scopeGroupId, ownerUserId,
-                searchTerms.getTitle(), null, status, null, searchTerms.isAndOperator(),
+                searchTerms.getTitle(), status, null, searchTerms.isAndOperator(),
                 searchContainer.getStart(), searchContainer.getEnd(), sort);
 
     } else {
@@ -46,7 +46,7 @@
 
     }
 
-    List<Mailing> mailings = NewsletterUtil.getMailings(hits);
+    List<Mailing> mailings = MailingUtil.getMailings(hits);
 
     searchContainer.setResults(mailings);
     searchContainer.setTotal(hits.getLength());
@@ -55,6 +55,8 @@
 
     searchContainer.setRowChecker(entriesChecker);
 %>
+
+hits.getLength = <%= hits.getLength() %>
 
 <div id="<portlet:namespace />mailingContainer">
 

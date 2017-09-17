@@ -55,7 +55,7 @@
 
 <div class="container-fluid-1280">
 
-    <portlet:actionURL name="updateNewsletter" var="updateNewsletterURL">
+    <portlet:actionURL var="updateNewsletterURL">
         <portlet:param name="mvcPath" value="/edit_newsletter.jsp" />
     </portlet:actionURL>
 

@@ -46,7 +46,7 @@
 
     }
 
-    List<Subscriber> subscribers = NewsletterUtil.getSubscribers(hits);
+    List<Subscriber> subscribers = SubscriberUtil.getSubscribers(hits);
 
     searchContainer.setResults(subscribers);
     searchContainer.setTotal(hits.getLength());
