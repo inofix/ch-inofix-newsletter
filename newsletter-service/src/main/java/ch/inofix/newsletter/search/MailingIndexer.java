@@ -1,5 +1,6 @@
 package ch.inofix.newsletter.search;
 
+import java.util.LinkedHashMap;
 import java.util.Locale;
 
 import javax.portlet.PortletRequest;
@@ -17,14 +18,18 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BaseIndexer;
+import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
+import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import ch.inofix.newsletter.model.Mailing;
@@ -34,8 +39,8 @@ import ch.inofix.newsletter.service.permission.MailingPermission;
 /**
  * @author Christian Berndt
  * @created 2016-10-15 23:14
- * @modified 2017-03-11 10:52
- * @version 1.0.2
+ * @modified 2017-09-17 21:23
+ * @version 1.0.3
  */
 @Component(immediate = true, service = Indexer.class)
 public class MailingIndexer extends BaseIndexer<Mailing> {
@@ -59,6 +64,35 @@ public class MailingIndexer extends BaseIndexer<Mailing> {
     public boolean hasPermission(PermissionChecker permissionChecker, String entryClassName, long entryClassPK,
             String actionId) throws Exception {
         return MailingPermission.contains(permissionChecker, entryClassPK, ActionKeys.VIEW);
+    }
+
+    @Override
+    public void postProcessContextBooleanFilter(BooleanFilter contextBooleanFilter, SearchContext searchContext)
+            throws Exception {
+
+        _log.info("postProcessContextBooleanFilter");
+
+        addStatus(contextBooleanFilter, searchContext);
+
+    }
+
+    @Override
+    public void postProcessSearchQuery(BooleanQuery searchQuery, BooleanFilter fullQueryBooleanFilter,
+            SearchContext searchContext) throws Exception {
+
+        _log.info("postProcessSearchQuery");
+
+        addSearchTerm(searchQuery, searchContext, "title", false);
+
+        LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
+
+        if (params != null) {
+            String expandoAttributes = (String) params.get("expandoAttributes");
+
+            if (Validator.isNotNull(expandoAttributes)) {
+                addSearchExpando(searchQuery, searchContext, expandoAttributes);
+            }
+        }
     }
 
     @Override

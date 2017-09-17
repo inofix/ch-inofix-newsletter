@@ -68,8 +68,8 @@ import ch.inofix.newsletter.social.SubscriberActivityKeys;
  *
  * @author Christian Berndt
  * @created 2016-10-08 16:41
- * @modified 2017-09-14 10:44
- * @version 1.0.3
+ * @modified 2017-09-17 21:52
+ * @version 1.0.4
  * @see SubscriberLocalServiceBaseImpl
  * @see ch.inofix.newsletter.service.SubscriberLocalServiceUtil
  */
@@ -85,8 +85,9 @@ public class SubscriberLocalServiceImpl extends SubscriberLocalServiceBaseImpl {
 
     @Indexable(type = IndexableType.REINDEX)
     @Override
-    public Subscriber addSubscriber(long userId, String title, String template, String fromAddress, String fromName,
-            boolean useHttps, ServiceContext serviceContext) throws PortalException {
+    public Subscriber addSubscriber(long userId, String email, String firstname, String gender, String lastname,
+            String middlename, long newsletterId, String salutation, String title, ServiceContext serviceContext)
+            throws PortalException {
 
         // Subscriber
 
@@ -104,12 +105,15 @@ public class SubscriberLocalServiceImpl extends SubscriberLocalServiceBaseImpl {
         subscriber.setUserName(user.getFullName());
         subscriber.setExpandoBridgeAttributes(serviceContext);
 
-        // TODO
+        subscriber.setEmail(email);
+        subscriber.setFirstname(firstname);
+        subscriber.setGender(gender);
+        subscriber.setLastname(lastname);
+        subscriber.setMiddlename(middlename);
+        subscriber.setNewsletterId(newsletterId);
+        subscriber.setSalutation(salutation);
         subscriber.setTitle(title);
-        // subscriber.setTemplate(template);
-        // subscriber.setFromAddress(fromAddress);
-        // subscriber.setFromName(fromName);
-        // subscriber.setUseHttps(useHttps);
+
         subscriber.setExpandoBridgeAttributes(serviceContext);
 
         subscriberPersistence.update(subscriber);
@@ -265,8 +269,8 @@ public class SubscriberLocalServiceImpl extends SubscriberLocalServiceBaseImpl {
 
     @Override
     @Indexable(type = IndexableType.REINDEX)
-    public Subscriber updateSubscriber(long userId, long subscriberId, String title, String template,
-            String fromAddress, String fromName, boolean useHttps, ServiceContext serviceContext)
+    public Subscriber updateSubscriber(long subscriberId, long userId, String email, String firstname, String gender, String lastname,
+            String middlename, long newsletterId, String salutation, String title, ServiceContext serviceContext)
             throws PortalException {
 
         // Subscriber
@@ -284,13 +288,14 @@ public class SubscriberLocalServiceImpl extends SubscriberLocalServiceBaseImpl {
         subscriber.setUserName(user.getFullName());
         subscriber.setExpandoBridgeAttributes(serviceContext);
 
-        // TODO
+        subscriber.setEmail(email);
+        subscriber.setFirstname(firstname);
+        subscriber.setGender(gender);
+        subscriber.setLastname(lastname);
+        subscriber.setMiddlename(middlename);
+        subscriber.setNewsletterId(newsletterId);
+        subscriber.setSalutation(salutation);
         subscriber.setTitle(title);
-        // subscriber.setTemplate(template);
-        // subscriber.setFromAddress(fromAddress);
-        // subscriber.setFromName(fromName);
-        // subscriber.setUseHttps(useHttps);
-        subscriber.setExpandoBridgeAttributes(serviceContext);
 
         subscriberPersistence.update(subscriber);
 

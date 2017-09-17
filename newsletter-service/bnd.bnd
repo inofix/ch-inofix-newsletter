@@ -6,6 +6,7 @@ Export-Package:\
     ch.inofix.newsletter.search,\
     ch.inofix.newsletter.service.impl,\
     ch.inofix.newsletter.service.permission,\
-    ch.inofix.newsletter.service.util
+    ch.inofix.newsletter.service.util,\
+    ch.inofix.newsletter.util
 Liferay-Require-SchemaVersion: 1.0.0
 Liferay-Service: true

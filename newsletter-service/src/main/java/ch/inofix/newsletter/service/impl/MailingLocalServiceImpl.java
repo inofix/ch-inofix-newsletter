@@ -222,33 +222,35 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
     @Override
     public Hits search(long userId, long groupId, long ownerUserId, String keywords, int start, int end, Sort sort)
             throws PortalException {
+        
+        _log.info("search()");
 
         if (sort == null) {
             sort = new Sort(Field.MODIFIED_DATE, true);
         }
 
-        String description = null;
-        String workPackage = null;
+        String title = null;
         boolean andOperator = false;
 
         if (Validator.isNotNull(keywords)) {
 
-            description = keywords;
-            workPackage = keywords;
+            title = keywords;
 
         } else {
             andOperator = true;
         }
 
-        return search(userId, groupId, ownerUserId, workPackage, description, WorkflowConstants.STATUS_ANY, null,
+        return search(userId, groupId, ownerUserId, title, WorkflowConstants.STATUS_ANY, null,
                 andOperator, start, end, sort);
 
     }
 
     @Override
-    public Hits search(long userId, long groupId, long ownerUserId, String title, String description, int status,
+    public Hits search(long userId, long groupId, long ownerUserId, String title, int status,
             LinkedHashMap<String, Object> params, boolean andSearch, int start, int end, Sort sort)
             throws PortalException {
+        
+        _log.info("search(advanced)");
 
         if (sort == null) {
             sort = new Sort(Field.MODIFIED_DATE, true);
@@ -256,7 +258,7 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
 
         Indexer<Mailing> indexer = IndexerRegistryUtil.getIndexer(Mailing.class.getName());
 
-        SearchContext searchContext = buildSearchContext(userId, groupId, ownerUserId, title, description, status,
+        SearchContext searchContext = buildSearchContext(userId, groupId, ownerUserId, title, status,
                 params, andSearch, start, end, sort);
 
         return indexer.search(searchContext);
@@ -437,16 +439,14 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
     }
 
     protected SearchContext buildSearchContext(long userId, long groupId, long ownerUserId, String title,
-            String description, int status, LinkedHashMap<String, Object> params, boolean andSearch, int start, int end,
+ int status, LinkedHashMap<String, Object> params, boolean andSearch, int start, int end,
             Sort sort) throws PortalException {
+        
+        _log.info("buildSearchContext()");
 
         SearchContext searchContext = new SearchContext();
 
         searchContext.setAttribute(Field.STATUS, status);
-
-        if (Validator.isNotNull(description)) {
-            searchContext.setAttribute("description", description);
-        }
 
         if (Validator.isNotNull(title)) {
             searchContext.setAttribute("title", title);

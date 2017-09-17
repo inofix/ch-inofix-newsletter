@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2016-10-05 15:44 by Christian Berndt
-    Modified:    2017-09-10 23:26 by Christian Berndt
-    Version:     1.2.0
+    Modified:    2017-09-17 21:05 by Christian Berndt
+    Version:     1.2.1
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -38,7 +38,9 @@
 <%@page import="ch.inofix.newsletter.service.permission.NewsletterPermission"%>
 <%@page import="ch.inofix.newsletter.service.permission.NewsletterPortletPermission"%>
 <%@page import="ch.inofix.newsletter.service.permission.SubscriberPermission"%>
-<%@page import="ch.inofix.newsletter.service.util.NewsletterUtil"%>
+<%@page import="ch.inofix.newsletter.util.MailingUtil"%>
+<%@page import="ch.inofix.newsletter.util.NewsletterUtil"%>
+<%@page import="ch.inofix.newsletter.util.SubscriberUtil"%>
 
 <%@page import="com.liferay.portal.kernel.exception.SystemException"%>
 <%@page import="com.liferay.portal.kernel.exception.PortalException"%>
