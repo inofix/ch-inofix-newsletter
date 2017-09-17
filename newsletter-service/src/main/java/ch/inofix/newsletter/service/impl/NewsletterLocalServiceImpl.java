@@ -68,8 +68,8 @@ import ch.inofix.newsletter.social.NewsletterActivityKeys;
  *
  * @author Christian Berndt
  * @created 2016-10-08 16:41
- * @modified 2017-09-14 10:43
- * @version 1.0.9
+ * @modified 2017-09-17 13:12
+ * @version 1.1.0
  * @see NewsletterLocalServiceBaseImpl
  * @see ch.inofix.newsletter.service.NewsletterLocalServiceUtil
  */
@@ -87,6 +87,8 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
     @Indexable(type = IndexableType.REINDEX)
     public Newsletter addNewsletter(long userId, String title, String template, String fromAddress, String fromName,
             boolean useHttps, ServiceContext serviceContext) throws PortalException {
+        
+        _log.info("addNewsletter");
 
         // Newsletter
 
@@ -198,41 +200,47 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
     @Override
     public Hits search(long userId, long groupId, long ownerUserId, String keywords, int start, int end, Sort sort)
             throws PortalException {
+        
+        _log.info("search(keyword)");
 
         if (sort == null) {
             sort = new Sort(Field.MODIFIED_DATE, true);
         }
 
-        String description = null;
-        String workPackage = null;
+        String title = null;
+        String fromAddress = null;
+        String fromName = null;
         boolean andOperator = false;
 
         if (Validator.isNotNull(keywords)) {
 
-            description = keywords;
-            workPackage = keywords;
+            title = keywords;
+            fromAddress = keywords;
+            fromName = keywords;
 
         } else {
             andOperator = true;
         }
 
-        return search(userId, groupId, ownerUserId, workPackage, description, WorkflowConstants.STATUS_ANY, null,
+        return search(userId, groupId, ownerUserId, title, fromAddress, fromName, WorkflowConstants.STATUS_ANY, null,
                 andOperator, start, end, sort);
 
     }
 
     @Override
-    public Hits search(long userId, long groupId, long ownerUserId, String title, String description, int status,
+    public Hits search(long userId, long groupId, long ownerUserId, String title, String fromAddress, String fromName, int status,
             LinkedHashMap<String, Object> params, boolean andSearch, int start, int end, Sort sort)
             throws PortalException {
+        
+        _log.info("search(advanced)");
 
         if (sort == null) {
             sort = new Sort(Field.MODIFIED_DATE, true);
         }
 
-        Indexer<Mailing> indexer = IndexerRegistryUtil.getIndexer(Mailing.class.getName());
+        Indexer<Mailing> indexer = IndexerRegistryUtil.getIndexer(Newsletter.class.getName());
 
-        SearchContext searchContext = buildSearchContext(userId, groupId, ownerUserId, title, description, status,
+        SearchContext searchContext = buildSearchContext(userId, groupId, ownerUserId, title, fromAddress, fromName, status,
                 params, andSearch, start, end, sort);
 
         return indexer.search(searchContext);
@@ -268,6 +276,8 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
     public Newsletter updateNewsletter(long userId, long newsletterId, String title, String template,
             String fromAddress, String fromName, boolean useHttps, ServiceContext serviceContext)
             throws PortalException {
+        
+        _log.info("updateNewsletter()");
 
         // Newsletter
 
@@ -317,15 +327,21 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
     }
 
     protected SearchContext buildSearchContext(long userId, long groupId, long ownerUserId, String title,
-            String description, int status, LinkedHashMap<String, Object> params, boolean andSearch, int start, int end,
+            String fromAddress, String fromName, int status, LinkedHashMap<String, Object> params, boolean andSearch, int start, int end,
             Sort sort) throws PortalException {
+        
+        _log.info("buildSearchContext()");
 
         SearchContext searchContext = new SearchContext();
 
         searchContext.setAttribute(Field.STATUS, status);
 
-        if (Validator.isNotNull(description)) {
-            searchContext.setAttribute("description", description);
+        if (Validator.isNotNull(fromAddress)) {
+            searchContext.setAttribute("fromAddress", fromAddress);
+        }
+
+        if (Validator.isNotNull(fromName)) {
+            searchContext.setAttribute("fromName", fromName);
         }
 
         if (Validator.isNotNull(title)) {
