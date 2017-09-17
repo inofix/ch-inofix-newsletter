@@ -46,8 +46,8 @@ import ch.inofix.newsletter.service.permission.NewsletterPortletPermission;
  *
  * @author Christian Berndt
  * @created 2016-10-08 01:25
- * @modified 2017-09-17 13:12
- * @version 1.1.0
+ * @modified 2017-09-17 21:42
+ * @version 1.1.1
  * @see ch.inofix.portlet.newsletter.service.base.NewsletterServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.NewsletterServiceUtil
  */
@@ -73,13 +73,13 @@ public class NewsletterServiceImpl extends NewsletterServiceBaseImpl {
      * @throws SystemException
      */
     @Override
-    public Newsletter addNewsletter(long userId, String title, String template, String fromAddress, String fromName,
+    public Newsletter addNewsletter(String title, String template, String fromAddress, String fromName,
             boolean useHttps, ServiceContext serviceContext) throws PortalException {
 
         NewsletterPortletPermission.check(getPermissionChecker(), serviceContext.getScopeGroupId(),
                 ActionKeys.ADD_NEWSLETTER);
 
-        return newsletterLocalService.addNewsletter(userId, title, template, fromAddress, fromName, useHttps,
+        return newsletterLocalService.addNewsletter(getUserId(), title, template, fromAddress, fromName, useHttps,
                 serviceContext);
 
     }
@@ -155,13 +155,13 @@ public class NewsletterServiceImpl extends NewsletterServiceBaseImpl {
     }
 
     @Override
-    public Newsletter updateNewsletter(long userId, long newsletterId, String title, String template,
+    public Newsletter updateNewsletter(long newsletterId, String title, String template,
             String fromAddress, String fromName, boolean useHttps, ServiceContext serviceContext)
             throws PortalException {
 
         NewsletterPermission.check(getPermissionChecker(), newsletterId, ActionKeys.UPDATE);
 
-        return newsletterLocalService.updateNewsletter(userId, serviceContext.getScopeGroupId(), title, template,
+        return newsletterLocalService.updateNewsletter(getUserId(), serviceContext.getScopeGroupId(), title, template,
                 fromAddress, fromName, useHttps, serviceContext);
 
     }
