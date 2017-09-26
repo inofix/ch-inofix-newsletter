@@ -1,0 +1,55 @@
+<%--
+    subscriber_search_columns.jspf: Configurable search columns
+    for the subscriber view of the newsletter manager.
+
+    Created:     2017-09-26 22:55 by Christian Berndt
+    Modified:    2017-09-26 22:55 by Christian Berndt
+    Version:     1.0.0
+--%>
+
+<%
+    // TODO: read subscriber columns from configuration
+    String[] columns = {"subscriber-id", "email", "firstname", "lastname", "user-name", "modified-date"}; 
+    // String[] columns = (String[])request.getAttribute("view.jsp-columns");
+%>
+
+<%
+    for (String column : columns) {
+%>
+
+<c:if test='<%="create-date".equals(column)%>'>
+    <liferay-ui:search-container-column-date property="createDate"
+        name="create-date" orderable="true" href="<%=detailURL%>" />
+</c:if>
+<c:if test='<%="email".equals(column)%>'>
+    <liferay-ui:search-container-column-text property="email"
+        name="email" orderable="true" href="<%=detailURL%>" />
+</c:if>
+<c:if test='<%="firstname".equals(column)%>'>
+    <liferay-ui:search-container-column-text property="firstname"
+        name="firstname" orderable="true" href="<%=detailURL%>" />
+</c:if>
+<c:if test='<%="lastname".equals(column)%>'>
+    <liferay-ui:search-container-column-text property="lastname"
+        name="lastname" orderable="true" href="<%=detailURL%>" />
+</c:if>
+<c:if test='<%="modified-date".equals(column)%>'>
+    <liferay-ui:search-container-column-date property="modifiedDate"
+        name="modified-date" orderable="true" href="<%=detailURL%>" />
+</c:if>
+<c:if test='<%="status".equals(column)%>'>
+    <liferay-ui:search-container-column-status property="status"
+        orderable="true" />
+</c:if>
+<c:if test='<%="subscriber-id".equals(column)%>'>
+    <liferay-ui:search-container-column-text property="subscriberId"
+        name="subscriber-id" orderable="true" href="<%=detailURL%>" />
+</c:if>
+<c:if test='<%="user-name".equals(column)%>'>
+    <liferay-ui:search-container-column-text property="userName"
+        name="user-name" orderable="true" href="<%=detailURL%>" />
+</c:if>
+
+<%
+    }
+%>
