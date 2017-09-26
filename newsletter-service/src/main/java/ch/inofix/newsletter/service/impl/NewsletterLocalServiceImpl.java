@@ -68,8 +68,8 @@ import ch.inofix.newsletter.social.NewsletterActivityKeys;
  *
  * @author Christian Berndt
  * @created 2016-10-08 16:41
- * @modified 2017-09-17 13:12
- * @version 1.1.0
+ * @modified 2017-09-26 18:51
+ * @version 1.1.1
  * @see NewsletterLocalServiceBaseImpl
  * @see ch.inofix.newsletter.service.NewsletterLocalServiceUtil
  */
@@ -273,12 +273,10 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
     }
 
     @Indexable(type = IndexableType.REINDEX)
-    public Newsletter updateNewsletter(long userId, long newsletterId, String title, String template,
+    public Newsletter updateNewsletter(long newsletterId, long userId, String title, String template,
             String fromAddress, String fromName, boolean useHttps, ServiceContext serviceContext)
             throws PortalException {
         
-        _log.info("updateNewsletter()");
-
         // Newsletter
 
         User user = userPersistence.findByPrimaryKey(userId);
