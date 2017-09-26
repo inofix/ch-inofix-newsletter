@@ -9,7 +9,7 @@
 
 <%
     // TODO: read newsletter columns from configuration
-    String[] columns = {"title", "user-name", "modified-date"}; 
+    String[] columns = {"newsletter-id", "title", "user-name", "modified-date"}; 
     // String[] columns = (String[])request.getAttribute("view.jsp-columns");
 %>
 
