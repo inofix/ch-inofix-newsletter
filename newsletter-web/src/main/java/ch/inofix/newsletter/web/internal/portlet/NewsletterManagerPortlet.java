@@ -50,8 +50,8 @@ import ch.inofix.newsletter.web.internal.constants.NewsletterWebKeys;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2017-09-26 19:02
- * @version 1.2.5
+ * @modified 2017-09-26 23:41
+ * @version 1.2.6
  */
 @Component(immediate = true, property = { 
 		"com.liferay.portlet.css-class-wrapper=portlet-newsletter",
@@ -92,11 +92,20 @@ public class NewsletterManagerPortlet extends MVCPortlet {
             } else if (cmd.equals(Constants.UPDATE)) {
 
                 if (Mailing.class.getName().equals(className)) {
+                    
                     updateMailing(actionRequest, actionResponse);
+                    addSuccessMessage(actionRequest, actionResponse);
+                    
                 } else if (Newsletter.class.getName().equals(className)) {
+                    
                     updateNewsletter(actionRequest, actionResponse);
+                    addSuccessMessage(actionRequest, actionResponse);
+                    
                 } else if (Subscriber.class.getName().equals(className)) {
+                    
                     updateSubscriber(actionRequest, actionResponse);
+                    addSuccessMessage(actionRequest, actionResponse);
+                    
                 }
             }
         }
@@ -408,8 +417,6 @@ public class NewsletterManagerPortlet extends MVCPortlet {
     }
 
     protected void updateSubscriber(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
-
-        _log.info("updateSubscriber");
 
         long subscriberId = ParamUtil.getLong(actionRequest, "subscriberId");
 
