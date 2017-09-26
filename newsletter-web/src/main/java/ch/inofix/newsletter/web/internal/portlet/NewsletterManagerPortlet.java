@@ -50,8 +50,8 @@ import ch.inofix.newsletter.web.internal.constants.NewsletterWebKeys;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2017-09-26 18:19
- * @version 1.2.4
+ * @modified 2017-09-26 19:02
+ * @version 1.2.5
  */
 @Component(immediate = true, property = { 
 		"com.liferay.portlet.css-class-wrapper=portlet-newsletter",
@@ -130,13 +130,13 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         super.render(renderRequest, renderResponse);
     }
 
-    @Override
-    public void sendRedirect(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException {
-
-        // Disable the default sendRedirect-behaviour of LiferayPortlet in order
-        // to pass renderParameters via actionResponse's setRenderParameter()
-        // methods.
-    }
+//    @Override
+//    public void sendRedirect(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException {
+//
+//        // Disable the default sendRedirect-behaviour of LiferayPortlet in order
+//        // to pass renderParameters via actionResponse's setRenderParameter()
+//        // methods.
+//    }
 
     @Activate
     @Modified
@@ -246,44 +246,44 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
         return editURL;
     }
-    
+
     /**
-    *
-    * @param portletRequest
-    * @throws Exception
-    */
-   protected void getMailing(PortletRequest portletRequest) throws Exception {
+     *
+     * @param portletRequest
+     * @throws Exception
+     */
+    protected void getMailing(PortletRequest portletRequest) throws Exception {
 
-       long mailingId = ParamUtil.getLong(portletRequest, "mailingId");
-       boolean postDelete = ParamUtil.getBoolean(portletRequest, "postDelete");
+        long mailingId = ParamUtil.getLong(portletRequest, "mailingId");
+        boolean postDelete = ParamUtil.getBoolean(portletRequest, "postDelete");
 
-       if (mailingId <= 0 || postDelete) {
-           return;
-       }
+        if (mailingId <= 0 || postDelete) {
+            return;
+        }
 
-       Mailing mailing = _mailingService.getMailing(mailingId);
+        Mailing mailing = _mailingService.getMailing(mailingId);
 
-       portletRequest.setAttribute(NewsletterWebKeys.MAILING, mailing);
-   }
-   
-   /**
-   *
-   * @param portletRequest
-   * @throws Exception
-   */
-  protected void getNewsletter(PortletRequest portletRequest) throws Exception {
+        portletRequest.setAttribute(NewsletterWebKeys.MAILING, mailing);
+    }
 
-      long newsletterId = ParamUtil.getLong(portletRequest, "newsletterId");
-      boolean postDelete = ParamUtil.getBoolean(portletRequest, "postDelete");
+    /**
+     *
+     * @param portletRequest
+     * @throws Exception
+     */
+    protected void getNewsletter(PortletRequest portletRequest) throws Exception {
 
-      if (newsletterId <= 0 || postDelete) {
-          return;
-      }
+        long newsletterId = ParamUtil.getLong(portletRequest, "newsletterId");
+        boolean postDelete = ParamUtil.getBoolean(portletRequest, "postDelete");
 
-      Newsletter newsletter = _newsletterService.getNewsletter(newsletterId);
+        if (newsletterId <= 0 || postDelete) {
+            return;
+        }
 
-      portletRequest.setAttribute(NewsletterWebKeys.NEWSLETTER, newsletter);
-  }
+        Newsletter newsletter = _newsletterService.getNewsletter(newsletterId);
+
+        portletRequest.setAttribute(NewsletterWebKeys.NEWSLETTER, newsletter);
+    }
 
     /**
      *
@@ -326,7 +326,7 @@ public class NewsletterManagerPortlet extends MVCPortlet {
      * @throws Exception
      */
     protected void updateMailing(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
-        
+
         _log.info("updateMailing");
 
         long mailingId = ParamUtil.getLong(actionRequest, "mailingId");
@@ -378,8 +378,6 @@ public class NewsletterManagerPortlet extends MVCPortlet {
      */
     protected void updateNewsletter(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
 
-        _log.info("updateNewsletter");
-
         long newsletterId = ParamUtil.getLong(actionRequest, "newsletterId");
 
         String fromAddress = ParamUtil.getString(actionRequest, "fromAddress");
@@ -401,11 +399,9 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         }
 
         String redirect = getEditNewsletterURL(actionRequest, actionResponse, newsletter);
-        String tabs1 = ParamUtil.get(actionRequest, "tabs1", "settings");
-
         actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
+
         actionRequest.setAttribute(NewsletterWebKeys.NEWSLETTER, newsletter);
-        actionResponse.setRenderParameter("tabs1", tabs1);
 
     }
 

@@ -2,8 +2,8 @@
     edit_newsletter.jsp: edit a newsletter.
 
     Created:     2017-09-17 00:02 by Christian Berndt
-    Modified:    2017-09-17 00:02 by Christian Berndt
-    Version:     1.0.0
+    Modified:    2017-09-26 18:28 by Christian Berndt
+    Version:     1.0.1
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -11,7 +11,7 @@
 <%@page import="java.util.Calendar"%>
 
 <%
-    Newsletter newsletter = (Newsletter) request.getAttribute(NewsletterWebKeys.MAILING);
+    Newsletter newsletter = (Newsletter) request.getAttribute(NewsletterWebKeys.NEWSLETTER);
 
     String title = LanguageUtil.get(request, "new-newsletter");
 
@@ -74,6 +74,15 @@
         <div class="lfr-form-content">
         
             <aui:fieldset-group markupView="<%= markupView %>">
+            
+                <aui:input name="backURL" type="hidden"
+                    value="<%=backURL%>" />
+
+                <aui:input name="redirect" type="hidden"
+                    value="<%=redirect%>" />
+
+                <aui:input name="newsletterId" type="hidden"
+                    disabled="<%=!hasUpdatePermission%>" />
             
                 <aui:input name="title"/>
                 <aui:input name="template"/>
