@@ -50,8 +50,8 @@ import ch.inofix.newsletter.web.internal.constants.NewsletterWebKeys;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2017-09-26 23:41
- * @version 1.2.6
+ * @modified 2017-09-27 00:02
+ * @version 1.2.7
  */
 @Component(immediate = true, property = { 
 		"com.liferay.portlet.css-class-wrapper=portlet-newsletter",
@@ -87,7 +87,25 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
 
         try {
+            
             if (cmd.equals(Constants.DELETE)) {
+                
+                if (Mailing.class.getName().equals(className)) {
+                    
+                    deleteMailings(actionRequest, actionResponse);
+                    addSuccessMessage(actionRequest, actionResponse);
+                    
+                } else if (Newsletter.class.getName().equals(className)) {
+                    
+                    deleteNewsletters(actionRequest, actionResponse);
+                    addSuccessMessage(actionRequest, actionResponse);
+                    
+                } else if (Subscriber.class.getName().equals(className)) {
+                    
+                    deleteSubscribers(actionRequest, actionResponse);                    
+                    addSuccessMessage(actionRequest, actionResponse);
+                    
+                }
 
             } else if (cmd.equals(Constants.UPDATE)) {
 
@@ -155,6 +173,28 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         _newsletterManagerConfiguration = Configurable.createConfigurable(NewsletterManagerConfiguration.class,
                 properties);
     }
+    
+    /**
+    *
+    * @param actionRequest
+    * @param actionResponse
+    * @throws Exception
+    */
+   protected void deleteMailings(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+
+       long mailingId = ParamUtil.getLong(actionRequest, "mailingId");
+
+       long[] mailingIds = ParamUtil.getLongValues(actionRequest, "deleteMailingIds");
+
+       if (mailingId > 0) {
+           mailingIds = new long[] { mailingId };
+       }
+
+       for (long id : mailingIds) {
+           _mailingService.deleteMailing(id);
+       }
+
+   }
 
     /**
      *
@@ -163,15 +203,45 @@ public class NewsletterManagerPortlet extends MVCPortlet {
      * @since 1.0.0
      * @throws Exception
      */
-    protected void deleteNewsletter(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+    protected void deleteNewsletters(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
 
         long newsletterId = ParamUtil.getLong(actionRequest, "newsletterId");
 
-        _newsletterService.deleteNewsletter(newsletterId);
+        long[] newsletterIds = ParamUtil.getLongValues(actionRequest, "deleteMailingIds");
 
-        actionResponse.setRenderParameter("postDelete", "true");
+        if (newsletterId > 0) {
+            newsletterIds = new long[] { newsletterId };
+        }
+
+        for (long id : newsletterIds) {
+            _newsletterService.deleteNewsletter(id);
+        }
+
+//        actionResponse.setRenderParameter("postDelete", "true");
 
     }
+    
+    /**
+    *
+    * @param actionRequest
+    * @param actionResponse
+    * @throws Exception
+    */
+   protected void deleteSubscribers(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+
+       long subscriberId = ParamUtil.getLong(actionRequest, "subscriberId");
+
+       long[] subscriberIds = ParamUtil.getLongValues(actionRequest, "deleteSubscriberIds");
+
+       if (subscriberId > 0) {
+           subscriberIds = new long[] { subscriberId };
+       }
+
+       for (long id : subscriberIds) {
+           _subscriberService.deleteSubscriber(id);
+       }
+
+   }
 
     /**
      *

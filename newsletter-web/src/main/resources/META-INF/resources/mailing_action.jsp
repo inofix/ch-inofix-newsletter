@@ -2,8 +2,8 @@
     mailing_action.jsp: The action menu of the newsletter-manager's mailing panel.
     
     Created:    2017-09-21 23:50 by Christian Berndt
-    Modified:   2017-09-21 23:50 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-09-26 23:57 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -52,6 +52,7 @@
     <c:if test="<%=hasDeletePermission%>">
 
         <portlet:actionURL var="deleteURL">
+            <portlet:param name="className" value="<%= Mailing.class.getName() %>"/>        
             <portlet:param name="cmd" value="<%= Constants.DELETE %>"/>
             <portlet:param name="redirect" value="<%=currentURL%>" />
             <portlet:param name="mailingId"
