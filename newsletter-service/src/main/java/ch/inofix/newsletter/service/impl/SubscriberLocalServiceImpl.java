@@ -68,8 +68,8 @@ import ch.inofix.newsletter.social.SubscriberActivityKeys;
  *
  * @author Christian Berndt
  * @created 2016-10-08 16:41
- * @modified 2017-09-17 21:52
- * @version 1.0.4
+ * @modified 2017-09-26 22:52
+ * @version 1.0.5
  * @see SubscriberLocalServiceBaseImpl
  * @see ch.inofix.newsletter.service.SubscriberLocalServiceUtil
  */
@@ -232,7 +232,7 @@ public class SubscriberLocalServiceImpl extends SubscriberLocalServiceBaseImpl {
             sort = new Sort(Field.MODIFIED_DATE, true);
         }
 
-        Indexer<Mailing> indexer = IndexerRegistryUtil.getIndexer(Mailing.class.getName());
+        Indexer<Mailing> indexer = IndexerRegistryUtil.getIndexer(Subscriber.class.getName());
 
         SearchContext searchContext = buildSearchContext(userId, groupId, ownerUserId, title, description, status,
                 params, andSearch, start, end, sort);
