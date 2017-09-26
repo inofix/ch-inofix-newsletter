@@ -85,6 +85,7 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
         String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
 
+
         try {
             if (cmd.equals(Constants.DELETE)) {
 
@@ -95,6 +96,7 @@ public class NewsletterManagerPortlet extends MVCPortlet {
                 } else if (Newsletter.class.getName().equals(className)) {
                     updateNewsletter(actionRequest, actionResponse);
                 } else if (Subscriber.class.getName().equals(className)) {
+                    updateSubscriber(actionRequest, actionResponse);
                 }
             }
         }
@@ -292,6 +294,8 @@ public class NewsletterManagerPortlet extends MVCPortlet {
      */
     protected void getSubscriber(PortletRequest portletRequest) throws Exception {
 
+        _log.info("getSubscriber()");
+        
         long subscriberId = ParamUtil.getLong(portletRequest, "subscriberId");
         boolean postDelete = ParamUtil.getBoolean(portletRequest, "postDelete");
 
@@ -326,8 +330,6 @@ public class NewsletterManagerPortlet extends MVCPortlet {
      * @throws Exception
      */
     protected void updateMailing(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
-
-        _log.info("updateMailing");
 
         long mailingId = ParamUtil.getLong(actionRequest, "mailingId");
 
@@ -434,11 +436,9 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         }
 
         String redirect = getEditSubscriberURL(actionRequest, actionResponse, subscriber);
-        String tabs1 = ParamUtil.get(actionRequest, "tabs1", "settings");
-
         actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
+
         actionRequest.setAttribute(NewsletterWebKeys.SUBSCRIBER, subscriber);
-        actionResponse.setRenderParameter("tabs1", tabs1);
 
     }
 

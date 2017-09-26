@@ -5,15 +5,17 @@ import ch.inofix.newsletter.service.SubscriberLocalServiceUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
 /**
  *
  * @author Christian Berndt
- * @created 2016-10-20 18:43
- * @modified 2017-03-10 16:38
- * @version 1.0.1
+ * @created 2017-09-26 21:23
+ * @modified 2017-09-26 21:23
+ * @version 1.0.2
  *
  */
 public class SubscriberPermission {
@@ -35,20 +37,7 @@ public class SubscriberPermission {
         }
     }
 
-    /**
-     *
-     * @param permissionChecker
-     * @param subscriberId
-     * @param actionId
-     * @return
-     * @since 1.0.0
-     * @throws PortalException
-     * @throws SystemException
-     */
-    public static boolean contains(PermissionChecker permissionChecker, long subscriberId, String actionId)
-            throws PortalException, SystemException {
-
-        Subscriber subscriber = SubscriberLocalServiceUtil.getSubscriber(subscriberId);
+    public static boolean contains(PermissionChecker permissionChecker, Subscriber subscriber, String actionId) {
 
         if (permissionChecker.hasOwnerPermission(subscriber.getCompanyId(), Subscriber.class.getName(),
                 subscriber.getSubscriberId(), subscriber.getUserId(), actionId)) {
@@ -57,7 +46,22 @@ public class SubscriberPermission {
         }
 
         return permissionChecker.hasPermission(subscriber.getGroupId(), Subscriber.class.getName(),
-                subscriber.getSubscriberId(), actionId);
-
+                String.valueOf(subscriber.getSubscriberId()), actionId);
     }
+
+    public static boolean contains(PermissionChecker permissionChecker, long subscriberId, String actionId) {
+
+        Subscriber subscriber;
+        try {
+            subscriber = SubscriberLocalServiceUtil.getSubscriber(subscriberId);
+            return contains(permissionChecker, subscriber, actionId);
+        } catch (PortalException e) {
+            _log.error(e);
+        }
+
+        return false;
+    }
+
+    private static final Log _log = LogFactoryUtil.getLog(SubscriberPermission.class.getName());
+
 }

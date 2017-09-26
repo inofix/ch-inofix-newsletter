@@ -34,8 +34,8 @@ import ch.inofix.newsletter.service.permission.SubscriberPermission;
 /**
  * @author Christian Berndt
  * @created 2017-03-16 16:19
- * @modified 2017-03-16 16:50
- * @version 1.0.1
+ * @modified 2017-09-26 22:59
+ * @version 1.0.2
  */
 @Component(immediate = true, service = Indexer.class)
 public class SubscriberIndexer extends BaseIndexer<Subscriber> {
@@ -68,7 +68,9 @@ public class SubscriberIndexer extends BaseIndexer<Subscriber> {
 
     @Override
     protected Document doGetDocument(Subscriber subscriber) throws Exception {
+        
         Document document = getBaseModelDocument(CLASS_NAME, subscriber);
+        document.addTextSortable("email", subscriber.getEmail());
         document.addTextSortable(Field.TITLE, subscriber.getTitle());
 
         return document;
