@@ -152,8 +152,6 @@ public class NewsletterIndexer extends BaseIndexer<Newsletter> {
     }
 
     protected void reindexNewsletters(long companyId) throws PortalException {
-
-        _log.info("reindexNewsletters");
         
         final IndexableActionableDynamicQuery indexableActionableDynamicQuery = _newsletterLocalService
                 .getIndexableActionableDynamicQuery();
