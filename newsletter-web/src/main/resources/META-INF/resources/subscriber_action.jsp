@@ -52,6 +52,7 @@
     <c:if test="<%=hasDeletePermission%>">
 
         <portlet:actionURL var="deleteURL">
+            <portlet:param name="className" value="<%= Subscriber.class.getName() %>"/>
             <portlet:param name="cmd" value="<%= Constants.DELETE %>"/>
             <portlet:param name="redirect" value="<%=currentURL%>" />
             <portlet:param name="subscriberId"
