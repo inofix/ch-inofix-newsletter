@@ -17,6 +17,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
+import com.liferay.portal.kernel.exception.NoSuchResourceException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
@@ -49,15 +50,23 @@ import ch.inofix.newsletter.web.internal.constants.NewsletterWebKeys;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2017-09-13 22:51
- * @version 1.2.3
+ * @modified 2017-09-26 18:19
+ * @version 1.2.4
  */
-@Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-newsletter",
-        "com.liferay.portlet.display-category=category.inofix", "com.liferay.portlet.header-portlet-css=/css/main.css",
-        "com.liferay.portlet.instanceable=false", "javax.portlet.display-name=Newsletter",
-        "javax.portlet.init-param.template-path=/", "javax.portlet.init-param.view-template=/view.jsp",
-        "javax.portlet.name=" + PortletKeys.NEWSLETTER_MANAGER, "javax.portlet.resource-bundle=content.Language",
-        "javax.portlet.security-role-ref=power-user,user" }, service = Portlet.class)
+@Component(immediate = true, property = { 
+		"com.liferay.portlet.css-class-wrapper=portlet-newsletter",
+        "com.liferay.portlet.display-category=category.inofix", 
+        "com.liferay.portlet.header-portlet-css=/css/main.css",
+        "com.liferay.portlet.instanceable=false", 
+        "javax.portlet.display-name=Newsletter",
+        "javax.portlet.init-param.template-path=/", 
+        "javax.portlet.init-param.view-template=/view.jsp",
+        "javax.portlet.name=" + PortletKeys.NEWSLETTER_MANAGER, 
+        "javax.portlet.resource-bundle=content.Language",
+        "javax.portlet.security-role-ref=power-user,user" 
+    }, 
+	service = Portlet.class
+)
 public class NewsletterManagerPortlet extends MVCPortlet {
 
     @Override
@@ -102,19 +111,21 @@ public class NewsletterManagerPortlet extends MVCPortlet {
     public void render(RenderRequest renderRequest, RenderResponse renderResponse)
             throws IOException, PortletException {
 
-        // TODO
-        // try {
-        // getNewsletter(renderRequest);
-        // } catch (Exception e) {
-        // if (e instanceof NoSuchResourceException || e instanceof
-        // PrincipalException) {
-        // SessionErrors.add(renderRequest, e.getClass());
-        // } else {
-        // throw new PortletException(e);
-        // }
-        // }
+		try {
+			
+			getMailing(renderRequest);
+			getNewsletter(renderRequest);
+			getSubscriber(renderRequest);
+			
+		} catch (Exception e) {
+			if (e instanceof NoSuchResourceException || e instanceof PrincipalException) {
+				SessionErrors.add(renderRequest, e.getClass());
+			} else {
+				throw new PortletException(e);
+			}
+		}
 
-        renderRequest.setAttribute(NewsletterManagerConfiguration.class.getName(), _newsletterManagerConfiguration);
+//        renderRequest.setAttribute(NewsletterManagerConfiguration.class.getName(), _newsletterManagerConfiguration);
 
         super.render(renderRequest, renderResponse);
     }
@@ -235,24 +246,62 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
         return editURL;
     }
+    
+    /**
+    *
+    * @param portletRequest
+    * @throws Exception
+    */
+   protected void getMailing(PortletRequest portletRequest) throws Exception {
+
+       long mailingId = ParamUtil.getLong(portletRequest, "mailingId");
+       boolean postDelete = ParamUtil.getBoolean(portletRequest, "postDelete");
+
+       if (mailingId <= 0 || postDelete) {
+           return;
+       }
+
+       Mailing mailing = _mailingService.getMailing(mailingId);
+
+       portletRequest.setAttribute(NewsletterWebKeys.MAILING, mailing);
+   }
+   
+   /**
+   *
+   * @param portletRequest
+   * @throws Exception
+   */
+  protected void getNewsletter(PortletRequest portletRequest) throws Exception {
+
+      long newsletterId = ParamUtil.getLong(portletRequest, "newsletterId");
+      boolean postDelete = ParamUtil.getBoolean(portletRequest, "postDelete");
+
+      if (newsletterId <= 0 || postDelete) {
+          return;
+      }
+
+      Newsletter newsletter = _newsletterService.getNewsletter(newsletterId);
+
+      portletRequest.setAttribute(NewsletterWebKeys.NEWSLETTER, newsletter);
+  }
 
     /**
      *
      * @param portletRequest
      * @throws Exception
      */
-    protected void getNewsletter(PortletRequest portletRequest) throws Exception {
+    protected void getSubscriber(PortletRequest portletRequest) throws Exception {
 
-        long newsletterId = ParamUtil.getLong(portletRequest, "newsletterId");
+        long subscriberId = ParamUtil.getLong(portletRequest, "subscriberId");
         boolean postDelete = ParamUtil.getBoolean(portletRequest, "postDelete");
 
-        if (newsletterId <= 0 || postDelete) {
+        if (subscriberId <= 0 || postDelete) {
             return;
         }
 
-        Newsletter newsletter = _newsletterService.getNewsletter(newsletterId);
+        Subscriber subscriber = _subscriberService.getSubscriber(subscriberId);
 
-        portletRequest.setAttribute(NewsletterWebKeys.NEWSLETTER, newsletter);
+        portletRequest.setAttribute(NewsletterWebKeys.SUBSCRIBER, subscriber);
     }
 
     @Reference

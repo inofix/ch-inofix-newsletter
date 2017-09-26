@@ -2,8 +2,8 @@
     edit_mailing.jsp: edit a single mailing.
 
     Created:     2017-09-05 23:10 by Christian Berndt
-    Modified:    2017-09-17 20:43 by Christian Berndt
-    Version:     1.0.1
+    Modified:    2017-09-17 18:21 by Christian Berndt
+    Version:     1.0.2
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -86,12 +86,21 @@
         
             <aui:fieldset-group markupView="<%= markupView %>">
             
+                <aui:input name="backURL" type="hidden"
+                    value="<%=backURL%>" />
+
+                <aui:input name="redirect" type="hidden"
+                    value="<%=redirect%>" />
+
+                <aui:input name="mailingId" type="hidden"
+                    disabled="<%=!hasUpdatePermission%>" />
+            
                 <aui:input name="title"/>
                 <aui:input name="template"/>
                 
                 <aui:select name="newsletterId"
                     disabled="<%=disabled%>"
-                    helpMessage="newsletter-help" label="newsletter"
+                    helpMessage="newsletter-id-help" label="newsletter"
                     inlineField="true">
                     <aui:option label="select-newsletter" value="0" />
                     <%
