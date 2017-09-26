@@ -46,8 +46,8 @@ import ch.inofix.newsletter.service.permission.NewsletterPortletPermission;
  *
  * @author Christian Berndt
  * @created 2016-10-08 01:25
- * @modified 2017-09-17 21:42
- * @version 1.1.1
+ * @modified 2017-09-26 18:52
+ * @version 1.1.2
  * @see ch.inofix.portlet.newsletter.service.base.NewsletterServiceBaseImpl
  * @see ch.inofix.portlet.newsletter.service.NewsletterServiceUtil
  */
@@ -161,7 +161,7 @@ public class NewsletterServiceImpl extends NewsletterServiceBaseImpl {
 
         NewsletterPermission.check(getPermissionChecker(), newsletterId, ActionKeys.UPDATE);
 
-        return newsletterLocalService.updateNewsletter(getUserId(), serviceContext.getScopeGroupId(), title, template,
+        return newsletterLocalService.updateNewsletter(newsletterId, getUserId(), title, template,
                 fromAddress, fromName, useHttps, serviceContext);
 
     }
