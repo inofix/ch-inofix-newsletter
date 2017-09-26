@@ -35,7 +35,7 @@ import ch.inofix.newsletter.service.permission.NewsletterPortletPermission;
  *
  * @author Christian Berndt
  * @created 2017-09-26 19:32
- * @modified 2017-09-26 19:32
+ * @modified 2017-09-26 23:13
  * @version 1.0.0
  *
  */
@@ -46,7 +46,7 @@ import ch.inofix.newsletter.service.permission.NewsletterPortletPermission;
 )
 public class SubscriberAssetRendererFactory extends BaseAssetRendererFactory<Subscriber> {
 
-    public static final String TYPE = "task_record";
+    public static final String TYPE = "subscriber";
 
     public SubscriberAssetRendererFactory() {
 
@@ -66,13 +66,14 @@ public class SubscriberAssetRendererFactory extends BaseAssetRendererFactory<Sub
 
         // TODO
 
-//        SubscriberAssetRenderer subscriberAssetRenderer = new SubscriberAssetRenderer(subscriber);
-//
-//        subscriberAssetRenderer.setAssetRendererType(type);
-//        subscriberAssetRenderer.setServletContext(_servletContext);
-//
-//        return subscriberAssetRenderer;
-        
+        // SubscriberAssetRenderer subscriberAssetRenderer = new
+        // SubscriberAssetRenderer(subscriber);
+        //
+        // subscriberAssetRenderer.setAssetRendererType(type);
+        // subscriberAssetRenderer.setServletContext(_servletContext);
+        //
+        // return subscriberAssetRenderer;
+
         return null;
 
     }
@@ -99,7 +100,8 @@ public class SubscriberAssetRendererFactory extends BaseAssetRendererFactory<Sub
 
         if (group != null) {
 
-            long portletPlid = PortalUtil.getPlidFromPortletId(group.getGroupId(), false, PortletKeys.NEWSLETTER_MANAGER);
+            long portletPlid = PortalUtil.getPlidFromPortletId(group.getGroupId(), false,
+                    PortletKeys.NEWSLETTER_MANAGER);
 
             PortletURL portletURL = PortletURLFactoryUtil.create(liferayPortletRequest, PortletKeys.NEWSLETTER_MANAGER,
                     portletPlid, PortletRequest.RENDER_PHASE);
