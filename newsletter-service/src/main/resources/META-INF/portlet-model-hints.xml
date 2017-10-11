@@ -11,8 +11,12 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="status" type="int" />
-		<field name="title" type="String" />
-		<field name="template" type="String" />
+		<field name="title" type="String" >
+            <validator name="required" />        
+        </field>
+        <field name="template" type="String" >
+            <hint-collection name="TEXTAREA" />
+        </field>
 		<field name="newsletterId" type="long" />
 		<field name="articleId" type="String" />
 		<field name="articleGroupId" type="long" />
@@ -30,9 +34,16 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="status" type="int" />
-		<field name="title" type="String" />
-		<field name="template" type="String" />
-		<field name="fromAddress" type="String" />
+		<field name="title" type="String" >
+            <validator name="required" />        
+        </field>
+		<field name="template" type="String" >
+            <hint-collection name="TEXTAREA" />
+        </field>
+		<field name="fromAddress" type="String" >
+            <validator name="required" />        
+            <validator name="email" />
+        </field>     
 		<field name="fromName" type="String" />
 		<field name="useHttps" type="boolean" />
 	</model>
@@ -46,7 +57,10 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="status" type="int" />
-		<field name="email" type="String" />
+		<field name="email" type="String">
+            <validator name="email" />        
+            <validator name="required" />       
+        </field>
 		<field name="firstname" type="String" />
 		<field name="gender" type="String" />
 		<field name="lastname" type="String" />
