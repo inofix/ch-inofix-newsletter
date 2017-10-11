@@ -17,3 +17,52 @@
     }
     
 }
+
+.portlet-newsletter {
+    
+    .clear-message {
+    
+        display: inline-block;
+        padding-bottom: 17px;
+        padding-top: 17px;
+        padding-right: 15px;
+        
+        a {
+            color: #777;
+            
+            &:hover {
+                color: #333;
+                text-decoration: none; 
+            }
+        }
+    
+        .btn {
+            border: 0;
+            background-color: transparent;
+            margin-top: -2px;
+            padding: 0;
+        }
+        
+        .icon-monospaced {
+            height: 18px;
+            line-height: 18px;
+            width: 18px;
+        }  
+        
+        .lexicon-icon {
+            width: 16px;
+            height: 16px;
+            padding: 3px;
+            margin-right: 3px;
+            color: #fff;
+            text-align: center;
+            background-color: #777;
+            border-radius: 3px;  
+            
+            &:hover {
+                background-color: #333;
+            }          
+        }     
+    }
+    
+}
