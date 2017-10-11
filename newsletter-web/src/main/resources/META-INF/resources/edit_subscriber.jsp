@@ -2,8 +2,8 @@
     edit_subscriber.jsp: edit a single subscriber.
 
     Created:     2017-09-22 00:07 by Christian Berndt
-    Modified:    2017-09-26 23:02 by Christian Berndt
-    Version:     1.0.1
+    Modified:    2017-10-11 23:21 by Christian Berndt
+    Version:     1.0.2
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -11,6 +11,7 @@
 <%
     Subscriber subscriber = (Subscriber) request.getAttribute(NewsletterWebKeys.SUBSCRIBER);
 
+    boolean disabled = false;
 
     String title = LanguageUtil.get(request, "new-subscriber");
 
@@ -37,6 +38,18 @@
         subscriber = SubscriberServiceUtil.createSubscriber();
         hasUpdatePermission = true;
 
+    }
+    
+    boolean reverse = false;
+
+    Sort sort = new Sort("title_sortable", reverse);
+
+    Hits hits = NewsletterServiceUtil.search(themeDisplay.getUserId(), scopeGroupId, 0, null, 0, 20, sort);
+    
+    List<Newsletter> newsletters = NewsletterUtil.getNewsletters(hits);
+    
+    if (newsletters.size() == 0) {
+        disabled = true; 
     }
     
     String redirect = ParamUtil.getString(request, "redirect");
@@ -81,16 +94,32 @@
 
                 <aui:input name="subscriberId" type="hidden"
                     disabled="<%=!hasUpdatePermission%>" />
+                
+                <aui:select name="newsletterId"
+                    disabled="<%=disabled%>"
+                    helpMessage="newsletter-id-help" label="newsletter"
+                    inlineField="true">
+                    <aui:option label="select-newsletter" value="0" />
+                    <%
+                        for (Newsletter newsletter : newsletters) {
+                    %>
+                    <aui:option label="<%=newsletter.getTitle()%>"
+                        value="<%=newsletter.getNewsletterId()%>"
+                        selected="<%=subscriber.getNewsletterId() == newsletter
+                                            .getNewsletterId()%>" />
+                    <%
+                        }
+                    %>
+                </aui:select>
             
                 <aui:input name="email"/>
                 <aui:input name="salutation"/>
+                <aui:input name="title"/>
                 <aui:input name="firstname"/>
                 <aui:input name="middlename"/>
                 <aui:input name="lastname"/>                             
                 <aui:input name="gender"/>
-                <aui:input name="newsletterId"/>
-                <aui:input name="title"/>
-        
+                        
             </aui:fieldset-group>
         </div>
                            
