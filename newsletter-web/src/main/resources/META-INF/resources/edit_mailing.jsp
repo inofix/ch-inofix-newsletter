@@ -2,8 +2,8 @@
     edit_mailing.jsp: edit a single mailing.
 
     Created:     2017-09-05 23:10 by Christian Berndt
-    Modified:    2017-09-17 18:21 by Christian Berndt
-    Version:     1.0.2
+    Modified:    2017-10-11 23:14 by Christian Berndt
+    Version:     1.0.3
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -51,6 +51,10 @@
     Hits hits = NewsletterServiceUtil.search(themeDisplay.getUserId(), scopeGroupId, 0, null, 0, 20, sort);
     
     List<Newsletter> newsletters = NewsletterUtil.getNewsletters(hits);
+    
+    if (newsletters.size() == 0) {
+        disabled = true; 
+    }
 
     String redirect = ParamUtil.getString(request, "redirect");
 
@@ -84,6 +88,13 @@
     
         <div class="lfr-form-content">
         
+            <c:if test="<%= newsletters.size() == 0 %>">
+                <aui:alert type="warning" closeable="<%= false %>">
+                    <liferay-ui:message key="you-must-create-a-newsletter-before-you-can-add-a-mailing"/>
+                    <aui:a href="<%= redirect %>" label="back"/>
+                </aui:alert>
+            </c:if>
+        
             <aui:fieldset-group markupView="<%= markupView %>">
             
                 <aui:input name="backURL" type="hidden"
@@ -95,8 +106,8 @@
                 <aui:input name="mailingId" type="hidden"
                     disabled="<%=!hasUpdatePermission%>" />
             
-                <aui:input name="title"/>
-                <aui:input name="template"/>
+                <aui:input name="title" disabled="<%= disabled %>"/>
+                <aui:input name="template" disabled="<%= disabled %>"/>
                 
                 <aui:select name="newsletterId"
                     disabled="<%=disabled%>"
@@ -115,17 +126,17 @@
                     %>
                 </aui:select>  
                               
-                <aui:input name="articleId"/>
-                <aui:input name="articleGroupId"/>
-                <aui:input name="publishDate"/>
-                <aui:input name="sent"/>
-                <aui:input name="sendDate"/>
+                <aui:input name="articleId" disabled="<%= disabled %>"/>
+                <aui:input name="articleGroupId" disabled="<%= disabled %>"/>
+                <aui:input name="publishDate" disabled="<%= disabled %>"/>
+                <aui:input name="sent" disabled="<%= true %>"/>
+                <aui:input name="sendDate"  disabled="<%= disabled %>"/>
         
             </aui:fieldset-group>
         </div>
                            
         <aui:button-row>
-            <aui:button cssClass="btn-lg" disabled="<%= !hasUpdatePermission %>" type="submit" />           
+            <aui:button cssClass="btn-lg" disabled="<%= !hasUpdatePermission || disabled %>" type="submit" />           
             <aui:button cssClass="btn-lg" href="<%= redirect %>" type="cancel" />
         </aui:button-row>
         
