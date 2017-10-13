@@ -2,7 +2,7 @@
     edit_newsletter.jsp: edit a newsletter.
 
     Created:     2017-09-17 00:02 by Christian Berndt
-    Modified:    2017-09-26 18:28 by Christian Berndt
+    Modified:    2017-10-13 23:17 by Christian Berndt
     Version:     1.0.1
 --%>
 
@@ -88,7 +88,7 @@
                 <aui:input name="template"/>
                 <aui:input name="fromAddress"/>
                 <aui:input name="fromName"/>
-                <aui:input name="useHttps"/>
+                <aui:input name="useHttps" helpMessage="use-https-help"/>
         
             </aui:fieldset-group>
         </div>
