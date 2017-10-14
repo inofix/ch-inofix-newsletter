@@ -2,13 +2,18 @@
     view_newsletters.jsp: the newsletters panel.
     
     Created:    2017-09-02 11:55 by Christian Berndt
-    Modified:   2017-09-17 13:25 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2017-10-14 21:10 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/init.jsp"%>
 
+<%@page import="ch.inofix.newsletter.web.internal.search.NewsletterEntriesChecker"%>
+
 <%
+    // TODO: read newsletter columns from configuration
+    String[] columns = {"newsletter-id", "title", "user-name", "modified-date"}; 
+
     String displayStyle = ParamUtil.getString(request, "displayStyle");
 
     PortletURL portletURL = renderResponse.createRenderURL();
@@ -50,11 +55,18 @@
 
     searchContainer.setResults(newsletters);
     searchContainer.setTotal(hits.getLength());
+    
+    request.setAttribute("view_newsletters.jsp-columns", columns);
+    request.setAttribute("view_newsletters.jsp-total", hits.getLength());
 
-    EntriesChecker entriesChecker = new EntriesChecker(liferayPortletRequest, liferayPortletResponse);
+    NewsletterEntriesChecker entriesChecker = new NewsletterEntriesChecker(liferayPortletRequest, liferayPortletResponse);
 
     searchContainer.setRowChecker(entriesChecker);
 %>
+
+<liferay-util:include page="/newsletter_toolbar.jsp" servletContext="<%= application %>">
+    <liferay-util:param name="searchContainerId" value="newsletters" />
+</liferay-util:include>
 
 <div id="<portlet:namespace />newsletterContainer">
 
@@ -72,6 +84,7 @@
     <aui:form action="<%= editSetURL %>" name="fm" 
         onSubmit='<%= "event.preventDefault(); " + renderResponse.getNamespace() + "editSet();" %>'>
         
+        <aui:input name="className" type="hidden"/>        
         <aui:input name="<%= Constants.CMD %>" type="hidden"/>  
         <aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
         <aui:input name="deleteNewsletterIds" type="hidden" />

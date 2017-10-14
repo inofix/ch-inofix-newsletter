@@ -3,15 +3,9 @@
     for the newsletter view of the newsletter manager.
 
     Created:     2017-09-17 13:55 by Christian Berndt
-    Modified:    2017-09-17 13:55 by Christian Berndt
-    Version:     1.0.0
+    Modified:    2017-10-14 20:43 by Christian Berndt
+    Version:     1.0.1
 --%>
-
-<%
-    // TODO: read newsletter columns from configuration
-    String[] columns = {"newsletter-id", "title", "user-name", "modified-date"}; 
-    // String[] columns = (String[])request.getAttribute("view.jsp-columns");
-%>
 
 <%
     for (String column : columns) {

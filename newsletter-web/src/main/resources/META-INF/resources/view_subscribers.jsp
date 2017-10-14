@@ -2,13 +2,18 @@
     view_subscribers.jsp: the subscribers panel.
     
     Created:    2017-09-02 11:55 by Christian Berndt
-    Modified:   2017-09-02 11:55 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-10-14 21:10 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/init.jsp"%>
 
+<%@page import="ch.inofix.newsletter.web.internal.search.SubscriberEntriesChecker"%>
+
 <%
+    // TODO: read subscriber columns from configuration
+    String[] columns = {"subscriber-id", "email", "first-name", "last-name", "user-name", "modified-date"}; 
+
     String displayStyle = ParamUtil.getString(request, "displayStyle");
 
     PortletURL portletURL = renderResponse.createRenderURL();
@@ -50,11 +55,18 @@
 
     searchContainer.setResults(subscribers);
     searchContainer.setTotal(hits.getLength());
+    
+    request.setAttribute("view_subscribers.jsp-columns", columns);
+    request.setAttribute("view_subscribers.jsp-total", hits.getLength());
 
-    EntriesChecker entriesChecker = new EntriesChecker(liferayPortletRequest, liferayPortletResponse);
+    SubscriberEntriesChecker entriesChecker = new SubscriberEntriesChecker(liferayPortletRequest, liferayPortletResponse);
 
     searchContainer.setRowChecker(entriesChecker);
 %>
+
+<liferay-util:include page="/subscriber_toolbar.jsp" servletContext="<%= application %>">
+    <liferay-util:param name="searchContainerId" value="subscribers" />
+</liferay-util:include>
 
 <div id="<portlet:namespace />subscriberContainer">
 
@@ -72,6 +84,7 @@
     <aui:form action="<%= editSetURL %>" name="fm" 
         onSubmit='<%= "event.preventDefault(); " + renderResponse.getNamespace() + "editSet();" %>'>
         
+        <aui:input name="className" type="hidden"/>
         <aui:input name="<%= Constants.CMD %>" type="hidden"/>  
         <aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
         <aui:input name="deleteSubscriberIds" type="hidden" />
