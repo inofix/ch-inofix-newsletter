@@ -2,8 +2,8 @@
     edit_subscriber.jsp: edit a single subscriber.
 
     Created:     2017-09-22 00:07 by Christian Berndt
-    Modified:    2017-10-14 13:33 by Christian Berndt
-    Version:     1.0.3
+    Modified:    2017-10-14 22:14 by Christian Berndt
+    Version:     1.0.4
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -84,6 +84,13 @@
     
         <div class="lfr-form-content">
         
+            <c:if test="<%= newsletters.size() == 0 %>">
+                <aui:alert type="warning" closeable="<%= false %>">
+                    <liferay-ui:message key="you-must-create-a-newsletter-before-you-can-add-a-subscriber"/>
+                    <aui:a href="<%= redirect %>" label="back"/>
+                </aui:alert>
+            </c:if>
+        
             <aui:fieldset-group markupView="<%= markupView %>">
             
                 <aui:input name="backURL" type="hidden"
@@ -112,19 +119,19 @@
                     %>
                 </aui:select>
             
-                <aui:input name="email"/>
-                <aui:input name="salutation"/>
-                <aui:input name="title"/>
-                <aui:input name="firstName"/>
-                <aui:input name="middleName"/>
-                <aui:input name="lastName"/>                             
-                <aui:input name="gender"/>
+                <aui:input disabled="<%= disabled %>" name="email"/>
+                <aui:input disabled="<%= disabled %>" name="salutation"/>
+                <aui:input disabled="<%= disabled %>" name="title"/>
+                <aui:input disabled="<%= disabled %>" name="firstName"/>
+                <aui:input disabled="<%= disabled %>" name="middleName"/>
+                <aui:input disabled="<%= disabled %>" name="lastName"/>                             
+                <aui:input disabled="<%= disabled %>" name="gender"/>
                         
             </aui:fieldset-group>
         </div>
                            
         <aui:button-row>
-            <aui:button cssClass="btn-lg" disabled="<%= !hasUpdatePermission %>" type="submit" />           
+            <aui:button cssClass="btn-lg" disabled="<%= !hasUpdatePermission || disabled %>" type="submit" />           
             <aui:button cssClass="btn-lg" href="<%= redirect %>" type="cancel" />
         </aui:button-row>
         
