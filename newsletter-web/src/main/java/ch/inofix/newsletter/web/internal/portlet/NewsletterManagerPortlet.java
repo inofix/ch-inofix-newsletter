@@ -50,7 +50,7 @@ import ch.inofix.newsletter.web.internal.constants.NewsletterWebKeys;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2017-10-14 13:58
+ * @modified 2017-10-14 21:56
  */
 @Component(immediate = true, property = { 
 		"com.liferay.portlet.css-class-wrapper=portlet-newsletter",
@@ -83,7 +83,6 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         String className = ParamUtil.getString(actionRequest, "className");
 
         String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
-
 
         try {
             
@@ -206,7 +205,7 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
         long newsletterId = ParamUtil.getLong(actionRequest, "newsletterId");
 
-        long[] newsletterIds = ParamUtil.getLongValues(actionRequest, "deleteMailingIds");
+        long[] newsletterIds = ParamUtil.getLongValues(actionRequest, "deleteNewsletterIds");
 
         if (newsletterId > 0) {
             newsletterIds = new long[] { newsletterId };
@@ -215,8 +214,6 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         for (long id : newsletterIds) {
             _newsletterService.deleteNewsletter(id);
         }
-
-//        actionResponse.setRenderParameter("postDelete", "true");
 
     }
     
@@ -371,8 +368,6 @@ public class NewsletterManagerPortlet extends MVCPortlet {
      * @throws Exception
      */
     protected void getSubscriber(PortletRequest portletRequest) throws Exception {
-
-        _log.info("getSubscriber()");
         
         long subscriberId = ParamUtil.getLong(portletRequest, "subscriberId");
         boolean postDelete = ParamUtil.getBoolean(portletRequest, "postDelete");
