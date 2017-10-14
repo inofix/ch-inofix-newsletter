@@ -6,8 +6,8 @@
     service.xml: Model description for the newsletter-portlet.
     
     Created:    2016-10-07 23:13 by Christian Berndt
-    Modified:   2017-07-14 13:30 by Christian Berndt
-    Version:    1.1.8
+    Modified:   2017-10-14 13:22 by Christian Berndt
+    Version:    1.1.9
 -->
 
 <service-builder package-path="ch.inofix.newsletter">
@@ -141,10 +141,10 @@
 		<!-- Other fields -->
 
 		<column name="email" type="String" />
-		<column name="firstname" type="String" />
+		<column name="firstName" type="String" />
 		<column name="gender" type="String" />
-		<column name="lastname" type="String" />
-		<column name="middlename" type="String" />
+		<column name="lastName" type="String" />
+		<column name="middleName" type="String" />
 		<column name="newsletterId" type="long" />
 		<column name="salutation" type="String" />
 		<column name="title" type="String" />

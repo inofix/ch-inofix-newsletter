@@ -50,8 +50,7 @@ import ch.inofix.newsletter.web.internal.constants.NewsletterWebKeys;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2017-09-27 00:02
- * @version 1.2.7
+ * @modified 2017-10-14 13:58
  */
 @Component(immediate = true, property = { 
 		"com.liferay.portlet.css-class-wrapper=portlet-newsletter",
@@ -491,10 +490,10 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         long subscriberId = ParamUtil.getLong(actionRequest, "subscriberId");
 
         String email = ParamUtil.getString(actionRequest, "email");
-        String firstname = ParamUtil.getString(actionRequest, "firstname");
+        String firstName = ParamUtil.getString(actionRequest, "firstName");
         String gender = ParamUtil.getString(actionRequest, "gender");
-        String lastname = ParamUtil.getString(actionRequest, "lastname");
-        String middlename = ParamUtil.getString(actionRequest, "middlename");
+        String lastName = ParamUtil.getString(actionRequest, "lastName");
+        String middleName = ParamUtil.getString(actionRequest, "middleName");
         long newsletterId = ParamUtil.getLong(actionRequest, "newsletterId");
         String salutation = ParamUtil.getString(actionRequest, "salutation");
         String title = ParamUtil.getString(actionRequest, "title");
@@ -505,11 +504,11 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         Subscriber subscriber = null;
 
         if (subscriberId <= 0) {
-            subscriber = _subscriberService.addSubscriber(email, firstname, gender, lastname, middlename, newsletterId,
+            subscriber = _subscriberService.addSubscriber(email, firstName, gender, lastName, middleName, newsletterId,
                     salutation, title, status, serviceContext);
         } else {
-            subscriber = _subscriberService.updateSubscriber(subscriberId, email, firstname, gender, lastname,
-                    middlename, newsletterId, salutation, title, status, serviceContext);
+            subscriber = _subscriberService.updateSubscriber(subscriberId, email, firstName, gender, lastName,
+                    middleName, newsletterId, salutation, title, status, serviceContext);
         }
 
         String redirect = getEditSubscriberURL(actionRequest, actionResponse, subscriber);
