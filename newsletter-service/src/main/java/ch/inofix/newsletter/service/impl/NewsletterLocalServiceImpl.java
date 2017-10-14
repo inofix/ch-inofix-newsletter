@@ -16,6 +16,7 @@ package ch.inofix.newsletter.service.impl;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetLinkConstants;
@@ -47,8 +48,11 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import aQute.bnd.annotation.ProviderType;
+import ch.inofix.newsletter.exception.NewsletterReferencedByMailingException;
+import ch.inofix.newsletter.exception.NewsletterReferencedBySubscriberException;
 import ch.inofix.newsletter.model.Mailing;
 import ch.inofix.newsletter.model.Newsletter;
+import ch.inofix.newsletter.model.Subscriber;
 import ch.inofix.newsletter.service.base.NewsletterLocalServiceBaseImpl;
 import ch.inofix.newsletter.social.NewsletterActivityKeys;
 
@@ -68,8 +72,8 @@ import ch.inofix.newsletter.social.NewsletterActivityKeys;
  *
  * @author Christian Berndt
  * @created 2016-10-08 16:41
- * @modified 2017-09-26 18:51
- * @version 1.1.1
+ * @modified 2017-10-14 21:39
+ * @version 1.1.2
  * @see NewsletterLocalServiceBaseImpl
  * @see ch.inofix.newsletter.service.NewsletterLocalServiceUtil
  */
@@ -88,8 +92,6 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
     public Newsletter addNewsletter(long userId, String title, String template, String fromAddress, String fromName,
             boolean useHttps, ServiceContext serviceContext) throws PortalException {
         
-        _log.info("addNewsletter");
-
         // Newsletter
 
         User user = userPersistence.findByPrimaryKey(userId);
@@ -144,6 +146,22 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
     @Override
     @SystemEvent(type = SystemEventConstants.TYPE_DELETE)
     public Newsletter deleteNewsletter(Newsletter newsletter) throws PortalException {
+
+        // Do no delete if it's referenced by one or more mailings.
+
+        List<Mailing> mailings = mailingPersistence.findByNewsletterId(newsletter.getNewsletterId());
+
+        if (mailings.size() > 0) {
+            throw new NewsletterReferencedByMailingException();
+        }
+        
+        // Do no delete if it's referenced by one or more subscribers.
+
+        List<Subscriber> subscribers = subscriberPersistence.findByNewsletterId(newsletter.getNewsletterId());
+
+        if (subscribers.size() > 0) {
+            throw new NewsletterReferencedBySubscriberException();
+        }
 
         // Newsletter
 
@@ -201,8 +219,6 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
     public Hits search(long userId, long groupId, long ownerUserId, String keywords, int start, int end, Sort sort)
             throws PortalException {
         
-        _log.info("search(keyword)");
-
         if (sort == null) {
             sort = new Sort(Field.MODIFIED_DATE, true);
         }
@@ -232,8 +248,6 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
             LinkedHashMap<String, Object> params, boolean andSearch, int start, int end, Sort sort)
             throws PortalException {
         
-        _log.info("search(advanced)");
-
         if (sort == null) {
             sort = new Sort(Field.MODIFIED_DATE, true);
         }
@@ -327,8 +341,6 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
     protected SearchContext buildSearchContext(long userId, long groupId, long ownerUserId, String title,
             String fromAddress, String fromName, int status, LinkedHashMap<String, Object> params, boolean andSearch, int start, int end,
             Sort sort) throws PortalException {
-        
-        _log.info("buildSearchContext()");
 
         SearchContext searchContext = new SearchContext();
 

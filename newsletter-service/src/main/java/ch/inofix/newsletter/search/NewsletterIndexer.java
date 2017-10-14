@@ -70,8 +70,6 @@ public class NewsletterIndexer extends BaseIndexer<Newsletter> {
     public void postProcessContextBooleanFilter(BooleanFilter contextBooleanFilter, SearchContext searchContext)
             throws Exception {
         
-        _log.info("postProcessContextBooleanFilter");
-
         addStatus(contextBooleanFilter, searchContext);
         
     }
@@ -79,9 +77,7 @@ public class NewsletterIndexer extends BaseIndexer<Newsletter> {
     @Override
     public void postProcessSearchQuery(BooleanQuery searchQuery, BooleanFilter fullQueryBooleanFilter,
             SearchContext searchContext) throws Exception {
-        
-        _log.info("postProcessSearchQuery");
-        
+                
         addSearchTerm(searchQuery, searchContext, "title", false);
         addSearchTerm(searchQuery, searchContext, "fromAddress", false);
         addSearchTerm(searchQuery, searchContext, "fromName", false);
@@ -104,8 +100,6 @@ public class NewsletterIndexer extends BaseIndexer<Newsletter> {
 
     @Override
     protected Document doGetDocument(Newsletter newsletter) throws Exception {
-
-        _log.info("doGetDocument");
 
         Document document = getBaseModelDocument(CLASS_NAME, newsletter);
         document.addTextSortable(Field.TITLE, newsletter.getTitle());

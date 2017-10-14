@@ -26,9 +26,9 @@ import ch.inofix.newsletter.service.permission.MailingPermission;
 * @version 1.0.0
 *
 */
-public class EntriesChecker extends EmptyOnClickRowChecker {
+public class MailingEntriesChecker extends EmptyOnClickRowChecker {
 
-   public EntriesChecker(LiferayPortletRequest liferayPortletRequest, LiferayPortletResponse liferayPortletResponse) {
+   public MailingEntriesChecker(LiferayPortletRequest liferayPortletRequest, LiferayPortletResponse liferayPortletResponse) {
 
        super(liferayPortletResponse);
 

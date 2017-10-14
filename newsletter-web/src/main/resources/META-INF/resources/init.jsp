@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2016-10-05 15:44 by Christian Berndt
-    Modified:    2017-09-17 21:05 by Christian Berndt
-    Version:     1.2.1
+    Modified:    2017-10-14 21:17 by Christian Berndt
+    Version:     1.2.2
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -17,13 +17,13 @@
 <%@taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
 
 <%@page import="ch.inofix.newsletter.constants.NewsletterActionKeys"%>
+<%@page import="ch.inofix.newsletter.constants.PortletKeys"%>
 <%@page import="ch.inofix.newsletter.exception.EmailAddressException"%>
 <%@page import="ch.inofix.newsletter.exception.NoSuchNewsletterException"%>
 <%@page import="ch.inofix.newsletter.model.Mailing"%>
 <%@page import="ch.inofix.newsletter.model.Newsletter"%>
 <%@page import="ch.inofix.newsletter.model.Subscriber"%>
 <%@page import="ch.inofix.newsletter.web.internal.constants.NewsletterWebKeys"%>
-<%@page import="ch.inofix.newsletter.web.internal.search.EntriesChecker"%>
 <%@page import="ch.inofix.newsletter.web.internal.search.MailingSearch"%>
 <%@page import="ch.inofix.newsletter.web.internal.search.MailingSearchTerms"%>
 <%@page import="ch.inofix.newsletter.web.internal.search.NewsletterSearch"%>
@@ -45,10 +45,13 @@
 <%@page import="com.liferay.portal.kernel.exception.SystemException"%>
 <%@page import="com.liferay.portal.kernel.exception.PortalException"%>
 <%@page import="com.liferay.portal.kernel.language.LanguageUtil"%>
+<%@page import="com.liferay.portal.kernel.language.UnicodeLanguageUtil"%>
 <%@page import="com.liferay.portal.kernel.log.LogFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.log.Log"%>
 <%@page import="com.liferay.portal.kernel.model.User"%>
 <%@page import="com.liferay.portal.kernel.portlet.LiferayWindowState"%>
+<%@page import="com.liferay.portal.kernel.portlet.PortalPreferences"%>
+<%@page import="com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.search.Document"%>
 <%@page import="com.liferay.portal.kernel.search.Field"%>
 <%@page import="com.liferay.portal.kernel.search.Hits"%>
@@ -90,9 +93,9 @@
 <portlet:defineObjects />
 
 <%
-    long articleGroupId = GetterUtil.getLong(portletPreferences.getValue("articleGroupId", ""));
+    PortalPreferences portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(request);
 
-//     String currentURL = PortalUtil.getCurrentURL(request);
+    long articleGroupId = GetterUtil.getLong(portletPreferences.getValue("articleGroupId", ""));
     
     String markupView = "lexicon";
 
@@ -101,6 +104,4 @@
     boolean showSearchSpeed = false;
     
     String tabs1 = ParamUtil.getString(request, "tabs1", "mailings");
-//     String tabs2 = ParamUtil.getString(request, "tabs2", "export");
-
 %>

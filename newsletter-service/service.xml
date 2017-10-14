@@ -6,8 +6,8 @@
     service.xml: Model description for the newsletter-portlet.
     
     Created:    2016-10-07 23:13 by Christian Berndt
-    Modified:   2017-10-14 13:22 by Christian Berndt
-    Version:    1.1.9
+    Modified:   2017-10-14 21:34 by Christian Berndt
+    Version:    1.2.0
 -->
 
 <service-builder package-path="ch.inofix.newsletter">
@@ -152,7 +152,10 @@
 		<!-- Order -->
 
 		<!-- Finder methods -->
-
+        <finder return-type="Collection" name="NewsletterId">
+            <finder-column name="newsletterId" />
+        </finder>
+        
         <!-- References -->
         
         <reference entity="AssetEntry" package-path="com.liferay.portlet.asset" />
@@ -167,7 +170,8 @@
 	</entity>
 
 	<exceptions>
-		<exception>NewsletterReferencedByMailing</exception>
-		<exception>EmailAddress</exception>
+        <exception>EmailAddress</exception>
+        <exception>NewsletterReferencedByMailing</exception>
+        <exception>NewsletterReferencedBySubscriber</exception>
 	</exceptions>
 </service-builder>

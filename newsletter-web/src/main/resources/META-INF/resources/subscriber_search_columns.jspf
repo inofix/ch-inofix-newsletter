@@ -8,12 +8,6 @@
 --%>
 
 <%
-    // TODO: read subscriber columns from configuration
-    String[] columns = {"subscriber-id", "email", "first-name", "last-name", "user-name", "modified-date"}; 
-    // String[] columns = (String[])request.getAttribute("view.jsp-columns");
-%>
-
-<%
     for (String column : columns) {
 %>
 

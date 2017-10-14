@@ -223,8 +223,6 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
     public Hits search(long userId, long groupId, long ownerUserId, String keywords, int start, int end, Sort sort)
             throws PortalException {
         
-        _log.info("search()");
-
         if (sort == null) {
             sort = new Sort(Field.MODIFIED_DATE, true);
         }
@@ -250,8 +248,6 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
             LinkedHashMap<String, Object> params, boolean andSearch, int start, int end, Sort sort)
             throws PortalException {
         
-        _log.info("search(advanced)");
-
         if (sort == null) {
             sort = new Sort(Field.MODIFIED_DATE, true);
         }
@@ -438,11 +434,9 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
         return mailing;
     }
 
-    protected SearchContext buildSearchContext(long userId, long groupId, long ownerUserId, String title,
- int status, LinkedHashMap<String, Object> params, boolean andSearch, int start, int end,
-            Sort sort) throws PortalException {
-        
-        _log.info("buildSearchContext()");
+    protected SearchContext buildSearchContext(long userId, long groupId, long ownerUserId, String title, int status,
+            LinkedHashMap<String, Object> params, boolean andSearch, int start, int end, Sort sort)
+            throws PortalException {
 
         SearchContext searchContext = new SearchContext();
 

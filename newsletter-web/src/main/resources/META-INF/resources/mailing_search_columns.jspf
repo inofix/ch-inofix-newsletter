@@ -3,15 +3,9 @@
     for the mailing view of the newsletter manager.
 
     Created:     2017-09-17 20:43 by Christian Berndt
-    Modified:    2017-09-17 20:43 by Christian Berndt
-    Version:     1.0.0
+    Modified:    2017-10-14 20:36 by Christian Berndt
+    Version:     1.0.1
 --%>
-
-<%
-    // TODO: read mailing columns from configuration
-    String[] columns = {"title", "newsletter", "user-name", "modified-date", "send-date"}; 
-    // String[] columns = (String[])request.getAttribute("view.jsp-columns");
-%>
 
 <%
     for (String column : columns) {
