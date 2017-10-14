@@ -70,8 +70,6 @@ public class MailingIndexer extends BaseIndexer<Mailing> {
     public void postProcessContextBooleanFilter(BooleanFilter contextBooleanFilter, SearchContext searchContext)
             throws Exception {
 
-        _log.info("postProcessContextBooleanFilter");
-
         addStatus(contextBooleanFilter, searchContext);
 
     }
@@ -79,8 +77,6 @@ public class MailingIndexer extends BaseIndexer<Mailing> {
     @Override
     public void postProcessSearchQuery(BooleanQuery searchQuery, BooleanFilter fullQueryBooleanFilter,
             SearchContext searchContext) throws Exception {
-
-        _log.info("postProcessSearchQuery");
 
         addSearchTerm(searchQuery, searchContext, "title", false);
 
