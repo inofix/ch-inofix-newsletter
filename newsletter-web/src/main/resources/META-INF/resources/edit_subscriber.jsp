@@ -2,8 +2,8 @@
     edit_subscriber.jsp: edit a single subscriber.
 
     Created:     2017-09-22 00:07 by Christian Berndt
-    Modified:    2017-10-11 23:21 by Christian Berndt
-    Version:     1.0.2
+    Modified:    2017-10-14 13:33 by Christian Berndt
+    Version:     1.0.3
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -115,9 +115,9 @@
                 <aui:input name="email"/>
                 <aui:input name="salutation"/>
                 <aui:input name="title"/>
-                <aui:input name="firstname"/>
-                <aui:input name="middlename"/>
-                <aui:input name="lastname"/>                             
+                <aui:input name="firstName"/>
+                <aui:input name="middleName"/>
+                <aui:input name="lastName"/>                             
                 <aui:input name="gender"/>
                         
             </aui:fieldset-group>

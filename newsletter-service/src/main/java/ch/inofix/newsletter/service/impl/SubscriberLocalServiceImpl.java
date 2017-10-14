@@ -68,8 +68,8 @@ import ch.inofix.newsletter.social.SubscriberActivityKeys;
  *
  * @author Christian Berndt
  * @created 2016-10-08 16:41
- * @modified 2017-09-26 22:52
- * @version 1.0.5
+ * @modified 2017-10-14 13:27
+ * @version 1.0.6
  * @see SubscriberLocalServiceBaseImpl
  * @see ch.inofix.newsletter.service.SubscriberLocalServiceUtil
  */
@@ -106,10 +106,10 @@ public class SubscriberLocalServiceImpl extends SubscriberLocalServiceBaseImpl {
         subscriber.setExpandoBridgeAttributes(serviceContext);
 
         subscriber.setEmail(email);
-        subscriber.setFirstname(firstname);
+        subscriber.setFirstName(firstname);
         subscriber.setGender(gender);
-        subscriber.setLastname(lastname);
-        subscriber.setMiddlename(middlename);
+        subscriber.setLastName(lastname);
+        subscriber.setMiddleName(middlename);
         subscriber.setNewsletterId(newsletterId);
         subscriber.setSalutation(salutation);
         subscriber.setTitle(title);
@@ -269,9 +269,9 @@ public class SubscriberLocalServiceImpl extends SubscriberLocalServiceBaseImpl {
 
     @Override
     @Indexable(type = IndexableType.REINDEX)
-    public Subscriber updateSubscriber(long subscriberId, long userId, String email, String firstname, String gender, String lastname,
-            String middlename, long newsletterId, String salutation, String title, ServiceContext serviceContext)
-            throws PortalException {
+    public Subscriber updateSubscriber(long subscriberId, long userId, String email, String firstName, String gender,
+            String lastName, String middleName, long newsletterId, String salutation, String title,
+            ServiceContext serviceContext) throws PortalException {
 
         // Subscriber
 
@@ -289,10 +289,10 @@ public class SubscriberLocalServiceImpl extends SubscriberLocalServiceBaseImpl {
         subscriber.setExpandoBridgeAttributes(serviceContext);
 
         subscriber.setEmail(email);
-        subscriber.setFirstname(firstname);
+        subscriber.setFirstName(firstName);
         subscriber.setGender(gender);
-        subscriber.setLastname(lastname);
-        subscriber.setMiddlename(middlename);
+        subscriber.setLastName(lastName);
+        subscriber.setMiddleName(middleName);
         subscriber.setNewsletterId(newsletterId);
         subscriber.setSalutation(salutation);
         subscriber.setTitle(title);

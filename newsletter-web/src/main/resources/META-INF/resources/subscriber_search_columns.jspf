@@ -3,13 +3,13 @@
     for the subscriber view of the newsletter manager.
 
     Created:     2017-09-26 22:55 by Christian Berndt
-    Modified:    2017-09-26 22:55 by Christian Berndt
-    Version:     1.0.0
+    Modified:    2017-10-14 13:51 by Christian Berndt
+    Version:     1.0.1
 --%>
 
 <%
     // TODO: read subscriber columns from configuration
-    String[] columns = {"subscriber-id", "email", "firstname", "lastname", "user-name", "modified-date"}; 
+    String[] columns = {"subscriber-id", "email", "first-name", "last-name", "user-name", "modified-date"}; 
     // String[] columns = (String[])request.getAttribute("view.jsp-columns");
 %>
 
@@ -25,13 +25,17 @@
     <liferay-ui:search-container-column-text property="email"
         name="email" orderable="true" href="<%=detailURL%>" />
 </c:if>
-<c:if test='<%="firstname".equals(column)%>'>
-    <liferay-ui:search-container-column-text property="firstname"
-        name="firstname" orderable="true" href="<%=detailURL%>" />
+<c:if test='<%="first-name".equals(column)%>'>
+    <liferay-ui:search-container-column-text name="first-name"
+        property="firstName" orderable="true" href="<%=detailURL%>" />
 </c:if>
-<c:if test='<%="lastname".equals(column)%>'>
-    <liferay-ui:search-container-column-text property="lastname"
-        name="lastname" orderable="true" href="<%=detailURL%>" />
+<c:if test='<%="last-name".equals(column)%>'>
+    <liferay-ui:search-container-column-text name="last-name"
+        property="lastName" orderable="true" href="<%=detailURL%>" />
+</c:if>
+<c:if test='<%="middle-name".equals(column)%>'>
+    <liferay-ui:search-container-column-text name="middle-name"
+        property="middleName" orderable="true" href="<%=detailURL%>" />
 </c:if>
 <c:if test='<%="modified-date".equals(column)%>'>
     <liferay-ui:search-container-column-date property="modifiedDate"
