@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2016-10-05 15:44 by Christian Berndt
-    Modified:    2017-10-14 21:17 by Christian Berndt
-    Version:     1.2.2
+    Modified:    2017-10-28 19:38 by Christian Berndt
+    Version:     1.2.3
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -19,6 +19,7 @@
 <%@page import="ch.inofix.newsletter.constants.NewsletterActionKeys"%>
 <%@page import="ch.inofix.newsletter.constants.PortletKeys"%>
 <%@page import="ch.inofix.newsletter.exception.EmailAddressException"%>
+<%@page import="ch.inofix.newsletter.exception.NewsletterReferencedByMailingException"%>
 <%@page import="ch.inofix.newsletter.exception.NoSuchNewsletterException"%>
 <%@page import="ch.inofix.newsletter.model.Mailing"%>
 <%@page import="ch.inofix.newsletter.model.Newsletter"%>
@@ -73,6 +74,7 @@
 <%@page import="com.liferay.portal.kernel.util.StringUtil"%>
 <%@page import="com.liferay.portal.kernel.util.Validator"%>
 <%@page import="com.liferay.portal.kernel.util.WebKeys"%>
+<%@page import="com.liferay.trash.kernel.util.TrashUtil"%>
 
 <%@page import="java.io.StringWriter"%>
 <%@page import="java.io.PrintWriter"%>
@@ -95,13 +97,10 @@
 <%
     PortalPreferences portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(request);
 
-    long articleGroupId = GetterUtil.getLong(portletPreferences.getValue("articleGroupId", ""));
-    
-    String markupView = "lexicon";
-
+    long articleGroupId = GetterUtil.getLong(portletPreferences.getValue("articleGroupId", "0"));
+    String markupView = portletPreferences.getValue("markupView", "lexicon");
     String newsletterStructureId = portletPreferences.getValue("newsletterStructureId", "");
-
-    boolean showSearchSpeed = false;
+    boolean showSearchSpeed = GetterUtil.getBoolean(portletPreferences.getValue("showSearchSpeed", "false"));
     
     String tabs1 = ParamUtil.getString(request, "tabs1", "mailings");
 %>

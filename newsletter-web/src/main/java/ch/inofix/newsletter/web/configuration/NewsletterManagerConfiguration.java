@@ -10,7 +10,10 @@ import aQute.bnd.annotation.metatype.Meta;
  * @version 1.0.0
  *
  */
-@Meta.OCD(id = "ch.inofix.newsletter.web.configuration.NewsletterManagerConfiguration", localization = "content/Language", name = "newsletter.configuration.name")
+@Meta.OCD(
+    id = "ch.inofix.newsletter.web.configuration.NewsletterManagerConfiguration", 
+    localization = "content/Language", name = "newsletter.configuration.name"
+)
 public interface NewsletterManagerConfiguration {
 
     @Meta.AD(deflt = "referenceId|type|label|author|title|year|modified", required = false)

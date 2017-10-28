@@ -2,13 +2,11 @@
     subscriber_toolbar.jsp: The toolbar of the subscriber panel
     
     Created:    2017-10-14 21:18 by Christian Berndt
-    Modified:   2017-10-14 21:18 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-10-28 19:39 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/init.jsp"%>
-
-<%@page import="com.liferay.trash.kernel.util.TrashUtil"%>
 
 <%
     String[] columns = (String[])request.getAttribute("view_subscribers.jsp-columns");

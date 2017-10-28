@@ -8,8 +8,6 @@
 
 <%@ include file="/init.jsp"%>
 
-<%@page import="com.liferay.trash.kernel.util.TrashUtil"%>
-
 <%
     String[] columns = (String[])request.getAttribute("view_newsletters.jsp-columns");
 
