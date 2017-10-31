@@ -2,8 +2,8 @@
     edit_subscriber.jsp: edit a single subscriber.
 
     Created:     2017-09-22 00:07 by Christian Berndt
-    Modified:    2017-10-14 22:14 by Christian Berndt
-    Version:     1.0.4
+    Modified:    2017-11-01 00:40 by Christian Berndt
+    Version:     1.0.5
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -93,40 +93,44 @@
         
             <aui:fieldset-group markupView="<%= markupView %>">
             
-                <aui:input name="backURL" type="hidden"
-                    value="<%=backURL%>" />
-
-                <aui:input name="redirect" type="hidden"
-                    value="<%=redirect%>" />
-
-                <aui:input name="subscriberId" type="hidden"
-                    disabled="<%=!hasUpdatePermission%>" />
+                <aui:fieldset>
                 
-                <aui:select name="newsletterId"
-                    disabled="<%=disabled%>"
-                    helpMessage="newsletter-id-help" label="newsletter"
-                    inlineField="true">
-                    <aui:option label="select-newsletter" value="0" />
-                    <%
-                        for (Newsletter newsletter : newsletters) {
-                    %>
-                    <aui:option label="<%=newsletter.getTitle()%>"
-                        value="<%=newsletter.getNewsletterId()%>"
-                        selected="<%=subscriber.getNewsletterId() == newsletter
-                                            .getNewsletterId()%>" />
-                    <%
-                        }
-                    %>
-                </aui:select>
-            
-                <aui:input disabled="<%= disabled %>" name="email"/>
-                <aui:input disabled="<%= disabled %>" name="salutation"/>
-                <aui:input disabled="<%= disabled %>" name="title"/>
-                <aui:input disabled="<%= disabled %>" name="firstName"/>
-                <aui:input disabled="<%= disabled %>" name="middleName"/>
-                <aui:input disabled="<%= disabled %>" name="lastName"/>                             
-                <aui:input disabled="<%= disabled %>" name="gender"/>
-                        
+                    <aui:input name="backURL" type="hidden"
+                        value="<%=backURL%>" />
+    
+                    <aui:input name="redirect" type="hidden"
+                        value="<%=redirect%>" />
+    
+                    <aui:input name="subscriberId" type="hidden"
+                        disabled="<%=!hasUpdatePermission%>" />
+                    
+                    <aui:select name="newsletterId"
+                        disabled="<%=disabled%>"
+                        helpMessage="newsletter-id-help" label="newsletter"
+                        inlineField="true">
+                        <aui:option label="select-newsletter" value="0" />
+                        <%
+                            for (Newsletter newsletter : newsletters) {
+                        %>
+                        <aui:option label="<%=newsletter.getTitle()%>"
+                            value="<%=newsletter.getNewsletterId()%>"
+                            selected="<%=subscriber.getNewsletterId() == newsletter
+                                                .getNewsletterId()%>" />
+                        <%
+                            }
+                        %>
+                    </aui:select>
+                
+                    <aui:input disabled="<%= disabled %>" name="email"/>
+                    <aui:input disabled="<%= disabled %>" name="salutation"/>
+                    <aui:input disabled="<%= disabled %>" name="title"/>
+                    <aui:input disabled="<%= disabled %>" name="firstName"/>
+                    <aui:input disabled="<%= disabled %>" name="middleName"/>
+                    <aui:input disabled="<%= disabled %>" name="lastName"/>                             
+                    <aui:input disabled="<%= disabled %>" name="gender"/>
+                      
+                </aui:fieldset>
+                  
             </aui:fieldset-group>
         </div>
                            
