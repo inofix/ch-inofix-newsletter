@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2016-10-05 15:44 by Christian Berndt
-    Modified:    2017-10-28 19:38 by Christian Berndt
-    Version:     1.2.3
+    Modified:    2017-11-01 00:46 by Christian Berndt
+    Version:     1.2.4
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -80,6 +80,7 @@
 <%@page import="java.io.PrintWriter"%>
 
 <%@page import="java.util.ArrayList"%>
+<%@page import="java.util.Calendar"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Map"%>
