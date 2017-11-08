@@ -50,14 +50,14 @@ import ch.inofix.newsletter.web.internal.constants.NewsletterWebKeys;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2017-10-14 21:56
+ * @modified 2017-11-08 23:03
  */
 @Component(immediate = true, property = { 
 		"com.liferay.portlet.css-class-wrapper=portlet-newsletter",
         "com.liferay.portlet.display-category=category.inofix", 
         "com.liferay.portlet.header-portlet-css=/css/main.css",
         "com.liferay.portlet.instanceable=false", 
-        "javax.portlet.display-name=Newsletter",
+        "javax.portlet.display-name=Newsletter Manager",
         "javax.portlet.init-param.template-path=/", 
         "javax.portlet.init-param.view-template=/view.jsp",
         "javax.portlet.name=" + PortletKeys.NEWSLETTER_MANAGER, 
@@ -128,9 +128,11 @@ public class NewsletterManagerPortlet extends MVCPortlet {
 
         catch (Exception e) {
 
-            // TODO: report errors back to user
+            SessionErrors.add(actionRequest, e.getClass());
             _log.error(e);
+
         }
+        
 
     }
 
