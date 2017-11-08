@@ -2,8 +2,8 @@
     view.jsp: Default view of the newsletter-portlet.
     
     Created:     2016-10-05 15:54 by Christian Berndt
-    Modified:    2017-10-28 19:50 by Christian Berndt
-    Version:     1.2.0
+    Modified:    2017-11-08 00:31 by Christian Berndt
+    Version:     1.2.1
  --%>
 
 <%@ include file="/init.jsp"%>
@@ -29,7 +29,10 @@
 <liferay-ui:error
     exception="<%= NewsletterReferencedByMailingException.class %>"
     message="the-newsletter-is-referenced-by-one-or-more-mailings" />
-    
+   
+<liferay-ui:error exception="<%= NewsletterReferencedBySubscriberException.class %>"
+    message="the-newsletter-is-referenced-by-one-or-more-subscribers"/> 
+
 <c:choose>             
 
     <c:when test='<%=tabs1.equals("mailings")%>'>

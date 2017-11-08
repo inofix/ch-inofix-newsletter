@@ -129,10 +129,9 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         catch (Exception e) {
 
             SessionErrors.add(actionRequest, e.getClass());
-            _log.error(e);
+            _log.debug(e);
 
         }
-        
 
     }
 
