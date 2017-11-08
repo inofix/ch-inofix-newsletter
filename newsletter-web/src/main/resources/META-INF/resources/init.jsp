@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2016-10-05 15:44 by Christian Berndt
-    Modified:    2017-11-07 12:46 by Christian Berndt
-    Version:     1.2.5
+    Modified:    2017-11-09 00:32 by Christian Berndt
+    Version:     1.2.8
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -23,13 +23,17 @@
 <%@page import="ch.inofix.newsletter.exception.MailingTitleException"%>
 <%@page import="ch.inofix.newsletter.exception.MailingNewsletterIdException"%>
 <%@page import="ch.inofix.newsletter.exception.NewsletterReferencedByMailingException"%>
+<%@page import="ch.inofix.newsletter.exception.NewsletterReferencedBySubscriberException"%>
 <%@page import="ch.inofix.newsletter.exception.NoSuchNewsletterException"%>
+<%@page import="ch.inofix.newsletter.exception.SubscriberEmailException"%>
+<%@page import="ch.inofix.newsletter.exception.SubscriberNewsletterIdException"%>
 <%@page import="ch.inofix.newsletter.model.Mailing"%>
 <%@page import="ch.inofix.newsletter.model.Newsletter"%>
 <%@page import="ch.inofix.newsletter.model.Subscriber"%>
 <%@page import="ch.inofix.newsletter.web.internal.constants.NewsletterWebKeys"%>
 <%@page import="ch.inofix.newsletter.web.internal.search.MailingSearch"%>
 <%@page import="ch.inofix.newsletter.web.internal.search.MailingSearchTerms"%>
+<%@page import="ch.inofix.newsletter.web.internal.search.NewsletterEntriesChecker"%>
 <%@page import="ch.inofix.newsletter.web.internal.search.NewsletterSearch"%>
 <%@page import="ch.inofix.newsletter.web.internal.search.NewsletterSearchTerms"%>
 <%@page import="ch.inofix.newsletter.web.internal.search.SubscriberSearch"%>

@@ -2,8 +2,8 @@
     edit_subscriber.jsp: edit a single subscriber.
 
     Created:     2017-09-22 00:07 by Christian Berndt
-    Modified:    2017-11-01 00:40 by Christian Berndt
-    Version:     1.0.5
+    Modified:    2017-11-08 23:38 by Christian Berndt
+    Version:     1.0.6
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -83,6 +83,9 @@
             model="<%=Subscriber.class%>" />
     
         <div class="lfr-form-content">
+        
+            <liferay-ui:error exception="<%= SubscriberEmailException.class %>" message="please-enter-a-valid-email-address"/>     
+            <liferay-ui:error exception="<%= SubscriberNewsletterIdException.class %>" message="please-select-a-newsletter"/>     
         
             <c:if test="<%= newsletters.size() == 0 %>">
                 <aui:alert type="warning" closeable="<%= false %>">

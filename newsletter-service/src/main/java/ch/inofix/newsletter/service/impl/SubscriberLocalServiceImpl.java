@@ -47,6 +47,8 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import aQute.bnd.annotation.ProviderType;
+import ch.inofix.newsletter.exception.SubscriberEmailException;
+import ch.inofix.newsletter.exception.SubscriberNewsletterIdException;
 import ch.inofix.newsletter.model.Mailing;
 import ch.inofix.newsletter.model.Subscriber;
 import ch.inofix.newsletter.service.base.SubscriberLocalServiceBaseImpl;
@@ -68,8 +70,8 @@ import ch.inofix.newsletter.social.SubscriberActivityKeys;
  *
  * @author Christian Berndt
  * @created 2016-10-08 16:41
- * @modified 2017-10-14 13:27
- * @version 1.0.6
+ * @modified 2017-11-08 23:15
+ * @version 1.0.7
  * @see SubscriberLocalServiceBaseImpl
  * @see ch.inofix.newsletter.service.SubscriberLocalServiceUtil
  */
@@ -91,7 +93,10 @@ public class SubscriberLocalServiceImpl extends SubscriberLocalServiceBaseImpl {
 
         // Subscriber
 
-        User user = userPersistence.findByPrimaryKey(userId);
+        User user = userLocalService.getUser(userId);
+        
+        validate(email, newsletterId); 
+        
         long groupId = serviceContext.getScopeGroupId();
 
         long subscriberId = counterLocalService.increment();
@@ -267,25 +272,18 @@ public class SubscriberLocalServiceImpl extends SubscriberLocalServiceBaseImpl {
                 AssetLinkConstants.TYPE_RELATED);
     }
 
-    @Override
     @Indexable(type = IndexableType.REINDEX)
+    @Override
     public Subscriber updateSubscriber(long subscriberId, long userId, String email, String firstName, String gender,
             String lastName, String middleName, long newsletterId, String salutation, String title,
             ServiceContext serviceContext) throws PortalException {
 
         // Subscriber
 
-        User user = userPersistence.findByPrimaryKey(userId);
-
         Subscriber subscriber = subscriberPersistence.findByPrimaryKey(subscriberId);
+        
+        validate(email, newsletterId);
 
-        long groupId = serviceContext.getScopeGroupId();
-
-        subscriber.setUuid(serviceContext.getUuid());
-        subscriber.setGroupId(groupId);
-        subscriber.setCompanyId(user.getCompanyId());
-        subscriber.setUserId(user.getUserId());
-        subscriber.setUserName(user.getFullName());
         subscriber.setExpandoBridgeAttributes(serviceContext);
 
         subscriber.setEmail(email);
@@ -314,7 +312,7 @@ public class SubscriberLocalServiceImpl extends SubscriberLocalServiceBaseImpl {
 
         extraDataJSONObject.put("title", subscriber.getTitle());
 
-        socialActivityLocalService.addActivity(userId, groupId, Subscriber.class.getName(), subscriberId,
+        socialActivityLocalService.addActivity(userId, subscriber.getGroupId(), Subscriber.class.getName(), subscriberId,
                 SubscriberActivityKeys.UPDATE_SUBSCRIBER, extraDataJSONObject.toString(), 0);
 
         return subscriber;
@@ -380,6 +378,18 @@ public class SubscriberLocalServiceImpl extends SubscriberLocalServiceBaseImpl {
         searchContext.setStart(start);
 
         return searchContext;
+    }
+    
+    protected void validate(String email, long newsletterId) throws PortalException {
+        
+        if (!Validator.isEmailAddress(email)) {
+            throw new SubscriberEmailException();
+        }
+        
+        if (newsletterId <= 0) {
+            throw new SubscriberNewsletterIdException();
+        }
+
     }
 
     private static final Log _log = LogFactoryUtil.getLog(SubscriberLocalServiceImpl.class);

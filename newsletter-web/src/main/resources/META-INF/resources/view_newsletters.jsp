@@ -2,13 +2,11 @@
     view_newsletters.jsp: the newsletters panel.
     
     Created:    2017-09-02 11:55 by Christian Berndt
-    Modified:   2017-10-14 21:10 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2017-11-09 00:35 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/init.jsp"%>
-
-<%@page import="ch.inofix.newsletter.web.internal.search.NewsletterEntriesChecker"%>
 
 <%
     // TODO: read newsletter columns from configuration
