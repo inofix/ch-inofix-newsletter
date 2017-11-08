@@ -50,6 +50,9 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import aQute.bnd.annotation.ProviderType;
 import ch.inofix.newsletter.constants.PortletKeys;
+import ch.inofix.newsletter.exception.MailingArticleIdException;
+import ch.inofix.newsletter.exception.MailingNewsletterIdException;
+import ch.inofix.newsletter.exception.MailingTitleException;
 import ch.inofix.newsletter.model.Mailing;
 import ch.inofix.newsletter.model.Newsletter;
 import ch.inofix.newsletter.model.Subscriber;
@@ -92,11 +95,14 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
             throws PortalException {
 
         // Mailing
+        
+        User user = userLocalService.getUser(userId);
+        
+        validate(articleId, newsletterId, title);
 
         boolean sent = false;
         long groupId = serviceContext.getScopeGroupId();
         long mailingId = counterLocalService.increment();
-        User user = userPersistence.findByPrimaryKey(userId);
 
         Mailing mailing = mailingPersistence.create(mailingId);
 
@@ -398,6 +404,7 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
         indexer.reindex(mailing);
     }
 
+    @Indexable(type = IndexableType.REINDEX)    
     @Override
     public Mailing updateMailing(long mailingId, long userId, String title, String template, long newsletterId,
             String articleId, long articleGroupId, Date publishDate, Date sendDate, boolean sent, int status,
@@ -405,11 +412,13 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
 
         // Mailing
 
-        long groupId = serviceContext.getScopeGroupId();
-
         Mailing mailing = mailingPersistence.findByPrimaryKey(mailingId);
 
-        mailing.setGroupId(groupId);
+//        long groupId = serviceContext.getScopeGroupId();
+//        mailing.setGroupId(groupId);
+        
+        validate(articleId, newsletterId, title);
+        
         mailing.setExpandoBridgeAttributes(serviceContext);
 
         mailing.setTitle(title);
@@ -489,6 +498,22 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
         searchContext.setStart(start);
 
         return searchContext;
+    }
+    
+    protected void validate(String articleId, long newsletterId, String title) throws PortalException {
+
+        if (Validator.isNull(articleId)) {
+            throw new MailingArticleIdException();
+        }
+
+        if (newsletterId <= 0) {
+            throw new MailingNewsletterIdException();
+        }
+
+        if (Validator.isNull(title)) {
+            throw new MailingTitleException();
+        }
+
     }
 
     private void sendEmail(Mailing mailing, Subscriber subscriber) throws PortalException {

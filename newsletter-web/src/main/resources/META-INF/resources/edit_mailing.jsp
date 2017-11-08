@@ -2,8 +2,8 @@
     edit_mailing.jsp: edit a single mailing.
 
     Created:     2017-09-05 23:10 by Christian Berndt
-    Modified:    2017-11-01 00:45 by Christian Berndt
-    Version:     1.0.4
+    Modified:    2017-11-07 12:44 by Christian Berndt
+    Version:     1.0.5
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -85,6 +85,10 @@
             model="<%=Mailing.class%>" />
     
         <div class="lfr-form-content">
+        
+            <liferay-ui:error exception="<%= MailingArticleIdException.class %>" message="please-select-an-article"/>
+            <liferay-ui:error exception="<%= MailingNewsletterIdException.class %>" message="please-select-a-newsletter"/>
+            <liferay-ui:error exception="<%= MailingTitleException.class %>" message="please-enter-a-title"/>
                             
             <c:if test="<%= newsletters.size() == 0 %>">
                 <aui:alert type="warning" closeable="<%= false %>">
