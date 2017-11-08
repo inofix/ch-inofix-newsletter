@@ -74,8 +74,8 @@ import ch.inofix.newsletter.service.base.MailingLocalServiceBaseImpl;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:21
- * @modified 2017-09-14 10:42
- * @version 1.1.7
+ * @modified 2017-11-08 23:49
+ * @version 1.1.8
  * @see MailingLocalServiceBaseImpl
  * @see ch.inofix.newsletter.service.MailingLocalServiceUtil
  */
@@ -88,8 +88,8 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
      * ch.inofix.newsletter.service.MailingLocalServiceUtil} to access the
      * mailing local service.
      */
-    @Override
     @Indexable(type = IndexableType.REINDEX)
+    @Override
     public Mailing addMailing(long userId, String title, String template, long newsletterId, String articleId,
             long articleGroupId, Date publishDate, Date sendDate, int status, ServiceContext serviceContext)
             throws PortalException {
@@ -413,9 +413,6 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
         // Mailing
 
         Mailing mailing = mailingPersistence.findByPrimaryKey(mailingId);
-
-//        long groupId = serviceContext.getScopeGroupId();
-//        mailing.setGroupId(groupId);
         
         validate(articleId, newsletterId, title);
         
