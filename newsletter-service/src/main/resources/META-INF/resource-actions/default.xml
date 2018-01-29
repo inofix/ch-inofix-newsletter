@@ -6,8 +6,8 @@
     default.xml: The newsletter-portlet's permission configuration.
     
     Created:    2016-10-08 00:59 by Christian Berndt
-    Modified:   2017-03-22 10:11 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2018-01-29 12:08 by Christian Berndt
+    Version:    1.0.3
 -->
 <resource-action-mapping>
 
@@ -16,6 +16,8 @@
         <portlet-ref>
             <portlet-name>ch_inofix_newsletter_web_internal_portlet_NewsletterManagerPortlet</portlet-name>
         </portlet-ref>
+        <root>true</root>
+        <weight>1</weight>
         <permissions>
             <supports>
                 <action-key>ADD_MAILING</action-key>
