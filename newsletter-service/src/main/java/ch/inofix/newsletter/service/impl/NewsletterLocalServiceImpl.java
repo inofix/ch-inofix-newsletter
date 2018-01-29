@@ -14,7 +14,6 @@
 
 package ch.inofix.newsletter.service.impl;
 
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -42,8 +41,6 @@ import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ContentTypes;
-import com.liferay.portal.kernel.util.HtmlUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -72,8 +69,8 @@ import ch.inofix.newsletter.social.NewsletterActivityKeys;
  *
  * @author Christian Berndt
  * @created 2016-10-08 16:41
- * @modified 2017-10-14 21:39
- * @version 1.1.2
+ * @modified 2018-01-29 13:40
+ * @version 1.1.3
  * @see NewsletterLocalServiceBaseImpl
  * @see ch.inofix.newsletter.service.NewsletterLocalServiceUtil
  */
@@ -92,9 +89,11 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
     public Newsletter addNewsletter(long userId, String title, String template, String fromAddress, String fromName,
             boolean useHttps, ServiceContext serviceContext) throws PortalException {
         
+        _log.info("addNewsletter()");
+                        
         // Newsletter
 
-        User user = userPersistence.findByPrimaryKey(userId);
+        User user = userLocalService.getUser(userId);
         long groupId = serviceContext.getScopeGroupId();
         long newsletterId = counterLocalService.increment();
 
@@ -122,9 +121,6 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
         resourceLocalService.addModelResources(newsletter, serviceContext);
 
         // Asset
-
-        resourceLocalService.addResources(newsletter.getCompanyId(), groupId, userId, Mailing.class.getName(),
-                newsletter.getNewsletterId(), false, true, true);
 
         updateAsset(userId, newsletter, serviceContext.getAssetCategoryIds(), serviceContext.getAssetTagNames(),
                 serviceContext.getAssetLinkEntryIds(), serviceContext.getAssetPriority());
@@ -172,26 +168,9 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
         resourceLocalService.deleteResource(newsletter.getCompanyId(), Newsletter.class.getName(),
                 ResourceConstants.SCOPE_INDIVIDUAL, newsletter.getNewsletterId());
 
-        // Subscriptions
-
-        subscriptionLocalService.deleteSubscriptions(newsletter.getCompanyId(), Newsletter.class.getName(),
-                newsletter.getNewsletterId());
-
         // Asset
 
         assetEntryLocalService.deleteEntry(Newsletter.class.getName(), newsletter.getNewsletterId());
-
-        // Expando
-
-        expandoRowLocalService.deleteRows(newsletter.getNewsletterId());
-
-        // Ratings
-
-        ratingsStatsLocalService.deleteStats(Newsletter.class.getName(), newsletter.getNewsletterId());
-
-        // Trash
-
-        trashEntryLocalService.deleteEntry(Newsletter.class.getName(), newsletter.getNewsletterId());
 
         // Workflow
 
@@ -261,29 +240,23 @@ public class NewsletterLocalServiceImpl extends NewsletterLocalServiceBaseImpl {
 
     }
 
-    public void updateAsset(long userId, Newsletter newsletter, long[] assetCategoryIds, String[] assetTagNames,
+    @Override
+    public void updateAsset(long userId, Newsletter newsletter,
+            long[] assetCategoryIds, String[] assetTagNames,
             long[] assetLinkEntryIds, Double priority) throws PortalException {
 
-        boolean visible = false;
+        AssetEntry assetEntry = assetEntryLocalService.updateEntry(userId,
+                newsletter.getGroupId(), newsletter.getCreateDate(),
+                newsletter.getModifiedDate(), Newsletter.class.getName(),
+                newsletter.getNewsletterId(), newsletter.getUuid(), 0,
+                assetCategoryIds, assetTagNames, true, true, null, null,
+                newsletter.getCreateDate(), null, ContentTypes.TEXT_PLAIN,
+                newsletter.getTitle(), newsletter.getTitle(), null, null, null,
+                0, 0, priority);
 
-        Date publishDate = null;
+        assetLinkLocalService.updateLinks(userId, assetEntry.getEntryId(),
+                assetLinkEntryIds, AssetLinkConstants.TYPE_RELATED);
 
-        // TODO
-        // if (newsletter.isApproved()) {
-        // visible = true;
-        // publishDate = newsletter.getCreateDate();
-        // }
-
-        String summary = HtmlUtil.extractText(StringUtil.shorten(newsletter.getTitle(), 500));
-
-        AssetEntry assetEntry = assetEntryLocalService.updateEntry(userId, newsletter.getGroupId(),
-                newsletter.getCreateDate(), newsletter.getModifiedDate(), Newsletter.class.getName(),
-                newsletter.getNewsletterId(), newsletter.getUuid(), 0, assetCategoryIds, assetTagNames, true, visible,
-                null, null, publishDate, null, ContentTypes.TEXT_HTML, newsletter.getTitle(), newsletter.getTitle(),
-                summary, null, null, 0, 0, priority);
-
-        assetLinkLocalService.updateLinks(userId, assetEntry.getEntryId(), assetLinkEntryIds,
-                AssetLinkConstants.TYPE_RELATED);
     }
 
     @Indexable(type = IndexableType.REINDEX)

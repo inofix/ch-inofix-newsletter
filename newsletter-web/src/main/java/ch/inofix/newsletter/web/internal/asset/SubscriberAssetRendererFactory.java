@@ -35,8 +35,8 @@ import ch.inofix.newsletter.service.permission.NewsletterPortletPermission;
  *
  * @author Christian Berndt
  * @created 2017-09-26 19:32
- * @modified 2017-09-26 23:13
- * @version 1.0.0
+ * @modified 2018-01-29 15:07
+ * @version 1.0.1
  *
  */
 @Component(
@@ -44,7 +44,8 @@ import ch.inofix.newsletter.service.permission.NewsletterPortletPermission;
     property = {"javax.portlet.name=" + PortletKeys.NEWSLETTER_MANAGER }, 
     service = AssetRendererFactory.class
 )
-public class SubscriberAssetRendererFactory extends BaseAssetRendererFactory<Subscriber> {
+public class SubscriberAssetRendererFactory
+        extends BaseAssetRendererFactory<Subscriber> {
 
     public static final String TYPE = "subscriber";
 
@@ -60,21 +61,18 @@ public class SubscriberAssetRendererFactory extends BaseAssetRendererFactory<Sub
     }
 
     @Override
-    public AssetRenderer<Subscriber> getAssetRenderer(long classPK, int type) throws PortalException {
+    public AssetRenderer<Subscriber> getAssetRenderer(long classPK, int type)
+            throws PortalException {
 
         Subscriber subscriber = _subscriberLocalService.getSubscriber(classPK);
 
-        // TODO
+        SubscriberAssetRenderer subscriberAssetRenderer = new SubscriberAssetRenderer(
+                subscriber);
 
-        // SubscriberAssetRenderer subscriberAssetRenderer = new
-        // SubscriberAssetRenderer(subscriber);
-        //
-        // subscriberAssetRenderer.setAssetRendererType(type);
-        // subscriberAssetRenderer.setServletContext(_servletContext);
-        //
-        // return subscriberAssetRenderer;
+        subscriberAssetRenderer.setAssetRendererType(type);
+        subscriberAssetRenderer.setServletContext(_servletContext);
 
-        return null;
+        return subscriberAssetRenderer;
 
     }
 
@@ -90,9 +88,11 @@ public class SubscriberAssetRendererFactory extends BaseAssetRendererFactory<Sub
 
     @Override
     public PortletURL getURLAdd(LiferayPortletRequest liferayPortletRequest,
-            LiferayPortletResponse liferayPortletResponse) throws PortalException {
+            LiferayPortletResponse liferayPortletResponse)
+            throws PortalException {
 
-        ThemeDisplay themeDisplay = (ThemeDisplay) liferayPortletRequest.getAttribute(WebKeys.THEME_DISPLAY);
+        ThemeDisplay themeDisplay = (ThemeDisplay) liferayPortletRequest
+                .getAttribute(WebKeys.THEME_DISPLAY);
 
         User user = themeDisplay.getUser();
 
@@ -100,15 +100,17 @@ public class SubscriberAssetRendererFactory extends BaseAssetRendererFactory<Sub
 
         if (group != null) {
 
-            long portletPlid = PortalUtil.getPlidFromPortletId(group.getGroupId(), false,
-                    PortletKeys.NEWSLETTER_MANAGER);
+            long portletPlid = PortalUtil.getPlidFromPortletId(
+                    group.getGroupId(), false, PortletKeys.NEWSLETTER_MANAGER);
 
-            PortletURL portletURL = PortletURLFactoryUtil.create(liferayPortletRequest, PortletKeys.NEWSLETTER_MANAGER,
+            PortletURL portletURL = PortletURLFactoryUtil.create(
+                    liferayPortletRequest, PortletKeys.NEWSLETTER_MANAGER,
                     portletPlid, PortletRequest.RENDER_PHASE);
 
             portletURL.setParameter("mvcPath", "/edit_task_record.jsp");
 
-            String redirect = (String) liferayPortletRequest.getAttribute("redirect");
+            String redirect = (String) liferayPortletRequest
+                    .getAttribute("redirect");
 
             if (Validator.isNotNull(redirect)) {
                 portletURL.setParameter("redirect", redirect);
@@ -124,18 +126,21 @@ public class SubscriberAssetRendererFactory extends BaseAssetRendererFactory<Sub
     }
 
     @Override
-    public boolean hasAddPermission(PermissionChecker permissionChecker, long groupId, long classTypeId)
-            throws Exception {
+    public boolean hasAddPermission(PermissionChecker permissionChecker,
+            long groupId, long classTypeId) throws Exception {
 
-        return NewsletterPortletPermission.contains(permissionChecker, groupId, NewsletterActionKeys.ADD_SUBSCRIBER);
+        return NewsletterPortletPermission.contains(permissionChecker, groupId,
+                NewsletterActionKeys.ADD_SUBSCRIBER);
     }
 
     @Override
-    public boolean hasPermission(PermissionChecker permissionChecker, long classPK, String actionId) throws Exception {
+    public boolean hasPermission(PermissionChecker permissionChecker,
+            long classPK, String actionId) throws Exception {
 
         Subscriber subscriber = _subscriberLocalService.getSubscriber(classPK);
 
-        return SubscriberPermission.contains(permissionChecker, subscriber.getSubscriberId(), actionId);
+        return SubscriberPermission.contains(permissionChecker,
+                subscriber.getSubscriberId(), actionId);
     }
 
     @Reference(target = "(osgi.web.symbolicname=ch.inofix.newsletter.web)", unbind = "-")
@@ -144,11 +149,13 @@ public class SubscriberAssetRendererFactory extends BaseAssetRendererFactory<Sub
     }
 
     @Reference(unbind = "-")
-    protected void setSubscriberLocalService(SubscriberLocalService subscriberLocalService) {
+    protected void setSubscriberLocalService(
+            SubscriberLocalService subscriberLocalService) {
         _subscriberLocalService = subscriberLocalService;
     }
 
-    private static final Log _log = LogFactoryUtil.getLog(SubscriberAssetRendererFactory.class);
+    private static final Log _log = LogFactoryUtil
+            .getLog(SubscriberAssetRendererFactory.class);
 
     private SubscriberLocalService _subscriberLocalService;
     private ServletContext _servletContext;

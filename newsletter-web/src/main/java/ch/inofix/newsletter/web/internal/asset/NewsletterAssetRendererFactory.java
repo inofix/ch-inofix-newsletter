@@ -35,8 +35,8 @@ import ch.inofix.newsletter.service.permission.NewsletterPortletPermission;
  *
  * @author Christian Berndt
  * @created 2017-09-26 19:32
- * @modified 2017-09-26 23:13
- * @version 1.0.0
+ * @modified 2018-01-29 15:08
+ * @version 1.0.1
  *
  */
 @Component(
@@ -44,7 +44,8 @@ import ch.inofix.newsletter.service.permission.NewsletterPortletPermission;
     property = {"javax.portlet.name=" + PortletKeys.NEWSLETTER_MANAGER }, 
     service = AssetRendererFactory.class
 )
-public class NewsletterAssetRendererFactory extends BaseAssetRendererFactory<Newsletter> {
+public class NewsletterAssetRendererFactory
+        extends BaseAssetRendererFactory<Newsletter> {
 
     public static final String TYPE = "newsletter";
 
@@ -60,21 +61,18 @@ public class NewsletterAssetRendererFactory extends BaseAssetRendererFactory<New
     }
 
     @Override
-    public AssetRenderer<Newsletter> getAssetRenderer(long classPK, int type) throws PortalException {
+    public AssetRenderer<Newsletter> getAssetRenderer(long classPK, int type)
+            throws PortalException {
 
         Newsletter newsletter = _newsletterLocalService.getNewsletter(classPK);
 
-        // TODO
+        NewsletterAssetRenderer newsletterAssetRenderer = new NewsletterAssetRenderer(
+                newsletter);
 
-        // NewsletterAssetRenderer newsletterAssetRenderer = new
-        // NewsletterAssetRenderer(newsletter);
-        //
-        // newsletterAssetRenderer.setAssetRendererType(type);
-        // newsletterAssetRenderer.setServletContext(_servletContext);
-        //
-        // return newsletterAssetRenderer;
+        newsletterAssetRenderer.setAssetRendererType(type);
+        newsletterAssetRenderer.setServletContext(_servletContext);
 
-        return null;
+        return newsletterAssetRenderer;
 
     }
 
@@ -90,9 +88,11 @@ public class NewsletterAssetRendererFactory extends BaseAssetRendererFactory<New
 
     @Override
     public PortletURL getURLAdd(LiferayPortletRequest liferayPortletRequest,
-            LiferayPortletResponse liferayPortletResponse) throws PortalException {
+            LiferayPortletResponse liferayPortletResponse)
+            throws PortalException {
 
-        ThemeDisplay themeDisplay = (ThemeDisplay) liferayPortletRequest.getAttribute(WebKeys.THEME_DISPLAY);
+        ThemeDisplay themeDisplay = (ThemeDisplay) liferayPortletRequest
+                .getAttribute(WebKeys.THEME_DISPLAY);
 
         User user = themeDisplay.getUser();
 
@@ -100,15 +100,17 @@ public class NewsletterAssetRendererFactory extends BaseAssetRendererFactory<New
 
         if (group != null) {
 
-            long portletPlid = PortalUtil.getPlidFromPortletId(group.getGroupId(), false,
-                    PortletKeys.NEWSLETTER_MANAGER);
+            long portletPlid = PortalUtil.getPlidFromPortletId(
+                    group.getGroupId(), false, PortletKeys.NEWSLETTER_MANAGER);
 
-            PortletURL portletURL = PortletURLFactoryUtil.create(liferayPortletRequest, PortletKeys.NEWSLETTER_MANAGER,
+            PortletURL portletURL = PortletURLFactoryUtil.create(
+                    liferayPortletRequest, PortletKeys.NEWSLETTER_MANAGER,
                     portletPlid, PortletRequest.RENDER_PHASE);
 
             portletURL.setParameter("mvcPath", "/edit_task_record.jsp");
 
-            String redirect = (String) liferayPortletRequest.getAttribute("redirect");
+            String redirect = (String) liferayPortletRequest
+                    .getAttribute("redirect");
 
             if (Validator.isNotNull(redirect)) {
                 portletURL.setParameter("redirect", redirect);
@@ -124,18 +126,21 @@ public class NewsletterAssetRendererFactory extends BaseAssetRendererFactory<New
     }
 
     @Override
-    public boolean hasAddPermission(PermissionChecker permissionChecker, long groupId, long classTypeId)
-            throws Exception {
+    public boolean hasAddPermission(PermissionChecker permissionChecker,
+            long groupId, long classTypeId) throws Exception {
 
-        return NewsletterPortletPermission.contains(permissionChecker, groupId, NewsletterActionKeys.ADD_NEWSLETTER);
+        return NewsletterPortletPermission.contains(permissionChecker, groupId,
+                NewsletterActionKeys.ADD_NEWSLETTER);
     }
 
     @Override
-    public boolean hasPermission(PermissionChecker permissionChecker, long classPK, String actionId) throws Exception {
+    public boolean hasPermission(PermissionChecker permissionChecker,
+            long classPK, String actionId) throws Exception {
 
         Newsletter newsletter = _newsletterLocalService.getNewsletter(classPK);
 
-        return NewsletterPermission.contains(permissionChecker, newsletter.getNewsletterId(), actionId);
+        return NewsletterPermission.contains(permissionChecker,
+                newsletter.getNewsletterId(), actionId);
     }
 
     @Reference(target = "(osgi.web.symbolicname=ch.inofix.newsletter.web)", unbind = "-")
@@ -144,11 +149,13 @@ public class NewsletterAssetRendererFactory extends BaseAssetRendererFactory<New
     }
 
     @Reference(unbind = "-")
-    protected void setNewsletterLocalService(NewsletterLocalService newsletterLocalService) {
+    protected void setNewsletterLocalService(
+            NewsletterLocalService newsletterLocalService) {
         _newsletterLocalService = newsletterLocalService;
     }
 
-    private static final Log _log = LogFactoryUtil.getLog(NewsletterAssetRendererFactory.class);
+    private static final Log _log = LogFactoryUtil
+            .getLog(NewsletterAssetRendererFactory.class);
 
     private NewsletterLocalService _newsletterLocalService;
     private ServletContext _servletContext;

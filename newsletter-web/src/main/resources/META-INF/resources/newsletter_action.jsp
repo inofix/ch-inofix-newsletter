@@ -8,8 +8,6 @@
 
 <%@ include file="/init.jsp"%>
 
-<%@page import="com.liferay.portal.kernel.dao.search.ResultRow"%>
-
 <%
     ResultRow row = (ResultRow) request.getAttribute(WebKeys.SEARCH_CONTAINER_RESULT_ROW);
 
@@ -51,10 +49,10 @@
 
     <c:if test="<%=hasDeletePermission%>">
 
-        <portlet:actionURL var="deleteURL">
-            <portlet:param name="className" value="<%= Newsletter.class.getName() %>"/>        
+        <portlet:actionURL name="editNewsletter" var="deleteURL">
             <portlet:param name="cmd" value="<%= Constants.DELETE %>"/>
             <portlet:param name="redirect" value="<%=currentURL%>" />
+            <portlet:param name="tabs1" value="newsletter" />
             <portlet:param name="newsletterId"
                 value="<%=String.valueOf(newsletter.getNewsletterId())%>" />
         </portlet:actionURL>
