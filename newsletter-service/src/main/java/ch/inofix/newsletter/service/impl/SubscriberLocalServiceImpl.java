@@ -70,8 +70,8 @@ import ch.inofix.newsletter.social.SubscriberActivityKeys;
  *
  * @author Christian Berndt
  * @created 2016-10-08 16:41
- * @modified 2017-11-08 23:15
- * @version 1.0.7
+ * @modified 2018-01-29 15:25
+ * @version 1.0.8
  * @see SubscriberLocalServiceBaseImpl
  * @see ch.inofix.newsletter.service.SubscriberLocalServiceUtil
  */
@@ -159,26 +159,9 @@ public class SubscriberLocalServiceImpl extends SubscriberLocalServiceBaseImpl {
         resourceLocalService.deleteResource(subscriber.getCompanyId(), Subscriber.class.getName(),
                 ResourceConstants.SCOPE_INDIVIDUAL, subscriber.getSubscriberId());
 
-        // Subscriptions
-
-        subscriptionLocalService.deleteSubscriptions(subscriber.getCompanyId(), Subscriber.class.getName(),
-                subscriber.getSubscriberId());
-
         // Asset
 
         assetEntryLocalService.deleteEntry(Subscriber.class.getName(), subscriber.getSubscriberId());
-
-        // Expando
-
-        expandoRowLocalService.deleteRows(subscriber.getSubscriberId());
-
-        // Ratings
-
-        ratingsStatsLocalService.deleteStats(Subscriber.class.getName(), subscriber.getSubscriberId());
-
-        // Trash
-
-        trashEntryLocalService.deleteEntry(Subscriber.class.getName(), subscriber.getSubscriberId());
 
         // Workflow
 
