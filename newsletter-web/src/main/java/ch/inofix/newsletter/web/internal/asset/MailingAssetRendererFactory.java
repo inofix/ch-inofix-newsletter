@@ -35,8 +35,8 @@ import ch.inofix.newsletter.service.permission.NewsletterPortletPermission;
  *
  * @author Christian Berndt
  * @created 2017-09-26 23:11
- * @modified 2017-09-26 23:11
- * @version 1.0.0
+ * @modified 2018-01-29 15:08
+ * @version 1.0.1
  *
  */
 @Component(
@@ -44,7 +44,8 @@ import ch.inofix.newsletter.service.permission.NewsletterPortletPermission;
     property = {"javax.portlet.name=" + PortletKeys.NEWSLETTER_MANAGER }, 
     service = AssetRendererFactory.class
 )
-public class MailingAssetRendererFactory extends BaseAssetRendererFactory<Mailing> {
+public class MailingAssetRendererFactory
+        extends BaseAssetRendererFactory<Mailing> {
 
     public static final String TYPE = "mailing";
 
@@ -60,20 +61,18 @@ public class MailingAssetRendererFactory extends BaseAssetRendererFactory<Mailin
     }
 
     @Override
-    public AssetRenderer<Mailing> getAssetRenderer(long classPK, int type) throws PortalException {
+    public AssetRenderer<Mailing> getAssetRenderer(long classPK, int type)
+            throws PortalException {
 
         Mailing mailing = _mailingLocalService.getMailing(classPK);
 
-        // TODO
+        MailingAssetRenderer mailingAssetRenderer = new MailingAssetRenderer(
+                mailing);
 
-//        MailingAssetRenderer mailingAssetRenderer = new MailingAssetRenderer(mailing);
-//
-//        mailingAssetRenderer.setAssetRendererType(type);
-//        mailingAssetRenderer.setServletContext(_servletContext);
-//
-//        return mailingAssetRenderer;
-        
-        return null;
+        mailingAssetRenderer.setAssetRendererType(type);
+        mailingAssetRenderer.setServletContext(_servletContext);
+
+        return mailingAssetRenderer;
 
     }
 
@@ -89,9 +88,11 @@ public class MailingAssetRendererFactory extends BaseAssetRendererFactory<Mailin
 
     @Override
     public PortletURL getURLAdd(LiferayPortletRequest liferayPortletRequest,
-            LiferayPortletResponse liferayPortletResponse) throws PortalException {
+            LiferayPortletResponse liferayPortletResponse)
+            throws PortalException {
 
-        ThemeDisplay themeDisplay = (ThemeDisplay) liferayPortletRequest.getAttribute(WebKeys.THEME_DISPLAY);
+        ThemeDisplay themeDisplay = (ThemeDisplay) liferayPortletRequest
+                .getAttribute(WebKeys.THEME_DISPLAY);
 
         User user = themeDisplay.getUser();
 
@@ -99,14 +100,17 @@ public class MailingAssetRendererFactory extends BaseAssetRendererFactory<Mailin
 
         if (group != null) {
 
-            long portletPlid = PortalUtil.getPlidFromPortletId(group.getGroupId(), false, PortletKeys.NEWSLETTER_MANAGER);
+            long portletPlid = PortalUtil.getPlidFromPortletId(
+                    group.getGroupId(), false, PortletKeys.NEWSLETTER_MANAGER);
 
-            PortletURL portletURL = PortletURLFactoryUtil.create(liferayPortletRequest, PortletKeys.NEWSLETTER_MANAGER,
+            PortletURL portletURL = PortletURLFactoryUtil.create(
+                    liferayPortletRequest, PortletKeys.NEWSLETTER_MANAGER,
                     portletPlid, PortletRequest.RENDER_PHASE);
 
             portletURL.setParameter("mvcPath", "/edit_task_record.jsp");
 
-            String redirect = (String) liferayPortletRequest.getAttribute("redirect");
+            String redirect = (String) liferayPortletRequest
+                    .getAttribute("redirect");
 
             if (Validator.isNotNull(redirect)) {
                 portletURL.setParameter("redirect", redirect);
@@ -122,18 +126,21 @@ public class MailingAssetRendererFactory extends BaseAssetRendererFactory<Mailin
     }
 
     @Override
-    public boolean hasAddPermission(PermissionChecker permissionChecker, long groupId, long classTypeId)
-            throws Exception {
+    public boolean hasAddPermission(PermissionChecker permissionChecker,
+            long groupId, long classTypeId) throws Exception {
 
-        return NewsletterPortletPermission.contains(permissionChecker, groupId, NewsletterActionKeys.ADD_MAILING);
+        return NewsletterPortletPermission.contains(permissionChecker, groupId,
+                NewsletterActionKeys.ADD_MAILING);
     }
 
     @Override
-    public boolean hasPermission(PermissionChecker permissionChecker, long classPK, String actionId) throws Exception {
+    public boolean hasPermission(PermissionChecker permissionChecker,
+            long classPK, String actionId) throws Exception {
 
         Mailing mailing = _mailingLocalService.getMailing(classPK);
 
-        return MailingPermission.contains(permissionChecker, mailing.getMailingId(), actionId);
+        return MailingPermission.contains(permissionChecker,
+                mailing.getMailingId(), actionId);
     }
 
     @Reference(target = "(osgi.web.symbolicname=ch.inofix.newsletter.web)", unbind = "-")
@@ -142,11 +149,13 @@ public class MailingAssetRendererFactory extends BaseAssetRendererFactory<Mailin
     }
 
     @Reference(unbind = "-")
-    protected void setMailingLocalService(MailingLocalService mailingLocalService) {
+    protected void setMailingLocalService(
+            MailingLocalService mailingLocalService) {
         _mailingLocalService = mailingLocalService;
     }
 
-    private static final Log _log = LogFactoryUtil.getLog(MailingAssetRendererFactory.class);
+    private static final Log _log = LogFactoryUtil
+            .getLog(MailingAssetRendererFactory.class);
 
     private MailingLocalService _mailingLocalService;
     private ServletContext _servletContext;
