@@ -50,7 +50,7 @@ import ch.inofix.newsletter.web.internal.constants.NewsletterWebKeys;
  *
  * @author Christian Berndt
  * @created 2016-10-08 00:20
- * @modified 2017-11-08 23:03
+ * @modified 2018-01-29 13:00
  */
 @Component(immediate = true, property = { 
 		"com.liferay.portlet.css-class-wrapper=portlet-newsletter",
@@ -77,63 +77,64 @@ public class NewsletterManagerPortlet extends MVCPortlet {
         super.doView(renderRequest, renderResponse);
     }
 
-    @Override
-    public void processAction(ActionRequest actionRequest, ActionResponse actionResponse) {
-
-        String className = ParamUtil.getString(actionRequest, "className");
-
-        String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
-
-        try {
-            
-            if (cmd.equals(Constants.DELETE)) {
-                
-                if (Mailing.class.getName().equals(className)) {
-                    
-                    deleteMailings(actionRequest, actionResponse);
-                    addSuccessMessage(actionRequest, actionResponse);
-                    
-                } else if (Newsletter.class.getName().equals(className)) {
-                    
-                    deleteNewsletters(actionRequest, actionResponse);
-                    addSuccessMessage(actionRequest, actionResponse);
-                    
-                } else if (Subscriber.class.getName().equals(className)) {
-                    
-                    deleteSubscribers(actionRequest, actionResponse);                    
-                    addSuccessMessage(actionRequest, actionResponse);
-                    
-                }
-
-            } else if (cmd.equals(Constants.UPDATE)) {
-
-                if (Mailing.class.getName().equals(className)) {
-                    
-                    updateMailing(actionRequest, actionResponse);
-                    addSuccessMessage(actionRequest, actionResponse);
-                    
-                } else if (Newsletter.class.getName().equals(className)) {
-                    
-                    updateNewsletter(actionRequest, actionResponse);
-                    addSuccessMessage(actionRequest, actionResponse);
-                    
-                } else if (Subscriber.class.getName().equals(className)) {
-                    
-                    updateSubscriber(actionRequest, actionResponse);
-                    addSuccessMessage(actionRequest, actionResponse);
-                    
-                }
-            }
-        }
-
-        catch (Exception e) {
-
-            SessionErrors.add(actionRequest, e.getClass());
-            _log.debug(e);
-
-        }
-
-    }
+//    @Override
+//    public void processAction(ActionRequest actionRequest,
+//            ActionResponse actionResponse) {
+//
+//        String className = ParamUtil.getString(actionRequest, "className");
+//
+//        String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
+//
+//        try {
+//
+//            if (cmd.equals(Constants.DELETE)) {
+//
+//                if (Mailing.class.getName().equals(className)) {
+//
+//                    deleteMailings(actionRequest, actionResponse);
+//                    addSuccessMessage(actionRequest, actionResponse);
+//
+//                } else if (Newsletter.class.getName().equals(className)) {
+//
+//                    deleteNewsletters(actionRequest, actionResponse);
+//                    addSuccessMessage(actionRequest, actionResponse);
+//
+//                } else if (Subscriber.class.getName().equals(className)) {
+//
+//                    deleteSubscribers(actionRequest, actionResponse);
+//                    addSuccessMessage(actionRequest, actionResponse);
+//
+//                }
+//
+//            } else if (cmd.equals(Constants.UPDATE)) {
+//
+//                if (Mailing.class.getName().equals(className)) {
+//
+//                    updateMailing(actionRequest, actionResponse);
+//                    addSuccessMessage(actionRequest, actionResponse);
+//
+//                } else if (Newsletter.class.getName().equals(className)) {
+//
+//                    // updateNewsletter(actionRequest, actionResponse);
+//                    // addSuccessMessage(actionRequest, actionResponse);
+//
+//                } else if (Subscriber.class.getName().equals(className)) {
+//
+//                    updateSubscriber(actionRequest, actionResponse);
+//                    addSuccessMessage(actionRequest, actionResponse);
+//
+//                }
+//            }
+//        }
+//
+//        catch (Exception e) {
+//
+//            SessionErrors.add(actionRequest, e.getClass());
+//            _log.debug(e);
+//
+//        }
+//
+//    }
 
     @Override
     public void render(RenderRequest renderRequest, RenderResponse renderResponse)
@@ -452,34 +453,34 @@ public class NewsletterManagerPortlet extends MVCPortlet {
      * @since 1.0.0
      * @throws Exception
      */
-    protected void updateNewsletter(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
-
-        long newsletterId = ParamUtil.getLong(actionRequest, "newsletterId");
-
-        String fromAddress = ParamUtil.getString(actionRequest, "fromAddress");
-        String fromName = ParamUtil.getString(actionRequest, "fromName");
-        String template = ParamUtil.getString(actionRequest, "template");
-        String title = ParamUtil.getString(actionRequest, "title");
-        boolean useHttps = ParamUtil.getBoolean(actionRequest, "useHttps");
-
-        ServiceContext serviceContext = ServiceContextFactory.getInstance(Newsletter.class.getName(), actionRequest);
-
-        Newsletter newsletter = null;
-
-        if (newsletterId <= 0) {
-            newsletter = _newsletterService.addNewsletter(title, template, fromAddress, fromName, useHttps,
-                    serviceContext);
-        } else {
-            newsletter = _newsletterService.updateNewsletter(newsletterId, title, template, fromAddress, fromName,
-                    useHttps, serviceContext);
-        }
-
-        String redirect = getEditNewsletterURL(actionRequest, actionResponse, newsletter);
-        actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
-
-        actionRequest.setAttribute(NewsletterWebKeys.NEWSLETTER, newsletter);
-
-    }
+//    protected void updateNewsletter(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+//
+//        long newsletterId = ParamUtil.getLong(actionRequest, "newsletterId");
+//
+//        String fromAddress = ParamUtil.getString(actionRequest, "fromAddress");
+//        String fromName = ParamUtil.getString(actionRequest, "fromName");
+//        String template = ParamUtil.getString(actionRequest, "template");
+//        String title = ParamUtil.getString(actionRequest, "title");
+//        boolean useHttps = ParamUtil.getBoolean(actionRequest, "useHttps");
+//
+//        ServiceContext serviceContext = ServiceContextFactory.getInstance(Newsletter.class.getName(), actionRequest);
+//
+//        Newsletter newsletter = null;
+//
+//        if (newsletterId <= 0) {
+//            newsletter = _newsletterService.addNewsletter(title, template, fromAddress, fromName, useHttps,
+//                    serviceContext);
+//        } else {
+//            newsletter = _newsletterService.updateNewsletter(newsletterId, title, template, fromAddress, fromName,
+//                    useHttps, serviceContext);
+//        }
+//
+//        String redirect = getEditNewsletterURL(actionRequest, actionResponse, newsletter);
+//        actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
+//
+//        actionRequest.setAttribute(NewsletterWebKeys.NEWSLETTER, newsletter);
+//
+//    }
 
     protected void updateSubscriber(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
 

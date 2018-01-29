@@ -6,8 +6,8 @@
     service.xml: Model description for the newsletter-portlet.
     
     Created:    2016-10-07 23:13 by Christian Berndt
-    Modified:   2017-11-08 23:49 by Christian Berndt
-    Version:    1.2.2
+    Modified:   2018-01-29 15:21 by Christian Berndt
+    Version:    1.2.3
 -->
 
 <service-builder package-path="ch.inofix.newsletter">
@@ -60,16 +60,12 @@
 			<finder-column name="sent" />
 		</finder>
 
-		<!-- References -->
-        
-        <reference entity="AssetEntry" package-path="com.liferay.portlet.asset" />
-        <reference entity="AssetLink" package-path="com.liferay.portlet.asset" />
-        <reference entity="AssetTag" package-path="com.liferay.portlet.asset" />
-        <reference entity="ExpandoRow" package-path="com.liferay.portlet.expando" />
-        <reference entity="RatingsStats" package-path="com.liferay.portlet.ratings" />
-        <reference entity="SocialActivity" package-path="com.liferay.portlet.social" />
-        <reference entity="Subscription" package-path="com.liferay.portal" />
-        <reference entity="TrashEntry" package-path="com.liferay.portlet.trash" />
+        <!-- References -->
+
+        <reference package-path="com.liferay.portlet.asset" entity="AssetEntry" />
+        <reference package-path="com.liferay.portlet.asset" entity="AssetLink" />
+        <reference package-path="com.liferay.portlet.asset" entity="AssetTag" />
+        <reference package-path="com.liferay.portlet.social" entity="SocialActivity" />
 
 	</entity>
 
@@ -106,15 +102,11 @@
 		<!-- Finder methods -->
 
         <!-- References -->
-        
-        <reference entity="AssetEntry" package-path="com.liferay.portlet.asset" />
-        <reference entity="AssetLink" package-path="com.liferay.portlet.asset" />
-        <reference entity="AssetTag" package-path="com.liferay.portlet.asset" />
-        <reference entity="ExpandoRow" package-path="com.liferay.portlet.expando" />
-        <reference entity="RatingsStats" package-path="com.liferay.portlet.ratings" />
-        <reference entity="SocialActivity" package-path="com.liferay.portlet.social" />
-        <reference entity="Subscription" package-path="com.liferay.portal" />
-        <reference entity="TrashEntry" package-path="com.liferay.portlet.trash" />
+
+        <reference package-path="com.liferay.portlet.asset" entity="AssetEntry" />
+        <reference package-path="com.liferay.portlet.asset" entity="AssetLink" />
+        <reference package-path="com.liferay.portlet.asset" entity="AssetTag" />
+        <reference package-path="com.liferay.portlet.social" entity="SocialActivity" />
 
 	</entity>
 
@@ -158,14 +150,10 @@
         
         <!-- References -->
         
-        <reference entity="AssetEntry" package-path="com.liferay.portlet.asset" />
-        <reference entity="AssetLink" package-path="com.liferay.portlet.asset" />
-        <reference entity="AssetTag" package-path="com.liferay.portlet.asset" />
-        <reference entity="ExpandoRow" package-path="com.liferay.portlet.expando" />
-        <reference entity="RatingsStats" package-path="com.liferay.portlet.ratings" />
-        <reference entity="SocialActivity" package-path="com.liferay.portlet.social" />
-        <reference entity="Subscription" package-path="com.liferay.portal" />
-        <reference entity="TrashEntry" package-path="com.liferay.portlet.trash" />
+        <reference package-path="com.liferay.portlet.asset" entity="AssetEntry" />
+        <reference package-path="com.liferay.portlet.asset" entity="AssetLink" />
+        <reference package-path="com.liferay.portlet.asset" entity="AssetTag" />
+        <reference package-path="com.liferay.portlet.social" entity="SocialActivity" />
 
 	</entity>
 

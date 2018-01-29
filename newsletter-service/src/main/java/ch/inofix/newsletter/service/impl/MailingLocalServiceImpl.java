@@ -74,8 +74,8 @@ import ch.inofix.newsletter.service.base.MailingLocalServiceBaseImpl;
  *
  * @author Christian Berndt
  * @created 2016-10-10 17:21
- * @modified 2017-11-08 23:49
- * @version 1.1.8
+ * @modified 2018-01-29 15:25
+ * @version 1.1.9
  * @see MailingLocalServiceBaseImpl
  * @see ch.inofix.newsletter.service.MailingLocalServiceUtil
  */
@@ -193,26 +193,9 @@ public class MailingLocalServiceImpl extends MailingLocalServiceBaseImpl {
         resourceLocalService.deleteResource(mailing.getCompanyId(), Mailing.class.getName(),
                 ResourceConstants.SCOPE_INDIVIDUAL, mailing.getMailingId());
 
-        // Subscriptions
-
-        subscriptionLocalService.deleteSubscriptions(mailing.getCompanyId(), Newsletter.class.getName(),
-                mailing.getMailingId());
-
         // Asset
 
         assetEntryLocalService.deleteEntry(Newsletter.class.getName(), mailing.getMailingId());
-
-        // Expando
-
-        expandoRowLocalService.deleteRows(mailing.getMailingId());
-
-        // Ratings
-
-        ratingsStatsLocalService.deleteStats(Newsletter.class.getName(), mailing.getMailingId());
-
-        // Trash
-
-        trashEntryLocalService.deleteEntry(Newsletter.class.getName(), mailing.getMailingId());
 
         return mailing;
     }
